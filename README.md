@@ -61,17 +61,18 @@ However you can also manually copy all the files in [lunos/](https://github.com/
 
 ### Step 2: Configure Fans
 
-Example configuration:
+This example configuration assumes that the relay switches are already setup in Home Assistant, since that
+setup differs substantially depending on what type of relay hardware you are using (e.g. MQTT with ESP8266 vs WeMo Maker).
 
 ```yaml
 lunos:
   - name: "Bedroom Ventilation"
     relay_w1: switch.lunos_bedrooms_w1
-    relay_w2 switch.lunos_bedrooms_w2
+    relay_w2: switch.lunos_bedrooms_w2
   - name: "Basement Ventilation"
     entity: fan.lunos_basement_ventilation
     relay_w1: switch.lunos_basement_w1
-    relay_w2 switch.lunos_basement_w2
+    relay_w2: switch.lunos_basement_w2
   - name: "Bathroom Fan"
     default_speed: high
     relay_w1: switch.lunos_bathroom_w1
