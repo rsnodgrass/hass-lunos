@@ -25,7 +25,7 @@ be required for the install and wiring of this to a LUNOS Universal Controller.
 
 To meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
 
-* [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/)
+* [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
 * Intermatic PE635 allows 120V controller to switch separate low-voltage circuits (notably circuit 5 (and circuits 3 or 4 if wired as low-voltage, though must have a low-voltage divider insert fabricated).
 
 ## Installation
