@@ -134,7 +134,7 @@ LUNOS_SETTINGS = {
         },
         summer_vent: false,
         turbo_mode: true, # flip W2 on/off < 3 seconds = 60 m3/h
-        cycle_seconds: 0
+        exhaust_only: true # not a HRV
     },
     'ra-15-60-high': {
         name: 'LUNOS RA 15-60 (Extra High)',
@@ -145,7 +145,7 @@ LUNOS_SETTINGS = {
             SPEED_HIGH:   60 / CFM_TO_CMHR  # 35 CFM
         },
         summer_vent: false,
-        cycle_seconds: 0
+        exhaust_only: true # not a HRV
     },
     'ra-15-60-4speed': {
         name: 'LUNOS RA 15-60 (4-speed)',
@@ -157,7 +157,7 @@ LUNOS_SETTINGS = {
             SPEED_HIGH:   60 / CFM_TO_CMHR  # 35 CFM
         },
         summer_vent: false,
-        cycle_seconds: 0
+        exhaust_only: true # not a HRV
     }
 }
 
