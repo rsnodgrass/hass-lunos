@@ -71,6 +71,10 @@ class LUNOSFan(FanEntity):
     def __init__(self, unique_id, fan_device, channels, **kwargs):
         """Init this sensor."""
         super().__init__(unique_id, fan_device, channels, **kwargs)
+
+#        self._switch1 = xxx
+#        self._switch2 = xxx
+        
         self._fan_channel = self.cluster_channels.get(CHANNEL_FAN)
 
     async def async_added_to_hass(self):

@@ -38,12 +38,30 @@ entities:
   - entity: fan.lunos_fan_1
 ```
 
+### Automation Examples
+
+```yaml
+automation:
+  - alias: "Set LUNOS fans on when we get home"
+    trigger:
+      - platform: state
+        entity_id: group.people
+        to: "home"
+    action:
+      - service: fan.turn_on
+        entity_id: "fan.lunos"
+        data:
+          speed: "high"
+```
+
 ## See Also
 
-# [475: Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
 * [LUNOS](https://www.lunos.de/en/) (official product page)
+* [475 (USA distributor)](https://foursevenfive.com/lunos-e/)
+* [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
 
 ## Feature Requests
 
 * service turn_on / turn_off
 * service set_speed (low, medium, high)
+* example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
