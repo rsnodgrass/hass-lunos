@@ -2,7 +2,7 @@
 
 ***NOT YET IMPLEMENTED***
 
-The LUNOS integration provides control for LUNOS [e2](https://foursevenfive.com/lunos-e/) or [eGO](https://foursevenfive.com/lunos-ego/) heat-recovery ventilation fans using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches are used to turn on/off the fan and control the speed settings. See the LUNOS installation manual for more information.
+Provides control of LUNOS [e2](https://foursevenfive.com/lunos-e/) or [eGO](https://foursevenfive.com/lunos-ego/) heat-recovery ventilation fans using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches is used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
