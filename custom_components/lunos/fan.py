@@ -3,12 +3,12 @@ import logging
 y
 from homeassistant.components.fan import (
     DOMAIN,
-    SPEED_HIGH,
+    SPEED_OFF,
     SPEED_LOW,
     SPEED_MEDIUM,
-    SPEED_OFF,
+    SPEED_HIGH,
     SUPPORT_SET_SPEED,
-    FanEntity,
+    FanEntity
 )
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -22,30 +22,42 @@ SPEED_LIST = [
     SPEED_LOW,
     SPEED_MEDIUM,
     SPEED_HIGH,
-    SPEED_ON
+    SPEED_ON  # FIXME: remove?  is this really a speed....
 ]
+
+ON  = STATE_ON
+OFF = STATE_OFF
+
+# configuration of switch states to active LUNOS speedsy
+SPEED_SWITCH_STATES = {
+    SPEED_OFF:    [ OFF, OFF ],
+    SPEED_LOW:    [  ON, OFF ],
+    SPEED_MEDIUM: [ OFF,  ON ],
+    SPEED_HIGH:   [  ON,  ON ]
+}
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Old way of setting up fans"""
     pass
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    """Set up the LUNOS fan from config."""
-
-    async def async_discover(discovery_info):
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, [discovery_info]
-        )
+    """Initialize the LUNOS fans from config."""
+    pass
+#    async def async_discover(discovery_info):
+#        await _async_setup_entities(
+#            hass, config_entry, async_add_entities, [discovery_info]
+#        )
 
 async def _async_setup_entities(
     hass, config_entry, async_add_entities, discovery_infos
 ):
     """Set up the LUNOS fans."""
     entities = []
-    for discovery_info in discovery_infos:
-        entities.append(ZhaFan(**discovery_info))
+#    for discovery_info in discovery_infos:
+#        entities.append(LUNOSFan(**discovery_info))
 
-    async_add_entities(entities, update_before_add=True)
+#    async_add_entities(entities, update_before_add=True)
+
 
 
 class LUNOSFan(FanEntity):
@@ -57,20 +69,13 @@ class LUNOSFan(FanEntity):
 
 #        self._switch1 = xxx
 #        self._switch2 = xxx
-        
-        self._fan_channel = self.cluster_channels.get(CHANNEL_FAN)
 
     async def async_added_to_hass(self):
-        """Run when about to be added to hass."""
+        """Run when about to be added to HASS."""
         await super().async_added_to_hass()
-        await self.async_accept_signal(
-            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
-        )
-
-    @callback
-    def async_restore_last_state(self, last_state):
-        """Restore previous state."""
-        self._state = VALUE_TO_SPEED.get(last_state.state, last_state.state)
+ #       await self.async_accept_signal(
+#            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
+#        )
 
     @property
     def supported_features(self) -> int:
@@ -105,15 +110,16 @@ class LUNOSFan(FanEntity):
         self.async_schedule_update_ha_state()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
-        """Turn the entity on."""
+        """Turn the fan on."""
         if speed is None:
-            speed = SPEED_MEDIUM
+            speed = SPEED_MEDIUM   # FIXME: allow default override?
 
         await self.async_set_speed(speed)
 
     async def async_turn_off(self, **kwargs) -> None:
-        """Turn the entity off."""
+        """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
+        # FIXME: turn both switches off!
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
