@@ -10,14 +10,22 @@ Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive
 ## Supported Smart Relays
 
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
-The switches for the LUNOS Universal Controller must be relay switches only.
+For non-smart installations, the LUNOS Universal Controller typically has non-electrified rocker switches connected
+as switche W1 and W2. These are relay switches only and not powered. Any smart switches connected the LUNOS Universal
+Controller must be relay switches only with no chance that the LUNOS Controller would be electrified.
 
 ### Recommended Smart Relay
 
-The [WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
+The [Belgin WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
 is UL-listed, uses standard power adapter that plugs into any wall outlet, keeps 120V circuit completely
 separate from the relay side, and communicates over WiFi. Since the WeMo Maker plugs into any standard outlet,
 no electrical inspection should be required for the install and wiring of this to a LUNOS Universal Controller.
+
+Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller as
+shown in the following diagram.
+
+
+
 
 ### Advanced Electricans Only
 
