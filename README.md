@@ -41,6 +41,9 @@ The downside is that this requires the ESP8266 device to manually be reflashed w
 easy integration into Home Assistant.
 See [how to flash with Tasmota to support MQTT control](https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401).
 
+If you want to operate two independent LUNOS Controllers, it is recommended the 12V transformer be upgraded
+to a larger unit, like the Mean Well #RS-50-12 transformer, which produces up to 50W at 12V.
+
 ### Other Alternatives
 
 * USB relays (such as [2-port](https://relaypros.com/Relay/Relay/CAT_RELAY2_USB))
