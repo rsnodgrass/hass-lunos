@@ -23,16 +23,19 @@ Example configuration:
 
 ```yaml
 lunos:
-  - name: "Bedrooms"
-    switch_1: switch.lunos_bedrooms_1
-    switch_2: switch.lunos_bedrooms_2
-  - name: "Basement"
-    switch_1: switch.lunos_basement_1
-    switch_2: switch.lunos_basement_2
-  - name: "Bathroom"
+  - name: "Bedroom Ventilation"
+    switches:
+      - switch.lunos_bedrooms_1
+      - switch.lunos_bedrooms_2
+  - name: "Basement Ventilation"
+    switches:
+      - switch.lunos_basement_1
+      - switch.lunos_basement_2
+  - name: "Bathroom Fan"
     default_speed: high
-    switch_1: switch.lunos_bathroom_1
-    switch_2: switch.lunos_bathroom_2
+    switches:
+      - switch.lunos_bathroom_1
+      - switch.lunos_bathroom_2
 ```
 
 ### Step 3: Add Lovelace Card
