@@ -17,10 +17,14 @@ Easiest installation is by setting up [Home Assistant Community Store (HACS)](ht
 
 However you can also manually copy all the files in [lunos/](https://github.com/rsnodgrass/hass-lunos/custom_components/lunos) directory to `/config/custom_components/lunos` on your Home Assistant installation.
 
-### Step 2: Configure Fans
+### Step 2: Configure Fans and Assign Control Switch Pairs
+
+LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of the fans (as well as other features).
+Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use
+in operating the LUNOS fan controller.
 
 This example configuration assumes that the relay switches are already setup in Home Assistant, since that
-setup differs substantially depending on what type of relay hardware you are using (e.g. MQTT with ESP8266 vs WeMo Maker).
+setup differs substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
 
 ```yaml
 lunos:
@@ -94,6 +98,7 @@ to access the Sonoff web configuration interface.
 * configure the Sonoff relay device to connect to your WiFi network
 * enable auto-discovery (for automatic Home Assistant integration)
 * configure the MQTT broker host/user/password that your Home Assistant instance uses
+* configure the [Tasmota switches](https://github.com/arendst/Tasmota/wiki/Buttons-and-switches)
 
 In the Sonoff web interface Console, turn on auto discovery (option 19) so Home Assistant can find your relays:
 
