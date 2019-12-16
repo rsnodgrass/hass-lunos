@@ -18,8 +18,9 @@ Controller must be relay switches only with no chance that the LUNOS Controller 
 
 The [Belgin WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
 is UL-listed, uses standard power adapter that plugs into any wall outlet, keeps 120V circuit completely
-separate from the relay side, and communicates over WiFi. Since the WeMo Maker plugs into any standard outlet,
-no electrical inspection should be required for the install and wiring of this to a LUNOS Universal Controller.
+separate from the relay side (since it is powered by a 5V/1A micro USB cable), and communicates over WiFi
+Since the WeMo Maker is powered by a 5V/1A micro USB cable, no electrical inspection should be required for the
+install and wiring of this to a LUNOS Universal Controller.
 
 Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller as
 shown in the following diagram and with the switch type configured in WeMo software to be in Toggle mode.
