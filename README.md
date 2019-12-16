@@ -81,42 +81,16 @@ Example Home Assistant compatible relays when flashed with Tasmota for offline M
 | [MHCOZY 4-channel WiFI wireless switch](https://amazon.com/Channel-Momentary-Inching-Self-lock-Controller/dp/B071KFX63R/?tag=rynoshark-20) | 4 | Y | N | 5-32V |
 | [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) | 4 | Y | N | 12V |
 
-#### MQTT Setup
+#### Tasmota Setup
 
-After flashing Tasmota to the relays connected to the LUNOS Universal Controller, you must setup Home Assistant
-to communicate over MQTT with the relays.
+In the Sonoff web interface Console, turn on auto discovery (option 19) so Home Assistant can find your relays:
 
-```yaml
-switch:
-  - platform: mqtt
-    name: "LUNOS Switch W1"
-    state_topic: "stat/tasmota/RESULT"  
-    value_template: "{{ value_json.POWER1 }}"
-    command_topic: "cmnd/tasmota/POWER1"
-    payload_on: "ON"
-    payload_off: "OFF"
-    availability_topic: "tele/tasmota/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 1
-    retain: false
-  - platform: mqtt
-    name: "LUNOS Switch W2"
-    state_topic: "stat/tasmota/RESULT"  
-    value_template: "{{ value_json.POWER2 }}"
-    command_topic: "cmnd/tasmota/POWER1"
-    payload_on: "ON"
-    payload_off: "OFF"
-    availability_topic: "tele/tasmota/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 1
-    retain: false
+```
+SetOption19 on
 ```
 
-NOTE: In the future we may have a config option in hass-lunos to automatically create and inject these mqtt
-devices into configuration, so no manual config entries are required.
-
+Then you must configure in Sonoff web interface the address and username/password for the
+MQTT broker that Home Assistant uses.
 
 #### ESP8266 WiFi Relay
 
