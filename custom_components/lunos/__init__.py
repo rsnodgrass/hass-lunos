@@ -37,7 +37,7 @@ LUNOS_SETTINGS = {
         summer_vent: true,
         cycle_seconds: 70
     },
-    'e2-short-usa': {
+    'e2-short': {
         name: 'LUNOS e2 (non-USA, short)',
         controller_setting: '5',
         cfm: {
@@ -52,20 +52,20 @@ LUNOS_SETTINGS = {
         name: 'LUNOS e2 (USA)',
         controller_setting: '6',
         cfm: {
-            SPEED_LOW:    10,
-            SPEED_MEDIUM: 15,
-            SPEED_HIGH:   20
+            SPEED_LOW:    10, # 17   / CFM_TO_CMHR
+            SPEED_MEDIUM: 15, # 25.5 / CFM_TO_CMHR
+            SPEED_HIGH:   20  # 34   / CFM_TO_CMHR
         },
         summer_vent: true,
         cycle_seconds: 70
     },
-    'e2-short': {
+    'e2-short-usa': {
         name: 'LUNOS e2 (USA, short)',
         controller_setting: '7',
-        cfm: {
-            SPEED_LOW:    9,
-            SPEED_MEDIUM: 18,
-            SPEED_HIGH:   22
+        cfm: {                # STRANGE: different sources specific different CFM
+            SPEED_LOW:    9,  # 17   / CFM_TO_CMHR
+            SPEED_MEDIUM: 18, # 25.5 / CFM_TO_CMHR
+            SPEED_HIGH:   22  # 34   / CFM_TO_CMHR
         },
         summer_vent: true,
         cycle_seconds: 55

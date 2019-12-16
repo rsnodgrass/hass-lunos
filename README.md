@@ -27,7 +27,7 @@ shown in the following diagram and with the switch type configured in WeMo softw
 
 ### Alternatives
 
-* ESP8266 based WiFi relay (with Sonoff support) ... ideally sharing power from the transformer powering the LUNOS Controller
+* ESP8266 based WiFi relay (with Sonoff support, such as the [12V ESP8266 Dual WiFi Relay Module](https://www.banggood.com/12V-ESP8266-Dual-WiFi-Relay-Module-Internet-Of-Things-Smart-Home-Mobile-APP-Remote-Switch-p-1276094.html)) 
 * USB relays (such as [2-port](https://relaypros.com/Relay/Relay/CAT_RELAY2_USB))
 * Raspberry Pi with relay module
 
@@ -99,9 +99,10 @@ automation:
           speed: "high"
 ```
 
-## Supported Hardware
+## Required Hardware
 
-* [LUNOS eGO](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
+* LUNOS e2 HRV fan pairs or [LUNOS eGO HRV fan](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
+* NOTE: LUNOS Universal Controller is powered by a 12V transformer (such as Mean Wells RS-15-12 12V/1.3A/15.6W)
 
 ## See Also
 
