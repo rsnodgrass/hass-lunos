@@ -36,8 +36,6 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
-# left/right switch
-
 CONF_SWITCH_W1 = 'switch_w1'
 CONF_SWITCH_W2 = 'switch_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
@@ -103,8 +101,8 @@ class LUNOSFan(FanEntity):
         # FIXME: confirm the signature
         
         self._default_speed = DEFAULT_SPEED  # FIXME: allow default override?
-#        self._switch_a = xxx
-#        self._switch_b = xxx
+#        self._switch_w1 = xxx
+#        self._switch_w2 = xxx
 
          # FIXME: determine current state!
 
@@ -167,8 +165,8 @@ class LUNOSFan(FanEntity):
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
 
-#        switch1.set(switch_states[0])
-#        switch2.set(switch_states[1])
+#        self._switch_w1.set(switch_states[0])
+#        self._switch_w2.set(switch_states[1])
 # FIXME
         self.async_set_state(speed)
 
