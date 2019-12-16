@@ -62,16 +62,18 @@ automation:
           speed: "high"
 ```
 
-
 ## Hardware
 
 * LUNOS e2 HRV fan pairs or [LUNOS eGO HRV fan](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
-* NOTE: LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (such as Mean Well #RS-15-12 12V/1.3A/15.6W)
+* LUNOS Universal Controller
+* Home Assistant compatible relay
+
+The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W).
 
 While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using
 several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
 
-Example Home Assistant compatible relays (most can be flashed with Tasmota/MQTT):
+Example Home Assistant compatible relays when flashed with Tasmota for offline MQTT integration:
 
 | Model | Relays | Tasmota Supported | Manual Buttons | Power |
 |-------|:------:|:-----------------:|:--------------:|-------|
@@ -81,8 +83,40 @@ Example Home Assistant compatible relays (most can be flashed with Tasmota/MQTT)
 
 #### MQTT Setup
 
+After flashing Tasmota to the relays connected to the LUNOS Universal Controller, you must setup Home Assistant
+to communicate over MQTT with the relays.
+
 ```yaml
+switch:
+  - platform: mqtt
+    name: "LUNOS Switch W1"
+    state_topic: "stat/tasmota/RESULT"  
+    value_template: "{{ value_json.POWER1 }}"
+    command_topic: "cmnd/tasmota/POWER1"
+    payload_on: "ON"
+    payload_off: "OFF"
+    availability_topic: "tele/tasmota/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+  - platform: mqtt
+    name: "LUNOS Switch W2"
+    state_topic: "stat/tasmota/RESULT"  
+    value_template: "{{ value_json.POWER2 }}"
+    command_topic: "cmnd/tasmota/POWER1"
+    payload_on: "ON"
+    payload_off: "OFF"
+    availability_topic: "tele/tasmota/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
 ```
+
+NOTE: In the future we may have a config option in hass-lunos to automatically create and inject these mqtt
+devices into configuration, so no manual config entries are required.
+
 
 #### ESP8266 WiFi Relay
 
