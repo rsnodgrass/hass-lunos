@@ -1,6 +1,6 @@
-"""LUNOS e2 and eGO fan control"""
+"""LUNOS fan control (e2/eGO)"""
 import logging
-y
+
 from homeassistant.components.fan import (
     DOMAIN,
     SPEED_OFF,
@@ -19,25 +19,21 @@ from . import LUNOS_DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+DEFAULT_SPEED = SPEED_MEDIUM
 SPEED_LIST = [
     SPEED_OFF,
     SPEED_LOW,
     SPEED_MEDIUM,
-    SPEED_HIGH,
+    SPEED_HIGH
 #    SPEED_ON  # FIXME: remove?  is this really a speed....
 ]
 
-DEFAULT_SPEED = SPEED_MEDIUM
-
-ON  = STATE_
-OFF = STATE_OFF
-
 # configuration of switch states to active LUNOS speedsy
 SPEED_SWITCH_STATES = {
-    SPEED_OFF:    [ OFF, OFF ],
-    SPEED_LOW:    [  ON, OFF ],
-    SPEED_MEDIUM: [ OFF,  ON ],
-    SPEED_HIGH:   [  ON,  ON ]
+    SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
+    SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
+    SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+    SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
