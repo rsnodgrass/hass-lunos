@@ -2,7 +2,7 @@
 
 ***NOT YET IMPLEMENTED***
 
-The LUNOS integration provides control for LUNOS [e2](https://foursevenfive.com/lunos-e/) or [eGO](https://foursevenfive.com/lunos-ego/) heat-recovery fans using two on/off smart switches.
+The LUNOS integration provides control for LUNOS [e2](https://foursevenfive.com/lunos-e/) or [eGO](https://foursevenfive.com/lunos-ego/) heat-recovery ventilation fans using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches are used to turn on/off the fan and control the speed settings. See the LUNOS installation manual for more information.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -17,32 +17,39 @@ Easiest installation is by setting up [Home Assistant Community Store (HACS)](ht
 
 However you can also manually copy all the files in [lunos/](https://github.com/rsnodgrass/hass-lunos/custom_components/lunos) directory to `/config/custom_components/lunos` on your Home Assistant installation.
 
-### Step 2: Configure Sensors
+### Step 2: Configure Fans
 
 Example configuration:
 
 ```yaml
-switches:
-  - platform: lunos
-    switch_1: switch.lunos_1
-    switch_2: switch.lunos_2
+lunos:
+  - name: "Bedrooms"
+    switch_1: switch.lunos_bedrooms_1
+    switch_2: switch.lunos_bedrooms_2
+  - name: "Basement"
+    switch_1: switch.lunos_basement_1
+    switch_2: switch.lunos_basement_2
+  - name: "Bathroom"
+    default_speed: high
+    switch_1: switch.lunos_bathroom_1
+    switch_2: switch.lunos_bathroom_2
 ```
 
 ### Step 3: Add Lovelace Card
 
-The following is a simplest Lovelace card which shows data from the Flo sensors:
+The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952):
 
 ```yaml
-type: entities
-entities:
-  - entity: fan.lunos_fan_1
+- entity: fan.sunroom_fan
+  type: custom:fan-control-entity-row
+  name: Basement Ventilation
 ```
 
 ### Automation Examples
 
 ```yaml
 automation:
-  - alias: "Set LUNOS fans on when we get home"
+  - alias: "Turn on LUNOS ventilation fans on when we get home"
     trigger:
       - platform: state
         entity_id: group.people
