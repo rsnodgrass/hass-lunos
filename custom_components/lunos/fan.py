@@ -8,6 +8,8 @@ from homeassistant.components.fan import (
     SPEED_MEDIUM,
     SPEED_HIGH,
     SUPPORT_SET_SPEED,
+    STATE_ON,
+    STATE_OFF,
     FanEntity
 )
 from homeassistant.core import callback
@@ -109,6 +111,12 @@ class LUNOSFan(FanEntity):
         self._state = VALUE_TO_SPEED.get(state, self._state)
         self.async_schedule_update_ha_state()
 
+    def set_switches(self, speed):        
+        switch_states = SPEED_SWITCH_STATES[speed]
+#        switch1.set(switch_states[0])
+#        switch2.set(switch_states[1])
+# FIXME
+        
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
         if speed is None:
