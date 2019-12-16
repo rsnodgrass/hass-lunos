@@ -92,6 +92,9 @@ LUNOS_SETTINGS = {
     }
 }
 
+# NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
+# transformer entirely would add a Off setting in addition to the four-speeds
+
 def setup(hass, config):
     """Set up the LUNOS fan controllers"""
     conf = config[LUNOS_DOMAIN]
