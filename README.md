@@ -7,17 +7,17 @@ Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
-## Supported Smart Switches
+## Supported Smart Relays
 
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
 The switches for the LUNOS Universal Controller must be relay switches only.
 
-### Recommended
+### Recommended Smart Relay
 
 The [WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
-is UL-listed, uses standard power adapter that plugs into any wall outlet, and keeps 120V circuit completely
-separate from relay side. Since the WeMo Maker plugs into any standard outlet, no electrical inspection should
-be required for the install and wiring of this to a LUNOS Universal Controller.
+is UL-listed, uses standard power adapter that plugs into any wall outlet, keeps 120V circuit completely
+separate from the relay side, and communicates over WiFi. Since the WeMo Maker plugs into any standard outlet,
+no electrical inspection should be required for the install and wiring of this to a LUNOS Universal Controller.
 
 ### Advanced Electricans Only
 
@@ -32,8 +32,6 @@ For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Contr
 
 Additionally, once added to Home Assistant, LUNOS fan speeds can be configured to be controlled by
 Alexa or other voice enabled smart speaker.
-
-
 
 ## Installation
 
