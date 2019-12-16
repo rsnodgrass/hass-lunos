@@ -1,0 +1,5 @@
+{
+  "name": "Lunos Fan Control",
+  "domains": [ "switch" ],
+  "render_readme": true
+}

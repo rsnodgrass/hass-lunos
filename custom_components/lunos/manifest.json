@@ -1,0 +1,8 @@
+{
+  "domain": "lunos",
+  "name": "LUNOS Fan Control",
+  "documentation": "https://github.com/rsnodgrass/hass-lunos/",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@rsnodgrass"]
+}
