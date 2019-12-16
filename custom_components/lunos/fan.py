@@ -13,6 +13,8 @@ from homeassistant.components.fan import (
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
+from . import LUNOS_DOMAIN
+
 _LOGGER = logging.getLogger(__name__)
 
 SPEED_LIST = [
@@ -23,13 +25,9 @@ SPEED_LIST = [
     SPEED_ON
 ]
 
-DOMAIN = 'lunos'
-DATA_LUNOS = 'lunos'
-
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Old way of setting up fans"""
     pass
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the LUNOS fan from config."""
@@ -39,23 +37,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             hass, config_entry, async_add_entities, [discovery_info]
         )
 
-    unsub = async_dispatcher_connect(
-        hass, ZHA_DISCOVERY_NEW.format(DOMAIN), async_discover
-    )
-    hass.data[DATA_LUNOS][DATA_ZHA_DISPATCHERS].append(unsub)
-
-    fans = hass.data.get(DATA_LUNOS, {}).get(DOMAIN)
-    if fans is not None:
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, fans.values()
-        )
-        del hass.data[DATA_LUNOS][DOMAIN]
-
-
 async def _async_setup_entities(
     hass, config_entry, async_add_entities, discovery_infos
 ):
-    """Set up the ZHA fans."""
+    """Set up the LUNOS fans."""
     entities = []
     for discovery_info in discovery_infos:
         entities.append(ZhaFan(**discovery_info))
@@ -65,8 +50,6 @@ async def _async_setup_entities(
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
-
-    _domain = DOMAIN
 
     def __init__(self, unique_id, fan_device, channels, **kwargs):
         """Init this sensor."""
