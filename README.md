@@ -116,6 +116,7 @@ automation:
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
 * WARNING: flipping W1 within 3 seconds clears the filter warning light
 * add 3 second delay between state changes
+* support for wiring filter LED light to a smart sensor (such as WeMo Maker sensor input)
 
 ## Not Supported
 
