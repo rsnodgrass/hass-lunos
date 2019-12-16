@@ -68,19 +68,23 @@ automation:
 * LUNOS e2 HRV fan pairs or [LUNOS eGO HRV fan](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
 * NOTE: LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (such as Mean Well #RS-15-12 12V/1.3A/15.6W)
 
-Each e2 unit draws 12V / 6W
+While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using
+several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
 
+Example Home Assistant compatible relays (most can be flashed with Tasmota/MQTT):
 
-Other relays that may work:
+| Model | Relays | Tasmota Supported | Manual Buttons | Power |
+|-------|:------:|:-----------------:|:--------------:|-------|
+| [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) | 4 | Y | Y | 5V USB |
+| [MHCOZY 4-channel WiFI wireless switch](https://amazon.com/Channel-Momentary-Inching-Self-lock-Controller/dp/B071KFX63R/?tag=rynoshark-20) | 4 | Y | N | 5-32V |
+| [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) | 4 | Y | N | 12V |
 
-* [Wifi Relay Switch Module](https://smile.amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) (can be flashed to Tasmota with MQTT)
+#### MQTT Setup
 
+```yaml
+```
 
-#### ESP8266 WiFi Relay with MQTT
-
-
-While individual ESP8266 WiFi relays can be purchased, for a centralized control of several LUNOS zones (using
-several LUNOS Controllers), choosing a multi-relay ESP8266 module doesn't really cost any more.
+#### ESP8266 WiFi Relay
 
 For example, the [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) or
 
@@ -130,7 +134,7 @@ to a larger unit, like the Mean Well #RS-50-12 transformer, which produces up to
 
 Also note, to meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
 
-* Pair of [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/?tag=rynoshark-20) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
+* Pair of [Tuya Wi-Fi Switch Module Relay](https://amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/?tag=rynoshark-20) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
 
 ### Wireless and Alexa Integration
 
