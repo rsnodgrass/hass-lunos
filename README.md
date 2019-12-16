@@ -2,7 +2,7 @@
 
 ***NOT YET IMPLEMENTED***
 
-Provides control of LUNOS [e2](https://foursevenfive.com/lunos-e/) or [eGO](https://foursevenfive.com/lunos-ego/) heat-recovery ventilation fans using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches is used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches is used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -66,9 +66,10 @@ automation:
 
 ## See Also
 
-* [LUNOS](https://www.lunos.de/en/) (official product page)
-* [475 (USA distributor)](https://foursevenfive.com/lunos-e/)
+* [LUNOS Ventilation FAQ](https://foursevenfive.com/blog/lunos-faq/)
 * [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
+* [LUNOS](https://www.lunos.de/en/) (official site)
+* [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
 
 ## Feature Requests
 
