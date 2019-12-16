@@ -71,6 +71,7 @@ automation:
 * [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
 * [LUNOS](https://www.lunos.de/en/) (official site)
 * [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
+* [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 
 ## Feature Requests
 
