@@ -42,16 +42,16 @@ SPEED_SWITCH_STATES = {
 # delay all state changes to be > 3 seconds since the last switch change
 STATE_CHANGE_DELAY_SECONDS = 4
 
-CONF_SWITCH_W1 = 'switch_w1'
-CONF_SWITCH_W2 = 'switch_w1'
+CONF_relay_W1 = 'relay_w1'
+CONF_relay_W2 = 'relay_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
 
 #FAN_SCHEMA = vol.Schema(
 #    {
 #        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
 #        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-#        vol.Optional(CONF_SWITCH_W1): cv.string,  # cv.entity_id
-#        vol.Optional(CONF_SWITCH_W2): cv.string,  # cv.entity_id
+#        vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
+#        vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
 #        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
 #    }
 #)
@@ -76,7 +76,7 @@ async def _async_setup_entities(
 #    for discovery_info in discovery_infos:
 #        entities.append(LUNOSFan(**discovery_info))
 
-# FIXME: pass in switch_a and switch_b
+# FIXME: pass in relay_w1 and relay_w2
 
 #    async_add_entities(entities, update_before_add=True)
 
@@ -90,8 +90,8 @@ class LUNOSFan(FanEntity):
 
         self._last_state_change = time.time()
         self._default_speed = DEFAULT_SPEED  # FIXME: allow default override?
-#        self._switch_w1 = xxx
-#        self._switch_w2 = xxx
+#        self._relay_w1 = xxx
+#        self._relay_w2 = xxx
 
          # FIXME: determine current state!
 
@@ -102,7 +102,7 @@ class LUNOSFan(FanEntity):
 #            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
 #        )
 
-    def determine_current_switch_state(self):
+    def determine_current_relay_state(self):
         # FIXME:
         return DEFAULT_SPEED # FIXME
 
