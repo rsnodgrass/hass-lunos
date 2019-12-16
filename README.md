@@ -14,7 +14,7 @@ For non-smart installations, the LUNOS Universal Controller typically has non-el
 as switche W1 and W2. These are relay switches only and not powered. Any smart switches connected the LUNOS Universal
 Controller must be relay switches only with no chance that the LUNOS Controller would be electrified.
 
-### Easy: Belkin WeMo Maker ($$$)
+### EASY OPTION ($$$): Belkin WeMo Maker
 
 The [Belkin WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as the Maker
 is UL-listed, uses a standard USB-based power adapter that plugs into any wall outlet, keeps the 120V circuit completely
@@ -29,7 +29,7 @@ software to be in Toggle mode.
 The downside of this approach is the WeMo Maker is expensive ($80+), and
 two are required.
 
-### Medium: ESP8266 WiFi Relay with Sonoff/MQTT ($)
+### MEDIUM DIFFICULTY OPTION ($): ESP8266 WiFi Relay with Sonoff/MQTT ($)
 
 Using an ESP8266 based WiFi relay (with Sonoff support, such as the [12V ESP8266 Dual WiFi Relay Module](https://www.banggood.com/12V-ESP8266-Dual-WiFi-Relay-Module-Internet-Of-Things-Smart-Home-Mobile-APP-Remote-Switch-p-1276094.html))
 is a very inexpensive model (under $10 for a relay module that can support up to two independent LUNOS Controllers).
