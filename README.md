@@ -71,6 +71,11 @@ automation:
 Each e2 unit draws 12V / 6W
 
 
+Other relays that may work:
+
+* [Wifi Relay Switch Module](https://smile.amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) (can be flashed to Tasmota with MQTT)
+
+
 #### ESP8266 WiFi Relay with MQTT
 
 
@@ -109,9 +114,11 @@ The ESP8266 module can share an upsized 12V transformer with LUNOS Universal Con
 
 ![LUNOS ESP8266 Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-esp8266.png?raw=true)
 
-The downside is that this requires the ESP8266 device to manually be reflashed with Sonoff firmware to support
-easy integration into Home Assistant.
-See [how to flash with Tasmota to support MQTT control](https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401).
+The downside is that this requires the ESP8266 device to manually be flashed with Sonoff firmware to support
+easy integration into Home Assistant. For detail on flashing the LC Technology ESP8266 WiFi Relays with Sonoff/MQTT, see:
+
+* https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
+* https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
 If you want to operate two independent LUNOS Controllers, it is recommended the 12V transformer be upgraded
 to a larger unit, like the Mean Well #RS-50-12 transformer, which produces up to 50W at 12V.
@@ -123,7 +130,7 @@ to a larger unit, like the Mean Well #RS-50-12 transformer, which produces up to
 
 Also note, to meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
 
-* Pair of [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
+* Pair of [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/?tag=rynoshark-20) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
 
 ### Wireless and Alexa Integration
 
