@@ -25,6 +25,12 @@ install and wiring of this to a LUNOS Universal Controller.
 Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller as
 shown in the following diagram and with the switch type configured in WeMo software to be in Toggle mode.
 
+### Alternatives
+
+* ESP8266 based WiFi relay (with Sonoff support) ... ideally sharing power from the transformer powering the LUNOS Controller
+* USB relays (such as [2-port](https://relaypros.com/Relay/Relay/CAT_RELAY2_USB))
+* Raspberry Pi with relay module
+
 ### Advanced Relays (Electricans Only)
 
 To meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
