@@ -36,14 +36,36 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
-CONF_SWITCH_ENTITIES = 'switches'
+# left/right switch
+
+CONF_SWITCH_W1 = 'switch_w1'
+CONF_SWITCH_W2 = 'switch_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
+
+LUNOS_CFM = {
+    'ego': {
+        SPEED_LOW:    10,
+        SPEED_MEDIUM: 15,
+        SPEED_HIGH:   20
+    },
+    'e2-usa': {
+        SPEED_LOW:    10,
+        SPEED_MEDIUM: 15,
+        SPEED_HIGH:   20
+    },
+    'e2-short-usa': {
+        SPEED_LOW:    9,
+        SPEED_MEDIUM: 18,
+        SPEED_HIGH:   22
+    }
+}
 
 #FAN_SCHEMA = vol.Schema(
 #    {
 #        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
 #        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-#        vol.Optional(CONF_SWITCH_ENTITIES): cv.ensure_list,  # cv.entity_ids
+#        vol.Optional(CONF_SWITCH_W1): cv.string,  # cv.entity_id
+#        vol.Optional(CONF_SWITCH_W2): cv.string,  # cv.entity_id
 #        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
 #    }
 #)

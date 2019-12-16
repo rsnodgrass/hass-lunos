@@ -2,7 +2,7 @@
 
 ***NOT YET IMPLEMENTED***
 
-Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches is used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches (W1/W2) are used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -24,18 +24,16 @@ Example configuration:
 ```yaml
 lunos:
   - name: "Bedroom Ventilation"
-    switches:
-      - switch.lunos_bedrooms_1
-      - switch.lunos_bedrooms_2
+    switch_w1: switch.lunos_bedrooms_w1
+    switch_w2 switch.lunos_bedrooms_w2
   - name: "Basement Ventilation"
-    switches:
-      - switch.lunos_basement_1
-      - switch.lunos_basement_2
+    entity: fan.lunos_basement_ventilation
+    switch_w1: switch.lunos_basement_w1
+    switch_w2 switch.lunos_basement_w2
   - name: "Bathroom Fan"
     default_speed: high
-    switches:
-      - switch.lunos_bathroom_1
-      - switch.lunos_bathroom_2
+    switch_w1: switch.lunos_bathroom_w1
+    switch_w2: switch.lunos_bathroom_w2
 ```
 
 ### Step 3: Add Lovelace Card
@@ -43,9 +41,8 @@ lunos:
 The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952):
 
 ```yaml
-- entity: fan.sunroom_fan
+- entity: fan.lunos_bathroom
   type: custom:fan-control-entity-row
-  name: Basement Ventilation
 ```
 
 ### Automation Examples
@@ -64,6 +61,10 @@ automation:
           speed: "high"
 ```
 
+## Supported Hardware
+
+* [LUNOS eGO](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
+
 ## See Also
 
 * [LUNOS Ventilation FAQ](https://foursevenfive.com/blog/lunos-faq/)
@@ -76,3 +77,5 @@ automation:
 * service turn_on / turn_off
 * service set_speed (low, medium, high)
 * example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
+* configurable type (sets CFM for each)
+* NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
