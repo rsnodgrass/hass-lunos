@@ -24,10 +24,12 @@ SPEED_LIST = [
     SPEED_LOW,
     SPEED_MEDIUM,
     SPEED_HIGH,
-    SPEED_ON  # FIXME: remove?  is this really a speed....
+#    SPEED_ON  # FIXME: remove?  is this really a speed....
 ]
 
-ON  = STATE_ON
+DEFAULT_SPEED = SPEED_MEDIUM
+
+ON  = STATE_
 OFF = STATE_OFF
 
 # configuration of switch states to active LUNOS speedsy
@@ -58,9 +60,9 @@ async def _async_setup_entities(
 #    for discovery_info in discovery_infos:
 #        entities.append(LUNOSFan(**discovery_info))
 
+# FIXME: pass in switch_a and switch_b
+
 #    async_add_entities(entities, update_before_add=True)
-
-
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
@@ -68,16 +70,24 @@ class LUNOSFan(FanEntity):
     def __init__(self, unique_id, fan_device, channels, **kwargs):
         """Init this sensor."""
         super().__init__(unique_id, fan_device, channels, **kwargs)
+        # FIXME: confirm the signature
+        
+        self._default_speed = DEFAULT_SPEED  # FIXME: allow default override?
+#        self._switch_a = xxx
+#        self._switch_b = xxx
 
-#        self._switch1 = xxx
-#        self._switch2 = xxx
+         # FIXME: determine current state!
 
     async def async_added_to_hass(self):
         """Run when about to be added to HASS."""
         await super().async_added_to_hass()
- #       await self.async_accept_signal(
+#       await self.async_accept_signal(
 #            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
 #        )
+
+    def determine_current_switch_state(self):
+        # FIXME:
+        return DEFAULT_SPEED # FIXME
 
     @property
     def supported_features(self) -> int:
@@ -101,37 +111,38 @@ class LUNOSFan(FanEntity):
             return False
         return self._state != SPEED_OFF
 
+    # FIXME: are there any attributes!?
     @property
     def device_state_attributes(self):
         """Return state attributes."""
         return self.state_attributes
 
+    # FIXME...effectively this should just call async_set_speed since it is the same thing (but with update ha state)
     def async_set_state(self, state):
         """Handle state update from channel."""
         self._state = VALUE_TO_SPEED.get(state, self._state)
         self.async_schedule_update_ha_state()
 
-    def set_switches(self, speed):        
-        switch_states = SPEED_SWITCH_STATES[speed]
-#        switch1.set(switch_states[0])
-#        switch2.set(switch_states[1])
-# FIXME
-        
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
         if speed is None:
-            speed = SPEED_MEDIUM   # FIXME: allow default override?
+            speed = self._default_speed
 
         await self.async_set_speed(speed)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
-        # FIXME: turn both switches off!
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
-        await self._fan_channel.async_set_speed(SPEED_TO_VALUE[speed])
+        switch_states = SPEED_SWITCH_STATES[speed]
+
+#        switch1.set(switch_states[0])
+#        switch2.set(switch_states[1])
+# FIXME
+        self._state = speed
+        
         self.async_set_state(speed)
 
     async def async_update(self):
