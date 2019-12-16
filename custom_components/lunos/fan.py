@@ -1,4 +1,5 @@
 """LUNOS Heat Recovery Ventilation Control (e2/eGO)"""
+import time
 import logging
 
 from homeassistant.components.fan import (
@@ -36,27 +37,14 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
+# flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
+# filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
+# delay all state changes to be > 3 seconds since the last switch change
+STATE_CHANGE_DELAY_SECONDS = 4
+
 CONF_SWITCH_W1 = 'switch_w1'
 CONF_SWITCH_W2 = 'switch_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
-
-LUNOS_CFM = {
-    'ego': {
-        SPEED_LOW:    10,
-        SPEED_MEDIUM: 15,
-        SPEED_HIGH:   20
-    },
-    'e2-usa': {
-        SPEED_LOW:    10,
-        SPEED_MEDIUM: 15,
-        SPEED_HIGH:   20
-    },
-    'e2-short-usa': {
-        SPEED_LOW:    9,
-        SPEED_MEDIUM: 18,
-        SPEED_HIGH:   22
-    }
-}
 
 #FAN_SCHEMA = vol.Schema(
 #    {
@@ -99,7 +87,8 @@ class LUNOSFan(FanEntity):
         """Init this sensor."""
         super().__init__(unique_id, fan_device, channels, **kwargs)
         # FIXME: confirm the signature
-        
+
+        self._last_state_change = time.time()
         self._default_speed = DEFAULT_SPEED  # FIXME: allow default override?
 #        self._switch_w1 = xxx
 #        self._switch_w2 = xxx
@@ -165,6 +154,11 @@ class LUNOSFan(FanEntity):
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
 
+        # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
+        # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
+        # delay all state changes to be > 3 seconds since the last switch change
+        # STATE_CHANGE_DELAY_SECONDS = 4
+        
 #        self._switch_w1.set(switch_states[0])
 #        self._switch_w2.set(switch_states[1])
 # FIXME

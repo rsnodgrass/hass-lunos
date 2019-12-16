@@ -79,3 +79,12 @@ automation:
 * example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 * configurable type (sets CFM for each)
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
+* WARNING: flipping W1 within 3 seconds clears the filter warning light
+* add 3 second delay between state changes
+
+## Not Supported
+
+* enabling the summer/night ventilation mode (e2)
+* eGO exhaust only modes
+* e2 four-flow rate mode (non-US models)
+* LUNOS type RA 15-60 radial duct fan
