@@ -14,33 +14,41 @@ For non-smart installations, the LUNOS Universal Controller typically has non-el
 as switche W1 and W2. These are relay switches only and not powered. Any smart switches connected the LUNOS Universal
 Controller must be relay switches only with no chance that the LUNOS Controller would be electrified.
 
-### Recommended Smart Relay
+### Easy: Belkin WeMo Maker ($$$)
 
-The [Belgin WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
-is UL-listed, uses standard power adapter that plugs into any wall outlet, keeps 120V circuit completely
+The [Belkin WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as the Maker
+is UL-listed, uses a standard USB-based power adapter that plugs into any wall outlet, keeps the 120V circuit completely
 separate from the relay side (since it is powered by a 5V/1A micro USB cable), and communicates over WiFi
 Since the WeMo Maker is powered by a 5V/1A micro USB cable, no electrical inspection should be required for the
 install and wiring of this to a LUNOS Universal Controller.
 
-Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller as
-shown in the following diagram and with the switch type configured in WeMo software to be in Toggle mode.
+Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller in
+similar setup to the ESP8266 version. Both of the WeMo Makers should have their switch type configured in WeMo
+software to be in Toggle mode.
+
+The downside of this approach is the WeMo Maker is expensive ($80+), and
+two are required.
+
+### Medium: ESP8266 WiFi Relay with Sonoff/MQTT ($)
+
+Using an ESP8266 based WiFi relay (with Sonoff support, such as the [12V ESP8266 Dual WiFi Relay Module](https://www.banggood.com/12V-ESP8266-Dual-WiFi-Relay-Module-Internet-Of-Things-Smart-Home-Mobile-APP-Remote-Switch-p-1276094.html))
+is a very inexpensive model (under $10 for a relay module that can support up to two independent LUNOS Controllers).
+The ESP8266 module can share an upsized 12V transformer with LUNOS Universal Controller.
 
 ![LUNOS ESP8266 Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-esp8266.png?raw=true)
 
+The downside is that this requires the ESP8266 device to manually be reflashed with Sonoff firmware to support
+easy integration into Home Assistant.
+See [how to flash with Tasmota to support MQTT control](https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401).
 
+### Other Alternatives
 
-### Alternatives
-
-* ESP8266 based WiFi relay (with Sonoff support, such as the [12V ESP8266 Dual WiFi Relay Module](https://www.banggood.com/12V-ESP8266-Dual-WiFi-Relay-Module-Internet-Of-Things-Smart-Home-Mobile-APP-Remote-Switch-p-1276094.html)) - could share upsized 12V transformer with LUNOS Universal Controller; see [how to flash with Tasmota to support MQTT control](https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401)
 * USB relays (such as [2-port](https://relaypros.com/Relay/Relay/CAT_RELAY2_USB))
-* Raspberry Pi with relay module
+* Raspberry Pi with various relay module
 
-### Advanced Relays (Electricans Only)
+Also note, to meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
 
-To meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
-
-* [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
-* Intermatic PE635 allows 120V controller to switch separate low-voltage circuits (notably circuit 5 (and circuits 3 or 4 if wired as low-voltage, though must have a low-voltage divider insert fabricated).
+* Pair of [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/) with L(out) and first relay contact wire nut connected as W1 or W2 to LUNOS Controller
 
 ### Wireless and Alexa Integration
 
