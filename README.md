@@ -1,6 +1,6 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-***NOT YET IMPLEMENTED***
+# ***NOT YET IMPLEMENTED***
 
 Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of smart on/off relays. Per the design of the LUNOS low-voltage fan controller, a pair of switches (W1/W2) are used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
