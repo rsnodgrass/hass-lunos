@@ -22,12 +22,9 @@ separate from the relay side, and communicates over WiFi. Since the WeMo Maker p
 no electrical inspection should be required for the install and wiring of this to a LUNOS Universal Controller.
 
 Two WeMo Makers are required. The WeMo relay contacts should be connected to the LUNOS Universal Controller as
-shown in the following diagram.
+shown in the following diagram and with the switch type configured in WeMo software to be in Toggle mode.
 
-
-
-
-### Advanced Electricans Only
+### Advanced Relays (Electricans Only)
 
 To meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
 
