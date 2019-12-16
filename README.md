@@ -12,7 +12,10 @@ For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Contr
 ## Supported Smart Switches
 
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
-The switches for the LUNOS Universal Controller must be contact switches only.
+The switches for the LUNOS Universal Controller must be relay switches only.
+
+* [WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043)
+* Sonoff WiFi Smart Switch
 
 * Intermatic PE635 allows 120V controller to switch separate low-voltage circuits (notably circuit 5 (and circuits 3 or 4 if wired as low-voltage, though must have a low-voltage divider insert fabricated).
 
