@@ -117,7 +117,6 @@ class LUNOSFan(FanEntity):
         """Return state attributes."""
         return self.state_attributes
 
-    # FIXME...effectively this should just call async_set_speed since it is the same thing (but with update ha state)
     def async_set_state(self, state):
         """Handle state update from channel."""
         self._state = VALUE_TO_SPEED.get(state, self._state)
@@ -141,14 +140,13 @@ class LUNOSFan(FanEntity):
 #        switch1.set(switch_states[0])
 #        switch2.set(switch_states[1])
 # FIXME
-        self._state = speed
-        
         self.async_set_state(speed)
 
     async def async_update(self):
-        """Attempt to retrieve on off state from the fan."""
+        """Attempt to retrieve current state of the fan by inspecting the switch state."""
         await super().async_update()
-        if self._fan_channel:
-            state = await self._fan_channel.get_attribute_value("fan_mode")
-            if state is not None:
-                self._state = VALUE_TO_SPEED.get(state, self._state)
+
+#        if self._fan_channel:
+#            state = await self._fan_channel.get_attribute_value("fan_mode")
+#            if state is not None:
+#                self._state = VALUE_TO_SPEED.get(state, self._state)
