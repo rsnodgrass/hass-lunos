@@ -36,6 +36,18 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
+CONF_SWITCH_ENTITIES = 'switches'
+CONF_DEFAULT_SPEED = 'default_speed'
+
+#FAN_SCHEMA = vol.Schema(
+#    {
+#        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+#        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
+#        vol.Optional(CONF_SWITCH_ENTITIES): cv.ensure_list,  # cv.entity_ids
+#        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
+#    }
+#)
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Old way of setting up fans"""
     pass

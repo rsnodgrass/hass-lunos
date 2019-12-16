@@ -1,4 +1,4 @@
-# LUNOS Fan Control for Home Assistant
+# LUNOS Heat Recovery Ventilation for Home Assistant
 
 ***NOT YET IMPLEMENTED***
 
