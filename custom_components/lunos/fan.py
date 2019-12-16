@@ -1,4 +1,4 @@
-"""LUNOS fan control (e2/eGO)"""
+"""LUNOS Heat Recovery Ventilation Control (e2/eGO)"""
 import logging
 
 from homeassistant.components.fan import (
