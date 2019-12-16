@@ -69,6 +69,11 @@ automation:
 * Home Assistant compatible relay
 
 The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W).
+If you want to power two independent LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay),
+it is recommended the 12V transformer be upgraded to a larger unit, like the Mean Well #RS-50-12 transformer,
+which produces up to 50W at 12V.
+
+#### WiFi Relays
 
 While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using
 several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
@@ -83,6 +88,13 @@ Example Home Assistant compatible relays when flashed with Tasmota for offline M
 
 #### Tasmota Setup
 
+After flashing your multi-channel WiFi relay with Sonoff, you must connect to it via the Sonoff WiFi
+to access the Sonoff web configuration interface.
+
+* configure the Sonoff relay device to connect to your WiFi network
+* enable auto-discovery (for automatic Home Assistant integration)
+* configure the MQTT broker host/user/password that your Home Assistant instance uses
+
 In the Sonoff web interface Console, turn on auto discovery (option 19) so Home Assistant can find your relays:
 
 ```
@@ -91,6 +103,8 @@ SetOption19 on
 
 Then you must configure in Sonoff web interface the address and username/password for the
 MQTT broker that Home Assistant uses.
+
+See XXX for more information.
 
 #### ESP8266 WiFi Relay
 
@@ -132,8 +146,6 @@ easy integration into Home Assistant. For detail on flashing the LC Technology E
 * https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-If you want to operate two independent LUNOS Controllers, it is recommended the 12V transformer be upgraded
-to a larger unit, like the Mean Well #RS-50-12 transformer, which produces up to 50W at 12V.
 
 ### Other Alternatives
 
