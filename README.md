@@ -4,7 +4,7 @@
 
 Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of LOW-VOLTAGE on/off smart switches. Per the design of the LUNOS low-voltage fan controller, a pair of switches (W1/W2) are used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
-For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Controller](http://www.lutron.com/TechnicalDocumentLibrary/Caseta_Fan_Control_Sell_Sheet.pdf) (PD-FSQN-WH-R) to a LUNOS fan within Home Assistant allows extremely slick and simple control of a LUNOS fan in a single gang outlet box in an occupied space. The larger W1 and W2 control switches can then be "hidden" in a utility room or closet.
+For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Controller](http://www.lutron.com/TechnicalDocumentLibrary/Caseta_Fan_Control_Sell_Sheet.pdf) (PD-FSQN-WH-R) to a LUNOS fan within Home Assistant allows extremely slick and simple control of a LUNOS fan in a single gang outlet box in an occupied space. The larger W1 and W2 control switches can then be "hidden" in a utility room or closet.  Additionally, Alexa can be configured to control LUNOS fan speeds.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -14,9 +14,18 @@ For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Contr
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
 The switches for the LUNOS Universal Controller must be relay switches only.
 
-* [WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043)
-* Sonoff WiFi Smart Switch
+### Recommended
 
+The [WeMo Maker](https://www.belkin.com/uk/p/P-F7C043/) (F7C043) is the recommended option for novices as it
+is UL-listed, uses standard power adapter that plugs into any wall outlet, and keeps 120V circuit completely
+separate from relay side. Since the WeMo Maker plugs into any standard outlet, no electrical inspection should
+be required for the install and wiring of this to a LUNOS Universal Controller.
+
+### Advanced Electricans Only
+
+To meet code requirements, 120V circuits must be separated from any low-voltage circuit. These approaches are for advanced users only:
+
+* [Tuya Wi-Fi Switch Module Relay](https://smile.amazon.com/Momentary-Inching-Self-Locking-90-264V-Compatible/dp/B07ZV73ZV7/)
 * Intermatic PE635 allows 120V controller to switch separate low-voltage circuits (notably circuit 5 (and circuits 3 or 4 if wired as low-voltage, though must have a low-voltage divider insert fabricated).
 
 ## Installation
