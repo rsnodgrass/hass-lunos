@@ -1,6 +1,7 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any Home Assistant compatible smart relays. The LUNOS low-voltage fan controller is designed to be controlled using a pair of switches (W1/W2) to turn on/off
+Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any Home Assistant compatible smart relays.
+The LUNOS low-voltage fan controller is designed to be controlled using a pair of switches (W1/W2) to turn on/off
 ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more
 information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
@@ -22,13 +23,14 @@ LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of
 Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use in
 operating the LUNOS fan controller.
 
-Configuration variables:
-- **name** (*Optional*): Friendly name for this fan controller.
-- **relay_w1** (*Required*): The HASS entity id for the relay switch that is connected as W1 to the LUNOS controller.
-- **relay_w2** (*Required*): The HASS entity id for the relay switch that is connected as W2 to the LUNOS controller.
-- **controller_coding** (*Optional*): Slug indicating the manual coding the LUNOS controller is set to (see lunos-codings.yaml).
-- **fan_count** (*Optional*): The number of fans connected to this LUNOS controller.
-- **default_speed** (*Optional*): The default speed when this LUNOS fan is turned on without any speed indicated.
+#### Configuration Variables
+
+- **name** (*Optional*): Friendly name for this fan controller
+- **relay_w1** (*Required*): HASS entity id for the relay switch that is connected as W1 to the LUNOS controller
+- **relay_w2** (*Required*): HASS entity id for the relay switch that is connected as W2 to the LUNOS controller
+- **controller_coding** (*Optional*): Slug indicating the manual coding the LUNOS controller is set to (see lunos-codings.yaml)
+- **fan_count** (*Optional*): Number of fans connected to this LUNOS controller
+- **default_speed** (*Optional*): Default speed when this LUNOS fan is turned on without any speed indicated
 
 #### Configuration Example
 
