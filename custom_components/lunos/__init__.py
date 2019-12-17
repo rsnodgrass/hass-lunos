@@ -6,6 +6,12 @@ import logging
 
 from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
+from homeassistant.components.fan import (
+    SPEED_OFF,
+    SPEED_LOW,
+    SPEED_MEDIUM,
+    SPEED_HIGH,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
