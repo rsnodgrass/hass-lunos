@@ -77,7 +77,7 @@ If you want to power two independent LUNOS Controllers and fan sets (plus poweri
 it is recommended the 12V transformer be upgraded to a larger unit, like the Mean Well #RS-50-12 transformer,
 which produces up to 50W at 12V.
 
-#### WiFi Relays
+#### WiFi Smart Relays
 
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
 For non-smart installations, the LUNOS Universal Controller typically has non-electrified rocker switches connected
@@ -119,15 +119,13 @@ For more information on flashing ESP8266 based relays:
 * https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-#### WiFi Real Switch Module
-
-Example of wiring the [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20):
+#### Example Wiring with [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20)
 
 ![LUNOS 4-Chan WiFi Case Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-switch-case.png?raw=true)
 
-#### ESP8266 WiFi Relay
+#### Example Wiring with ESP8266 WiFi Relay
 
-The following is an example of con necting a [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html).
+The following is an example connecting a [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) to the LUNOS Controller.
 
 ![LUNOS ESP8266 Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-esp8266.png?raw=true)
 
