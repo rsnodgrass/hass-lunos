@@ -30,7 +30,7 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 30 / CFM_TO_CMHR,
             SPEED_HIGH:   38 / CFM_TO_CMHR
         },
-        'summer_vent': false,
+        'summer_vent': False,
         'cycle_seconds': 70
     },
     'e2-4speed': {
@@ -42,8 +42,8 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 30 / CFM_TO_CMHR,
             SPEED_HIGH:   38 / CFM_TO_CMHR
         },
-        'four_speed': true,
-        'summer_vent': true,
+        'four_speed': True,
+        'summer_vent': True,
         'cycle_seconds': 70
     },
     'e2-short': {
@@ -54,7 +54,7 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 30 / CFM_TO_CMHR,
             SPEED_HIGH:   38 / CFM_TO_CMHR
         },
-        'summer_vent': true,
+        'summer_vent': True,
         'cycle_seconds': 55
     },
     'e2-usa': {
@@ -65,7 +65,7 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 15, # 25.5 / CFM_TO_CMHR
             SPEED_HIGH:   20  # 34   / CFM_TO_CMHR
         },
-        'summer_vent': true,
+        'summer_vent': True,
         'cycle_seconds': 70
     },
     'e2-short-usa': {
@@ -76,7 +76,7 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 18, # 25.5 / CFM_TO_CMHR
             SPEED_HIGH:   22  # 34   / CFM_TO_CMHR
         },
-        'summer_vent': true,
+        'summer_vent': True,
         'cycle_seconds': 55
     },
     'ego': {
@@ -87,7 +87,7 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 10 / CFM_TO_CMHR,  # 6 CFM
             SPEED_HIGH:   20 / CFM_TO_CMHR   # 12 CFM
         },
-        'summer_vent': true,
+        'summer_vent': True,
         'cycle_seconds': 50
     },
     'ego-4speed': {
@@ -100,9 +100,9 @@ LUNOS_SETTINGS = {
             SPEED_HIGH:   20 / CFM_TO_CMHR
             # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h
         },
-        'four_speed': true,
-        'summer_vent': true,
-        'turbo_mode': true,
+        'four_speed': True,
+        'summer_vent': True,
+        'turbo_mode': True,
         'cycle_seconds': 50
     },
     'ego-exhaust-4speed': {
@@ -114,9 +114,9 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 20 / CFM_TO_CMHR,
             SPEED_HIGH:   45 / CFM_TO_CMHR # exhaust only
         },
-        'four_speed': true,
-        'high_exhaust_only': true,
-        'summer_vent': true,
+        'four_speed': True,
+        'high_exhaust_only': True,
+        'summer_vent': True,
         'cycle_seconds': 50
     },
     'ego-exhaust': {
@@ -127,9 +127,9 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 10 / CFM_TO_CMHR,
             SPEED_HIGH:   45 / CFM_TO_CMHR # exhaust only
         },
-        'four_speed': true,
-        'high_exhaust_only': true,
-        'summer_vent': true,
+        'four_speed': True,
+        'high_exhaust_only': True,
+        'summer_vent': True,
         'cycle_seconds': 50
     },
     'ra-15-60': {
@@ -141,9 +141,9 @@ LUNOS_SETTINGS = {
             SPEED_HIGH:   45 / CFM_TO_CMHR  # 27 CFM
             # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h (35 CFM)
         },
-        'summer_vent': false,
-        'turbo_mode': true, # flip W2 on/off < 3 seconds = 60 m3/h
-        'exhaust_only': true # not a HRV
+        'summer_vent': False,
+        'turbo_mode': True, # flip W2 on/off < 3 seconds = 60 m3/h
+        'exhaust_only': True # not a HRV
     },
     'ra-15-60-high': {
         'name': 'LUNOS RA 15-60 (Extra High)',
@@ -153,8 +153,8 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 30 / CFM_TO_CMHR, # 18 CFM
             SPEED_HIGH:   60 / CFM_TO_CMHR  # 35 CFM
         },
-        'summer_vent': false,
-        'exhaust_only': true # not a HRV
+        'summer_vent': False,
+        'exhaust_only': True # not a HRV
     },
     'ra-15-60-4speed': {
         'name': 'LUNOS RA 15-60 (4-speed)',
@@ -165,8 +165,8 @@ LUNOS_SETTINGS = {
             SPEED_MEDIUM: 45 / CFM_TO_CMHR, # 27 CFM
             SPEED_HIGH:   60 / CFM_TO_CMHR  # 35 CFM
         },
-        'summer_vent': false,
-        'exhaust_only': true # not a HRV
+        'summer_vent': False,
+        'exhaust_only': True # not a HRV
     }
 }
 
