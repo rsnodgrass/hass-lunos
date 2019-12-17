@@ -1,5 +1,6 @@
 e2:
   name: LUNOS e2 (non-USA)
+  model_number: e2
   controller_coding: 3
   cycle_seconds: 70
   default_fan_count: 2
@@ -17,6 +18,7 @@ e2:
 
 e2-4speed:
   name: LUNOS e2 (4-speed)
+  model_number: e2
   controller_coding: 4 
   default_fan_count: 2
   four_speed: true
@@ -34,6 +36,7 @@ e2-4speed:
     
 e2-short:
   name: LUNOS e2 Short (non-USA)
+  model_number: e2-short
   controller_coding: 5
   default_fan_count: 2
   supports_summer_vent: true
@@ -48,6 +51,7 @@ e2-short:
     
 e2-usa:
   name: LUNOS e2 (USA)
+  model_number: e2
   controller_coding: 6
   default_fan_count: 2
   supports_summer_vent: true
@@ -62,6 +66,7 @@ e2-usa:
     
 e2-short-usa:
   name: LUNOS e2 Short (USA)
+  model_number: e2-short
   controller_coding: 7
   default_fan_count: 2
   supports_summer_vent: true
@@ -80,6 +85,7 @@ e2-short-usa:
 
 ego:
   name: LUNOS eGO
+  model_number: eGO
   controller_coding: 9
   default_fan_count: 1
   supports_summer_vent: true
@@ -95,6 +101,7 @@ ego:
     
 ego-4speed:
   name: LUNOS eGO (4-speed)
+  model_number: eGO
   controller_coding: A
   default_fan_count: 1
   four_speed: true
@@ -115,6 +122,7 @@ ego-4speed:
     
 ego-exhaust-4speed:
   name: LUNOS eGO (high=exhaust-only 4-speed)
+  model_number: eGO
   controller_coding: B
   default_fan_count: 1
   four_speed: true
@@ -133,6 +141,7 @@ ego-exhaust-4speed:
  
 ego-exhaust:
   name: LUNOS eGO (high=exhaust-only)
+  model_number: eGO
   controller_coding: C
   default_fan_count: 1
   four_speed: true
@@ -148,7 +157,8 @@ ego-exhaust:
         cmh: 45 # exhaust only
         
 ra-15-60:
-  name: LUNOS RA 15-60
+  name: LUNOS RA 15-60 radial duct fan
+  model_number: RA-15-60
   controller_coding: 0
   default_fan_count: 1
   supports_summer_vent: false
@@ -169,7 +179,8 @@ ra-15-60:
         cfm: 35
     
 ra-15-60-high:
-  name: LUNOS RA 15-60 (Extra High)
+  name: LUNOS RA 15-60 radial duct fan (Extra High)
+  model_number: RA-15-60
   controller_coding: 1
   default_fan_count: 1
   supports_summer_vent: false
@@ -183,7 +194,8 @@ ra-15-60-high:
         cmh: 60  # 35 CFM
     
 ra-15-60-4speed:
-  name: LUNOS RA 15-60 (4-speed)
+  name: LUNOS RA 15-60 radial duct fan (4-speed)
+  model_number: RA-15-60
   controller_coding: 2
   default_fan_count: 1
   supports_summer_vent: false
