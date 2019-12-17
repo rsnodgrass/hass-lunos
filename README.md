@@ -76,16 +76,25 @@ The following is a simple Lovelace card using the [fan-control-entity-row](https
   type: custom:fan-control-entity-row
 ```
 
-### Step 4 (Optional): Automation
+## Automation
 
-While using NodeRED can be used to easily create ventilation automation, here are several example manual
-automations that change the LUNOS fan speeds based on occupancy or air quality issues:
+### Supported Services
+
+* **lunos_turn_summer_ventilation_on** (only for supported LUNOS e2 models)
+* **lunos_turn_summer_ventilation_off**
+* **lunos_clear_filter_change_reminder**
+
+### Examples
+
+While using NodeRED can be used to easily create sophisticated (and often easier to understand) ventilation
+automation, the following examples showcase a few automations that adjust LUNOS fan speeds based on occupancy
+or air quality issues:
 
 Turn on fans when someone arrives:
 
 ```yaml
 automation:
-  - alias: "Turn on LUNOS ventilation fans on when anyone arrives home"
+  - alias: "**Turn on LUNOS ventilation fans on when anyone arrives home**"
     trigger:
       - platform: state
         entity_id: group.people
@@ -101,7 +110,7 @@ Turn LUNOS ventilation fan to highest speed when high humidity is detected:
 
 ```yaml
 automation:
-  - alias: "Turn basement LUNOS ventilation on maximum speed if high humidity is detected"
+  - alias: "**Turn basement LUNOS ventilation on maximum speed if high humidity is detected**"
     trigger:
       - platform: foobot
         entity_id: sensor.basement_humidity
@@ -120,13 +129,6 @@ automation:
 
 These same strategies can be used with any Home Assistant compatible devices that track humidity ([ecobee](https://smile.amazon.com/ecobee3-lite-Smart-Thermostat-Black/dp/B06W56TBLN?tag=rynoshark-20), [Nest thermostat](https://amazon.com/Nest-T3007ES-Thermostat-Temperature-Generation/dp/B0131RG6VK/?tag=rynoshark-20)) or,
 even better, using air quality measuring devices ([Airthings](https://amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?tag=rynoshark-20), [AirVisual IQAir](https://amazon.com/IQAir-AirVisual-Temperature-Real-Time-Forecasting/dp/B0784TZFRW/?tag=rynoshark-20), [Foobot](https://amazon.com/Foobot-Quality-Monitor-Homeowners-Renters/dp/B06Y8VLCH8?tag=rynoshark-20)) that measure CO2, VOCs, etc.
-
-
-### Supported Services
-
-* **lunos_turn_summer_ventilation_on** (only for supported LUNOS e2 models)
-* **lunos_turn_summer_ventilation_off**
-* **lunos_clear_filter_change_reminder**
 
 ## Hardware Requirements
 
