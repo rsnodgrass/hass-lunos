@@ -43,10 +43,8 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON  ]
 }
 
-# flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
-# filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
-# delay all state changes to be > 3 seconds since the last switch change
-STATE_CHANGE_DELAY_SECONDS = 4
+# delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
+SPEED_CHANGE_DELAY_SECONDS = 4
 
 ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = 'cmh'
@@ -148,10 +146,6 @@ class LUNOSFan(FanEntity):
 
             #self._state_attrs[ATTR_DBA] = controller_config['dbA'][self._state]
 
-    def determine_current_relay_state(self):
-        # FIXME:
-        return DEFAULT_SPEED # FIXME
-
     @property
     def supported_features(self) -> int:
         """Flag supported features."""
@@ -197,6 +191,11 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
+    def determine_current_speed_setting(self):
+        # FIXME: probe the two relays to determine current state and match to the SPEED_SWITCH_STATES table
+        # self._state = speed
+        return
+
     async def set_relay_switch_state(self, relay, state):
         method = 'turn_on'
         if state == STATE_OFF:
@@ -216,7 +215,7 @@ class LUNOSFan(FanEntity):
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
         now = time.time()
-        if now < self._last_state_change + STATE_CHANGE_DELAY_SECONDS:
+        if now < self._last_state_change + SPEED_CHANGE_DELAY_SECONDS:
             LOG.error("LUNOS currently DOES NOT delay switch toggles by at least 3 seconds to avoid confusing LUNOS controller")
             # FIXME: register a callback to fire after the required delay
 
