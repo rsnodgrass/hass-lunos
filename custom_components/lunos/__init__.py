@@ -132,7 +132,7 @@ LUNOS_SETTINGS = {
         'name': 'LUNOS eGO (high=exhaust-only)',
         'controller_setting': 'C',
         'cfm': {
->            SPEED_LOW:     5 / CFM_TO_CMHR,
+            SPEED_LOW:     5 / CFM_TO_CMHR,
             SPEED_MEDIUM: 10 / CFM_TO_CMHR,
             SPEED_HIGH:   45 / CFM_TO_CMHR # exhaust only
         },
