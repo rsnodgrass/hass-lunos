@@ -1,0 +1,206 @@
+- coding: e2
+  name: LUNOS e2 (non-USA)
+  controller_setting: 3
+  cycle_seconds: 70
+  default_fan_count: 2
+  behavior:
+      off: 
+        cmh: 0
+        cfm: 0
+      low:
+        cmh: 15
+      medium:
+        cmh: 30
+      high:
+        cmh: 38
+  summer_vent: false
+  
+- coding: e2-4speed
+  name: LUNOS e2 (4-speed)
+  controller_setting: 4 
+  default_fan_count: 2
+  behavior: 
+      off:
+        cmh: 15
+      low: 
+        cmh: 20
+      medium: 
+        cmh: 30
+      high:
+        cmh: 38
+      
+  four_speed: true
+  summer_vent: true
+  cycle_seconds: 70
+    
+- coding: e2-short
+  name: LUNOS e2 Short (non-USA)
+  controller_setting: 5
+  default_fan_count: 2
+  behavior:
+    low: 
+        cmh: 15
+    medium: 
+        cmh: 30
+    high: 
+        cmh: 38
+        
+  summer_vent: true
+  cycle_seconds: 55
+    
+- coding: e2-usa
+  name: LUNOS e2 (USA)
+  controller_setting: 6
+  default_fan_count: 2
+  behavior: 
+    low:
+        cmh: 10 # 17  
+    medium:
+        cmh: 15 # 25.5
+    high:
+        cmh: 20  # 34  
+        
+  summer_vent: true
+  cycle_seconds: 70
+    
+- coding: e2-short-usa
+  name: LUNOS e2 Short (USA)
+  controller_setting: 7
+  default_fan_count: 2
+  behavior: # STRANGE: different sources specific different CFM
+    low:
+        cmh: 9
+        cfm: 17
+    medium: 
+        cmh: 18
+        cfm: 25.5
+    high: 
+        cfm: 34
+        cmh: 22
+        
+  summer_vent: true
+  cycle_seconds: 55
+    
+- coding: ego
+  name: LUNOS eGO
+  controller_setting: 9
+  default_fan_count: 1
+  behavior: 
+    low:
+        cfm: 3
+        cmh: 5  # 3 CFM
+    medium: 
+        cmh: 10  # 6 CFM
+    high: 
+        cmh: 20   # 12 CFM
+        
+  summer_vent: true
+  cycle_seconds: 50
+    
+- coding: ego-4speed
+  name: LUNOS eGO (4-speed)
+  controller_setting: A
+  default_fan_count: 1
+  behavior: 
+    off:  
+        cmh: 5 
+    low:  
+        cmh: 10
+    medium: 
+        cmh: 15
+    high: 
+        cmh: 20
+    # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h
+        
+  four_speed: true
+  summer_vent: true
+  turbo_mode: true
+  cycle_seconds: 50
+    
+- coding: ego-exhaust-4speed
+  name: LUNOS eGO (high=exhaust-only 4-speed)
+  controller_setting: B
+  default_fan_count: 1
+  behavior: 
+    off:  
+        cmh: 5 
+    low:  
+        cmh: 10
+    medium: 
+        cmh: 20
+    high: 
+        cmh: 45 # exhaust only
+        exhaust_only: true
+        
+  four_speed: true
+  summer_vent: true
+  cycle_seconds: 50
+    
+- coding: ego-exhaust
+  name: LUNOS eGO (high=exhaust-only)
+  controller_setting: C
+  default_fan_count: 1
+  behavior: 
+    low:   
+        cmh: 5
+    medium:
+        cmh: 10
+    high:
+        cmh: 45 # exhaust only
+        
+  four_speed: true
+  high_exhaust_only: true
+  summer_vent: true
+  cycle_seconds: 50
+    
+- coding: ra-15-60
+  name: LUNOS RA 15-60
+  controller_setting: 0
+  default_fan_count: 1
+  behavior:
+    low: 
+        cfm: 9 # marketing estimate
+        cmh: 15
+    medium:
+        cfm: 8 # marketing estimate
+        cmh: 30
+    high:
+        cfm: 27 # marketing estimate
+    cmh: 45
+    # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h (35 CFM)
+
+  summer_vent: false
+  turbo_mode: true # flip W2 on/off < 3 seconds = 60 m3/h
+  exhaust_only: true # not a HRV
+
+- coding: ra-15-60-high
+  name: LUNOS RA 15-60 (Extra High)
+  controller_setting: 1
+  default_fan_count: 1
+  behavior: 
+    low:
+        cmh: 15 # 9 CFM
+    medium:
+        cmh: 30 # 18 CFM
+    high:
+        cmh: 60  # 35 CFM
+        
+  summer_vent: false
+  exhaust_only: true # not a HRV
+    
+- coding: ra-15-60-4speed
+  name: LUNOS RA 15-60 (4-speed)
+  controller_setting: 2
+  default_fan_count: 1
+  behavior: 
+    off:
+        cmh: 15 # 9 CFM
+    low:
+        cmh: 30 # 18 CFM
+    medium:
+        cmh: 45 # 27 CFM
+    high:
+        cmh: 60  # 35 CFM
+        
+  summer_vent: false
+  exhaust_only: true # not a HRV  
