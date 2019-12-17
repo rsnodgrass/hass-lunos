@@ -4,7 +4,7 @@ https://github.com/rsnodgrass/hass-lunos
 """
 import logging
 
-from homeassistant.helpers import discovery
+from homeassistant.helpers import config_validation as cv, discovery
 from homeassistant.helpers.entity import Entity
 from homeassistant.components.fan import (
     SPEED_OFF,
