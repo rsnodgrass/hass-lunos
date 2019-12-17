@@ -185,3 +185,4 @@ Alexa or other voice enabled smart speaker.
 * exhaust only ventilation mode (eGO models)
 * fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
+* LUNOS e2 Neo decibal level attributes
