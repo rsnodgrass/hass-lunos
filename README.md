@@ -209,16 +209,14 @@ Alexa or other voice enabled smart speaker.
 
 ## Currently Not Supported
 
-## TODO
-
-* BUG: does NOT detect the current relay switch state to determine current speed on startup
-* BUG: add 3+ second delay between state changes
-
-### Currently Not Supported
-
-* automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
 * attribute indicating current ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
 * special handling of exhaust only ventilation mode (eGO models)
 * fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
 * LUNOS e2 Neo sound dB differences
+
+## Known Bugs
+
+* BUG: current relay switch state is not read to determine current speed on startup
+* BUG: automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
+* BUG: add 3+ second delay between relay state changes (to avoid accidentally enabling summer ventilation mode or clearing filter reminder)
