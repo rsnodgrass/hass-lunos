@@ -8,8 +8,8 @@ The design of the LUNOS low-voltage fan controller uses a pair of physical switc
 ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only
 modes, etc. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
-This LUNOS integration allows control of the fans through Home Assistant apps and web consoles, as well as a wide variety of
-automation opportunities when paired with other sensors:
+While this LUNOS integration allows control of the fan modes through Home Assistant apps and web consoles, the real power
+comes in supporting a wide variety of automation opportunities when paired with other third-party sensors:
 
 * set LUNUS speeds to maximum when high CO2, VOCs, or radon is detected
 
@@ -94,7 +94,7 @@ Turn on fans when someone arrives:
 
 ```yaml
 automation:
-  - alias: "**Turn on LUNOS ventilation fans on when anyone arrives home**"
+  - alias: "Turn on LUNOS ventilation fans on when anyone arrives home"
     trigger:
       - platform: state
         entity_id: group.people
@@ -110,7 +110,7 @@ Turn LUNOS ventilation fan to highest speed when high humidity is detected:
 
 ```yaml
 automation:
-  - alias: "**Turn basement LUNOS ventilation on maximum speed if high humidity is detected**"
+  - alias: "Turn basement LUNOS ventilation on maximum speed if high humidity is detected"
     trigger:
       - platform: foobot
         entity_id: sensor.basement_humidity
@@ -202,17 +202,6 @@ an occupied space. The larger W1 and W2 control switches can then be "hidden" in
 Additionally, once added to Home Assistant, LUNOS fan speeds can be configured to be controlled by
 Alexa or other voice enabled smart speaker.
 
-## See Also
-
-* [LUNOS Ventilation FAQ](https://foursevenfive.com/blog/lunos-faq/)
-* [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
-* [LUNOS](https://www.lunos.de/en/) (official site)
-* [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
-* [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
-
-* https://community.home-assistant.io/t/fibaro-rgbw-to-switch-fan-controller/104872
-* https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
-
 ## Currently Not Supported
 
 * attribute indicating current ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
@@ -226,3 +215,14 @@ Alexa or other voice enabled smart speaker.
 * BUG: current relay switch state is not read to determine current speed on startup
 * BUG: automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
 * BUG: add 3+ second delay between relay state changes (to avoid accidentally enabling summer ventilation mode or clearing filter reminder)
+
+## See Also
+
+* [LUNOS Ventilation FAQ](https://foursevenfive.com/blog/lunos-faq/)
+* [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
+* [LUNOS](https://www.lunos.de/en/) (official site)
+* [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
+* [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
+
+* https://community.home-assistant.io/t/fibaro-rgbw-to-switch-fan-controller/104872
+* https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
