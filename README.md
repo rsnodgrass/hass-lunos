@@ -151,10 +151,8 @@ Alexa or other voice enabled smart speaker.
 
 ## Feature Requests
 
-* service turn_on / turn_off
-* service set_speed (low, medium, high)
-* example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 * add 3 second delay between state changes (bug fix)
+* automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 
 * support for wiring filter LED light to a smart sensor (such as WeMo Maker sensor input)
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
