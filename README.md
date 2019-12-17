@@ -224,5 +224,4 @@ Alexa or other voice enabled smart speaker.
 * [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 
-* https://community.home-assistant.io/t/fibaro-rgbw-to-switch-fan-controller/104872
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay

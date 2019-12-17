@@ -68,7 +68,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_CODING_CONFIG.keys()),
+        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vs.string,
+#        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_CODING_CONFIG.keys()),
         vol.Optional(CONF_FAN_COUNT): vol.In( [ '1', '2', '3', '4' ]), # default is based on how controller is coded (see below)
         vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
@@ -83,6 +84,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     relay_w1 = config.get(CONF_RELAY_W1)
     relay_w2 = config.get(CONF_RELAY_W2)
     default_speed = config.get(CONF_DEFAULT_SPEED)
+
+    LOG.info(f"Coding supported {LUNOS_CODING_CONFIG.keys()}")
 
     LOG.info(f"Found configuration for LUNOS fan controller '{name}' setup with relays W1={relay_w1}, W2={relay_w2}'")
 

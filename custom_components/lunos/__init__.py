@@ -25,6 +25,7 @@ LUNOS_CODING_CONFIG = {}
 async def async_setup(hass, config):
     global LUNOS_CODING_CONFIG
     LUNOS_CODING_CONFIG = yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
+    LOG.info(f"Coding supported (direct) {LUNOS_CODING_CONFIG.keys()}")
     return True
 
 # NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
