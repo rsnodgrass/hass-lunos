@@ -69,7 +69,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
         vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_CODING_CONFIG.keys()),
-        vol.Optional(CONF_FAN_COUNT, default='2'): vol.In( [ '1', '2', '3', '4' ]), # NOTE: should be controller_type defined
+        vol.Optional(CONF_FAN_COUNT): vol.In( [ '1', '2', '3', '4' ]), # default is based on how controller is coded (see below)
         vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
 )
@@ -84,11 +84,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     relay_w2 = config.get(CONF_RELAY_W2)
     default_speed = config.get(CONF_DEFAULT_SPEED)
 
-    LOG.info(f"Found configuration for LUNOS fan controller '{name} setup with relays W1={relay_w1}, W2={relay_w2}'")
+    LOG.info(f"Found configuration for LUNOS fan controller '{name}' setup with relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([fan], update_before_add=True)
 
+    # FIXME: actually subscribe to service call APIs
     #component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER:, {}, "async_clear_filter_reminder")
     #component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION:, {}, "async_turn_on_summer_ventilation")
     #component.async_register_entity_service(SERVICE_TURN_OFF_SUMMER_VENTILATION:, {}, "async_turn_off_summer_ventilation")

@@ -40,14 +40,7 @@ substantially depending on the type of relay hardware being used (e.g. Tasmota M
 ```yaml
 fan:
   - platform: lunos
-    name: Bedroom Ventilation
-    relay_w1: switch.lunos_bedrooms_w1
-    relay_w2: switch.lunos_bedrooms_w2
-  
-  - platform: lunos
     name: Basement Ventilation
-    controller_coding: e2-usa
-    entity: fan.lunos_basement_ventilation
     relay_w1: switch.lunos_basement_w1
     relay_w2: switch.lunos_basement_w2
 
@@ -61,7 +54,7 @@ fan:
 
 ### Step 3: Add Lovelace Card
 
-The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952):
+The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
 
 ```yaml
 - entity: fan.lunos_bathroom
@@ -107,7 +100,7 @@ automation:
         data:
           speed: "high"
 
-# similar automation required to turn LUNOS back down to lower speed setting once humidity is within tolerance
+# similar automation required to turn LUNOS to lower speed setting once humidity is within tolerance
 ```
 
 These same strategies can be used with any Home Assistant compatible devices that track humidity ([ecobee](https://smile.amazon.com/ecobee3-lite-Smart-Thermostat-Black/dp/B06W56TBLN?tag=rynoshark-20), [Nest thermostat](https://amazon.com/Nest-T3007ES-Thermostat-Temperature-Generation/dp/B0131RG6VK/?tag=rynoshark-20)) or,
@@ -115,6 +108,16 @@ even better, using air quality measuring devices ([Airthings](https://amazon.com
 
 Automatically turning up LUNOS when high CO2 or VOCs are detected can provide a great balance between LUNOS fan noise (which
 is already a very quiet fan) and maintaining optimal fresh indoor air quality.
+
+Other LUNOS automation ideas:
+
+* increase LUNOS fan speeds to high when kitchen smoke alarm detects smoke
+
+* if outside temperature is closer to target temperature on thermostats, engage exhaust only modes in LUNOS devices to expel indoor air (drawing in temperature that is closer to target from leaks in the building envelope or open windows/doors)
+
+* turn off LUNOS air circulation when house vacation mode is set
+
+* turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
 
 ### Supported Services
 
