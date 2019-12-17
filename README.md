@@ -123,6 +123,7 @@ For more information on flashing ESP8266 based relays:
 
 Example of wiring the [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20):
 
+![LUNOS 4-Chan WiFi Case Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-switch-case.png?raw=true)
 
 #### ESP8266 WiFi Relay
 
