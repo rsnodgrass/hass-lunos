@@ -2,10 +2,7 @@
 
 # ***NOT YET IMPLEMENTED***
 
-Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using any Home Assistant
-compatible smart relays. The LUNOS low-voltage fan controller is designed to be controlled by turning on/off a pair of switches (W1/W2)
-to turn on/off ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more
-information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using any Home Assistant compatible smart relays. The LUNOS low-voltage fan controller is designed to be controlled by turning on/off a pair of switches (W1/W2) to turn on/off ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -21,9 +18,7 @@ The easiest way to install (and ensure you are always running the latest version
 
 ### Step 2: Configure Home Assistant
 
-LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of the fans (as well as other features).
-Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use
-in operating the LUNOS fan controller.
+LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of the fans (as well as other features). Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use in operating the LUNOS fan controller.
 
 Configuration variables:
 - **name** (*Optional*): Friendly name for this fan controller.
@@ -35,8 +30,7 @@ Configuration variables:
 
 #### Configuration Example
 
-This example configuration assumes that the relay switches are already setup in Home Assistant, since that
-setup differs substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
+This example configuration assumes that the relay switches are already setup in Home Assistant, since that setup differs substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
 
 ```yaml
 fan:
@@ -93,21 +87,13 @@ automation:
 * LUNOS Universal Controller
 * Home Assistant compatible relay
 
-The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W).
-To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay) from a single
-transformer, it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example, 
-the [Mean Well #RS-50-12](https://smile.amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer
-produces up to 50W at 12V.
+The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W). To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay) from a single transformer, it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example,  the [Mean Well #RS-50-12](https://smile.amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer produces up to 50W at 12V.
 
 #### WiFi Smart Relays
 
-IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source.
-For non-smart installations, the LUNOS Universal Controller typically has non-electrified rocker switches connected
-as switche W1 and W2. These are relay switches only and not powered. Any smart switches connected the LUNOS Universal
-Controller must be relay switches only with no chance that the LUNOS Controller would be electrified.
+IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source. For non-smart installations, the LUNOS Universal Controller typically has non-electrified rocker switches connected as switche W1 and W2. These are relay switches only and not powered. Any smart switches connected the LUNOS Universal Controller must be relay switches only with no chance that the LUNOS Controller would be electrified.
 
-While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using
-several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
+While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
 
 Example relays compatible with Home Assistant:
 
@@ -119,8 +105,7 @@ Example relays compatible with Home Assistant:
 
 #### Tasmota Setup
 
-After flashing your multi-channel WiFi relay with Sonoff, you must connect to it via the Sonoff WiFi
-to access the Sonoff web configuration interface.
+After flashing your multi-channel WiFi relay with Sonoff, you must connect to it via the Sonoff WiFi to access the Sonoff web configuration interface.
 
 * configure the Sonoff relay device to connect to your WiFi network
 * enable auto-discovery (for automatic Home Assistant integration)
