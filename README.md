@@ -1,6 +1,6 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any Home Assistant compatible smart relays.
+Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any [Home Assistant](https://www.home-assistant.io/) compatible smart relays.
 The LUNOS low-voltage fan controller is designed to be controlled using a pair of switches (W1/W2) to turn on/off
 ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more
 information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
