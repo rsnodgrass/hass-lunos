@@ -28,17 +28,18 @@ setup differs substantially depending on the type of relay hardware being used (
 
 ```yaml
 lunos:
-  - name: "Bedroom Ventilation"
-    relay_w1: switch.lunos_bedrooms_w1
-    relay_w2: switch.lunos_bedrooms_w2
-  - name: "Basement Ventilation"
-    entity: fan.lunos_basement_ventilation
-    relay_w1: switch.lunos_basement_w1
-    relay_w2: switch.lunos_basement_w2
-  - name: "Bathroom Fan"
-    default_speed: high
-    relay_w1: switch.lunos_bathroom_w1
-    relay_w2: switch.lunos_bathroom_w2
+  controllers:
+    - name: "Bedroom Ventilation"
+      relay_w1: switch.lunos_bedrooms_w1
+      relay_w2: switch.lunos_bedrooms_w2
+    - name: "Basement Ventilation"
+      entity: fan.lunos_basement_ventilation
+      relay_w1: switch.lunos_basement_w1
+      relay_w2: switch.lunos_basement_w2
+    - name: "Bathroom Fan"
+      default_speed: high
+      relay_w1: switch.lunos_bathroom_w1
+      relay_w2: switch.lunos_bathroom_w2
 ```
 
 ### Step 3: Add Lovelace Card
@@ -87,7 +88,7 @@ Controller must be relay switches only with no chance that the LUNOS Controller 
 While single-channel WiFi relays can be purchased, for centralized control of several LUNOS zones (using
 several LUNOS Controllers), purchasing multi-relay modules typically costs less than separate single-channel relays.
 
-Example Home Assistant compatible relays when flashed with Tasmota for offline MQTT integration:
+Example relays compatible with Home Assistant:
 
 | Model | Relays | Tasmota Supported | Manual Buttons | Power |
 |-------|:------:|:-----------------:|:--------------:|-------|

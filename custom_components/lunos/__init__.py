@@ -1,5 +1,5 @@
 """
-LUNOS Fan Control for Home Assistant
+LUNOS Ventilation Fan Control for Home Assistant
 https://github.com/rsnodgrass/hass-lunos
 """
 import logging
@@ -9,9 +9,12 @@ from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-LUNOS_DOMAIN = 'lunos'
+DOMAIN = 'lunos'
 
 CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
+
+# NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
+# transformer entirely would add a Off setting in addition to the four-speeds.
 LUNOS_SETTINGS = {
     'e2': {
         name: 'LUNOS e2 (non-USA)',
@@ -161,14 +164,11 @@ LUNOS_SETTINGS = {
     }
 }
 
-# NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
-# transformer entirely would add a Off setting in addition to the four-speeds
-
 def setup(hass, config):
     """Set up the LUNOS fan controllers"""
-    conf = config[LUNOS_DOMAIN]
+    conf = config[DOMAIN]
 
     # FIXME: iterate through the config!
-#    for component in ['fan']:
+#    for component in conf['controllers']:
 #        discovery.load_platform(hass, component, LUNOS_DOMAIN, conf, config)
     return True

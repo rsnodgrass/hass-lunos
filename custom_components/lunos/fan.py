@@ -1,9 +1,8 @@
-"""LUNOS Heat Recovery Ventilation Control (e2/eGO)"""
+"""LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
 import time
 import logging
 
 from homeassistant.components.fan import (
-    DOMAIN,
     SPEED_OFF,
     SPEED_LOW,
     SPEED_MEDIUM,
@@ -16,7 +15,7 @@ from homeassistant.components.fan import (
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-from . import LUNOS_DOMAIN
+from . import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,8 +32,8 @@ SPEED_LIST = [
 SPEED_SWITCH_STATES = {
     SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
     SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-    SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-    SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
+    SPEED_MEDIUM: [ STATE_OFF, STATE_ON  ],
+    SPEED_HIGH:   [ STATE_ON,  STATE_ON  ]
 }
 
 # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
@@ -42,8 +41,8 @@ SPEED_SWITCH_STATES = {
 # delay all state changes to be > 3 seconds since the last switch change
 STATE_CHANGE_DELAY_SECONDS = 4
 
-CONF_relay_W1 = 'relay_w1'
-CONF_relay_W2 = 'relay_w1'
+CONF_RELAY_W1 = 'relay_w1'
+CONF_RELAY_W2 = 'relay_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
 
 #FAN_SCHEMA = vol.Schema(
@@ -56,9 +55,9 @@ CONF_DEFAULT_SPEED = 'default_speed'
 #    }
 #)
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Old way of setting up fans"""
-    pass
+#async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+#    """Old way of setting up fans"""
+#    pass
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Initialize the LUNOS fans from config."""
@@ -72,35 +71,30 @@ async def _async_setup_entities(
     hass, config_entry, async_add_entities, discovery_infos
 ):
     """Set up the LUNOS fans."""
-    entities = []
-#    for discovery_info in discovery_infos:
-#        entities.append(LUNOSFan(**discovery_info))
+    fans = []
+    for discovery_info in discovery_infos:
+#        fans.append(LUNOSFan(**discovery_info))
+         # FIXME: pass in relay_w1 and relay_w2
 
-# FIXME: pass in relay_w1 and relay_w2
-
-#    async_add_entities(entities, update_before_add=True)
+    async_add_entities(fans, update_before_add=True)
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def __init__(self, unique_id, fan_device, channels, **kwargs):
+    def __init__(self, friendly_name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
-        super().__init__(unique_id, fan_device, channels, **kwargs)
-        # FIXME: confirm the signature
+        super().__init__()
 
-        self._last_state_change = time.time()
-        self._default_speed = DEFAULT_SPEED  # FIXME: allow default override?
-#        self._relay_w1 = xxx
-#        self._relay_w2 = xxx
+        self._relay_w1 = relay_w1
+        self._relay_w2 = relay_w2
+        self._default_speed = default_speed
 
          # FIXME: determine current state!
+        self._last_state_change = time.time()
 
-    async def async_added_to_hass(self):
-        """Run when about to be added to HASS."""
-        await super().async_added_to_hass()
-#       await self.async_accept_signal(
-#            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
-#        )
+#    async def async_added_to_hass(self):
+#        """Run when about to be added to HASS."""
+#        await super().async_added_to_hass()
 
     def determine_current_relay_state(self):
         # FIXME:
@@ -128,15 +122,15 @@ class LUNOSFan(FanEntity):
             return False
         return self._state != SPEED_OFF
 
-    # FIXME: are there any attributes!?
+    # TOOD: last updated? controller type? cfm?
     @property
     def device_state_attributes(self):
         """Return state attributes."""
         return self.state_attributes
 
-    def async_set_state(self, state):
-        """Handle state update from channel."""
-        self._state = VALUE_TO_SPEED.get(state, self._state)
+    def async_set_state(self, speed):
+        """Handle state update from fan."""
+        self._state = speed
         self.async_schedule_update_ha_state()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
@@ -150,24 +144,34 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
+    def switch_to_state(switch, state):
+        if state = STATE_OFF:
+            switch.turn_off()
+        else
+            switch.turn_on()
+
+        
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
+        if switch_states = None:
+            log.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
+            return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
         # STATE_CHANGE_DELAY_SECONDS = 4
-        
-#        self._switch_w1.set(switch_states[0])
-#        self._switch_w2.set(switch_states[1])
-# FIXME
+
+        switch_to_state(self._switch_w1, switch_states[0])
+        switch_to_state(self._switch_w2, switch_states[1])
         self.async_set_state(speed)
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
         await super().async_update()
 
+        LOG.warn "LUNOS ventilation fan state update not yet supported!"
 #        if self._fan_channel:
 #            state = await self._fan_channel.get_attribute_value("fan_mode")
 #            if state is not None:
