@@ -17,7 +17,7 @@ Easiest installation is by setting up [Home Assistant Community Store (HACS)](ht
 
 However you can also manually copy all the files in [lunos/](https://github.com/rsnodgrass/hass-lunos/custom_components/lunos) directory to `/config/custom_components/lunos` on your Home Assistant installation.
 
-### Step 2: Configure Fans and Assign Control Switch Pairs
+### Step 2: Configure Home Assistant
 
 LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of the fans (as well as other features).
 Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use
@@ -67,7 +67,9 @@ The following is a simple Lovelace card using the [fan-control-entity-row](https
   type: custom:fan-control-entity-row
 ```
 
-### Automation Examples
+### Step 4 (Optional): Automation
+
+Example automation to turn on fans when someone arrives:
 
 ```yaml
 automation:
@@ -83,16 +85,17 @@ automation:
           speed: "high"
 ```
 
-## Hardware
+## Hardware Requirements
 
 * LUNOS e2 HRV fan pairs or [LUNOS eGO HRV fan](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
 * LUNOS Universal Controller
 * Home Assistant compatible relay
 
 The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W).
-If you want to power two independent LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay),
-it is recommended the 12V transformer be upgraded to a larger unit, like the Mean Well #RS-50-12 transformer,
-which produces up to 50W at 12V.
+To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay) from a single
+transformer, it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example, 
+the [Mean Well #RS-50-12](https://smile.amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer
+produces up to 50W at 12V.
 
 #### WiFi Smart Relays
 
@@ -174,7 +177,7 @@ Alexa or other voice enabled smart speaker.
 * automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
 
-## Currently Not Supported
+### Currently Not Supported
 
 * summer ventilation mode (e2 models)
 * exhaust only ventilation mode (eGO models)
