@@ -1,6 +1,7 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
 import time
 import logging
+import voluptuous as vol
 
 from homeassistant.components.fan import (
     SPEED_OFF,
@@ -15,9 +16,7 @@ from homeassistant.components.fan import (
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-from . import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 DEFAULT_SPEED = SPEED_MEDIUM
 SPEED_LIST = [
@@ -45,15 +44,15 @@ CONF_RELAY_W1 = 'relay_w1'
 CONF_RELAY_W2 = 'relay_w1'
 CONF_DEFAULT_SPEED = 'default_speed'
 
-#FAN_SCHEMA = vol.Schema(
-#    {
-#        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
-#        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-#        vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
-#        vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
-#        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
-#    }
-#)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
+        vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
+        vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
+        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
+    }
+)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Old way of setting up fans"""
@@ -91,6 +90,8 @@ class LUNOSFan(FanEntity):
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
+
+        LOG.info(f"Created LUNOS fan controller {friendly_name}")
 
 #    async def async_added_to_hass(self):
 #        """Run when about to be added to HASS."""

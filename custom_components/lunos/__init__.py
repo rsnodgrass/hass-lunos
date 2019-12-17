@@ -13,9 +13,18 @@ from homeassistant.components.fan import (
     SPEED_HIGH,
 )
 
-_LOGGER = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
-DOMAIN = 'lunos'
+LUNOS_DOMAIN = 'lunos'
+
+CONF_CONTROLLERS = 'controllers'
+
+#CONFIG_SCHEMA = vol.Schema({
+#        LUNOS_DOMAIN: vol.Schema({
+#            vol.Required(CONF_CONTROLLERS): cv.ensure_list
+#        })
+#    }, extra=vol.ALLOW_EXTRA
+#)
 
 CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
@@ -123,7 +132,7 @@ LUNOS_SETTINGS = {
         'name': 'LUNOS eGO (high=exhaust-only)',
         'controller_setting': 'C',
         'cfm': {
-            SPEED_LOW:     5 / CFM_TO_CMHR,
+>            SPEED_LOW:     5 / CFM_TO_CMHR,
             SPEED_MEDIUM: 10 / CFM_TO_CMHR,
             SPEED_HIGH:   45 / CFM_TO_CMHR # exhaust only
         },
@@ -172,9 +181,9 @@ LUNOS_SETTINGS = {
 
 def setup(hass, config):
     """Set up the LUNOS fan controllers"""
-    conf = config[DOMAIN]
+    conf = config[LUNOS_DOMAIN]
 
     # FIXME: iterate through the config!
-#    for component in conf['controllers']:
+#    for component in conf['controllers']:       
 #        discovery.load_platform(hass, component, LUNOS_DOMAIN, conf, config)
     return True
