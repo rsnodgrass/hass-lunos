@@ -3,7 +3,9 @@ import time
 import logging
 import voluptuous as vol
 
+from homeassistant.const import CONF_NAME, CONF_ENTITY_ID
 from homeassistant.components.fan import (
+    PLATFORM_SCHEMA,
     SPEED_OFF,
     SPEED_LOW,
     SPEED_MEDIUM,
@@ -19,9 +21,9 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 LOG = logging.getLogger(__name__)
 
-CONF_CONTROLLERS = 'controllers'
+LUNOS_DOMAIN = 'lunos'
 
-DEFAULT_SPEED = SPEED_MEDIUM
+SPEED_TURBO = 'turbo' # FUTURE: support the special W2 extra-high mode
 SPEED_LIST = [
     SPEED_OFF,
     SPEED_LOW,
@@ -29,6 +31,7 @@ SPEED_LIST = [
     SPEED_HIGH
 #    SPEED_ON  # FIXME: remove?  is this really a speed....
 ]
+DEFAULT_SPEED = SPEED_MEDIUM
 
 # configuration of switch states to active LUNOS speedsy
 SPEED_SWITCH_STATES = {
@@ -44,12 +47,12 @@ SPEED_SWITCH_STATES = {
 STATE_CHANGE_DELAY_SECONDS = 4
 
 CONF_RELAY_W1 = 'relay_w1'
-CONF_RELAY_W2 = 'relay_w1'
+CONF_RELAY_W2 = 'relay_w2'
 CONF_DEFAULT_SPEED = 'default_speed'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+        vol.Optional(CONF_NAME): cv.string,
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
@@ -57,16 +60,26 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+SERVICE_CLEAR_FILTER_REMINDER = "lunos_clear_filter_reminder"
+SERVICE_TO_METHOD = {
+    SERVICE_CLEAR_FILTER_REMINDER: { "method": "async_clear_filter_reminder" }
+}
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Initialize the LUNOS fans from config."""
     fans = []
 
     conf = config[LUNOS_DOMAIN]
-    for controller_conf in conf[CONF_CONTROLLERS]:
-        LOG.info(f"Found config {controller_conf}")
-        # FIXME: pass in relay_w1 and relay_w2
+#    for controller_conf in conf[CONF_CONTROLLERS]:
+#        LOG.info(f"Found config {controller_conf}")
+#        # FIXME: pass in relay_w1 and relay_w2
 
     async_add_entities(fans, update_before_add=True)
+
+    async def async_service_handler(service):
+        """Map services to methods on LUNOS."""
+        method = SERVICE_TO_METHOD.get(service.service)
+
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
@@ -152,6 +165,7 @@ class LUNOSFan(FanEntity):
             LOG.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
             return
 
+    
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
@@ -170,3 +184,8 @@ class LUNOSFan(FanEntity):
 #            state = await self._fan_channel.get_attribute_value("fan_mode")
 #            if state is not None:
 #                self._state = VALUE_TO_SPEED.get(state, self._state)
+
+    async def async_clear_filter_reminder_light(self):
+        LOG.error(f"Clearing the LUNOS filter reminder light is not currently supported")
+        # flipping switch W1 within 3 seconds instructs the LUNOS controller to
+        # clear the filter warning light

@@ -1,0 +1,6 @@
+lunos_clear_filter_reminder:
+  description: Clear a fan's reminder to change the filter
+  fields:
+    entity_id:
+      description: Name(s) of the entities to toggle
+      example: 'fan.living_room'
