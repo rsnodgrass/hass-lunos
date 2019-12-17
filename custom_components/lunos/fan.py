@@ -56,11 +56,11 @@ SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
 SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
 SERVICE_TURN_OFF_SUMMER_VENTILATION = 'lunos_turn_off_summer_ventilation'
 
+CONF_CONTROLLER_CODING = 'controller_coding'
 CONF_RELAY_W1 = 'relay_w1'
 CONF_RELAY_W2 = 'relay_w2'
 CONF_DEFAULT_SPEED = 'default_speed'
-
-CONF_CONTROLLER_CODING = 'controller_coding'
+CONF_DEFAULT_FAN_COUNT = 'default_fan_count'
 CONF_FAN_COUNT = 'fan_count'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
@@ -104,31 +104,37 @@ class LUNOSFan(FanEntity):
         self._relay_w2 = relay_w2
         self._default_speed = default_speed
 
-        coding = conf.get(CONF_CONTROLLER_CODING )
+        coding = conf.get(CONF_CONTROLLER_CODING)
         model_config = LUNOS_SETTINGS[coding]
 
         # default fan count differs depending on what fans are attached to the controller (e2 = 2 fans, eGO = 1 fan)
         fan_count = conf.get(CONF_FAN_COUNT)
         if fan_count == None:
-            fan_count = LUNOS_SETTINGS['default_fan_count']
+            fan_count = LUNOS_SETTINGS[CONF_DEFAULT_FAN_COUNT]
         self._fan_count = fan_count
 
         self._state_attrs = {
             ATTR_MODEL_NAME: model_config['name'],
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
-            ATTR_CFM: 'Unknown',
             ATTR_VENTILATION_MODE: 'normal'  # TODO: support summer and exhaust-only
         }
 
-        # FUTURE: pull effective CFM values from setting and number of configured fans
-        # the current cfm expected based on fan speed should be an attribute
-        #self._state_attrs[ATTR_CFM] = 10
+        self.update_estimated_cfm_attribute()
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
 
         LOG.info(f"Created LUNOS fan controller {name} (W1={relay_w1} / W2={relay_w2} / default_speed={default_speed})")
+
+    # calculate the current CFM based on the current fan speed as well as the
+    # number of fans configured by the user
+    def update_estimated_cfm_attribute(self):
+        if self._state != None:
+            model_config = self._state_attrs[CONF_CONTROLLER_CODING]
+            cfm_multiplier = self._fan_count / model_config[CONF_DEFAULT_FAN_COUNT]
+            cfm_for_mode = model_config['cfm'][self._state]
+            self._state_attrs[ATTR_CFM] = cfm_for_mode * cfm_multiplier
 
     def determine_current_relay_state(self):
         # FIXME:
