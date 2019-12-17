@@ -49,6 +49,7 @@ SPEED_SWITCH_STATES = {
 STATE_CHANGE_DELAY_SECONDS = 4
 
 ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
+ATTR_CMHR = 'cmh'
 ATTR_MODEL_NAME = 'model'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 
@@ -74,6 +75,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
 )
+
+CFM_TO_CMH = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
 # pylint: disable=unused-argument
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -134,7 +137,9 @@ class LUNOSFan(FanEntity):
             model_config = self._state_attrs[CONF_CONTROLLER_CODING]
             cfm_multiplier = self._fan_count / model_config[CONF_DEFAULT_FAN_COUNT]
             cfm_for_mode = model_config['cfm'][self._state]
+
             self._state_attrs[ATTR_CFM] = cfm_for_mode * cfm_multiplier
+            self._state_attrs[ATTR_CMHR] = self._state_attrs[ATTR_CFM] * CFM_TO_CMH
 
     def determine_current_relay_state(self):
         # FIXME:

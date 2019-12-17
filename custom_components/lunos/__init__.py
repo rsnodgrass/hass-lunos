@@ -3,6 +3,7 @@ LUNOS Ventilation Fan Control for Home Assistant
 https://github.com/rsnodgrass/hass-lunos
 """
 import logging
+import yaml
 
 from homeassistant.helpers import config_validation as cv, discovery
 from homeassistant.helpers.entity import Entity
@@ -17,16 +18,9 @@ LOG = logging.getLogger(__name__)
 
 LUNOS_DOMAIN = 'lunos'
 
-CONF_CONTROLLERS = 'controllers'
-
-#CONFIG_SCHEMA = vol.Schema({
-#        LUNOS_DOMAIN: vol.Schema({
-#            vol.Required(CONF_CONTROLLERS): cv.ensure_list
-#        })
-#    }, extra=vol.ALLOW_EXTRA
-#)
-
 CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
+
+LUNOS_CODING_CONFIG = yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
 
 # NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
 # transformer entirely would add a Off setting in addition to the four-speeds.

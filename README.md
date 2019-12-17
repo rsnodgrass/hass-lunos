@@ -35,6 +35,7 @@ fan:
   
   - platform: lunos
     name: Basement Ventilation
+    controller_coding: e2-usa
     entity: fan.lunos_basement_ventilation
     relay_w1: switch.lunos_basement_w1
     relay_w2: switch.lunos_basement_w2
@@ -42,6 +43,7 @@ fan:
   - platform: lunos
     name: Bathroom Fan
     default_speed: high
+    controller_coding: ego
     relay_w1: switch.lunos_bathroom_w1
     relay_w2: switch.lunos_bathroom_w2
 ```
