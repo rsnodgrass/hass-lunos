@@ -55,9 +55,9 @@ CONF_DEFAULT_SPEED = 'default_speed'
 #    }
 #)
 
-#async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-#    """Old way of setting up fans"""
-#    pass
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Old way of setting up fans"""
+    pass
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Initialize the LUNOS fans from config."""
@@ -72,7 +72,7 @@ async def _async_setup_entities(
 ):
     """Set up the LUNOS fans."""
     fans = []
-    for discovery_info in discovery_infos:
+#    for discovery_info in discovery_infos:
 #        fans.append(LUNOSFan(**discovery_info))
          # FIXME: pass in relay_w1 and relay_w2
 
@@ -145,16 +145,16 @@ class LUNOSFan(FanEntity):
         await self.async_set_speed(SPEED_OFF)
 
     def switch_to_state(switch, state):
-        if state = STATE_OFF:
+        if state == STATE_OFF:
             switch.turn_off()
-        else
+        else:
             switch.turn_on()
 
         
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
-        if switch_states = None:
+        if switch_states == None:
             log.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
             return
 
@@ -171,7 +171,7 @@ class LUNOSFan(FanEntity):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
         await super().async_update()
 
-        LOG.warn "LUNOS ventilation fan state update not yet supported!"
+        LOG.warn("LUNOS ventilation fan state update not yet supported!")
 #        if self._fan_channel:
 #            state = await self._fan_channel.get_attribute_value("fan_mode")
 #            if state is not None:
