@@ -196,14 +196,16 @@ class LUNOSFan(FanEntity):
         # self._state = speed
         return
 
-    async def set_relay_switch_state(self, relay, state):
-        method = 'turn_on'
+    async def set_relay_switch_state(self, relay_entity_id, state):
         if state == STATE_OFF:
-            method = 'turn_off'
-
-        self._last_state_change = time.time()
-        self._hass.services.call('switch', method, { 'entity_id': relay }, False)
+            self.switch_service_call('turn_off', relay_entity_id)
+        else:
+            self.switch_service_call('turn_on', relay_entity_id)
         
+    def switch_service_call(self, method, relay_entity_id):
+        self._hass.services.call('switch', method, { 'entity_id': relay }, False)
+        self._last_state_change = time.time()
+
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
@@ -236,8 +238,8 @@ class LUNOSFan(FanEntity):
 
         # flip W1 on off at least 2 times to clear reminder
         for i in range(3):
-            self.set_relay_switch_state(self._relay_w1, STATE_OFF)
-            self.set_relay_switch_state(self._relay_w1, STATE_ON)
+            self.switch_service_call('turn_off', self._relay_w1)
+            self.switch_service_call('turn_on', self._relay_w1)
 
         # reset back to the speed prior to toggling W1
         self.async_set_speed(save_speed)
@@ -253,24 +255,24 @@ class LUNOSFan(FanEntity):
             LOG.info(f"LUNOS controller '{self._name}' is coded and DOES NOT support summer ventilation")
             return
 
-        LOG.info(f"Turning on summer ventilation mode for LUNOS controller '{self._name}'")
+        LOG.info(f"Turning summer ventilation mode ON for LUNOS controller '{self._name}'")
         save_speed = self._state
 
         # flip W2 on off at least 2 times to enable summer ventilation
         for i in range(3):
-            self.set_relay_switch_state(self._relay_w2, STATE_OFF)
-            self.set_relay_switch_state(self._relay_w2, STATE_ON)
+            self.switch_service_call('turn_off', self._relay_w2)
+            self.switch_service_call('turn_on', self._relay_w2)
 
         # reset back to the speed prior to toggling W2
         self.async_set_speed(save_speed)
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
-            return
+            return # silently ignore as it is already off
 
-        LOG.error(f"LUNOS summer/night ventilation mode not yet supported")
-        # flipping relay W2 within 3 seconds instructs the LUNOS controller to
-        # turn on summer ventilation mode
-        
-        # FIXME: need to wait 10 seconds since the last time W2 was flipped, then toggling will clear summer ventilation mode
-        # FIXME: do not go more than a single up/down or down/up, else it will re-enable summer ventilation
+        # FIXME: must wait 10 seconds since the last time W2 was flipped before turning off ventilation will work
+        LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
+
+        # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
+        self.switch_service_call('toggle', self._relay_w2)
+        self.switch_service_call('toggle', self._relay_w2)
