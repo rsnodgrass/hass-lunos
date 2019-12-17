@@ -1,5 +1,8 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
+
 Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any [Home Assistant](https://www.home-assistant.io/) compatible smart relays.
 The design of the LUNOS low-voltage fan controller uses a pair of physical switches (W1/W2) to turn on/off
 ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only
@@ -19,9 +22,6 @@ automation opportunities when paired with other sensors:
 * turn off LUNOS air circulation when house vacation mode is set, and re-activate LUNOS air circulation whenever motion is detected (or someone arrives at the house)
 
 * turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
 ## Installation
 
