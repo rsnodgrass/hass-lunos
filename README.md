@@ -82,24 +82,30 @@ automation:
           speed: "high"
 ```
 
-Turn LUNOS ventilation fan to highest speed when [Airthings](https://smile.amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?ref=rynoshark-20)  detects high humidity:
+Turn LUNOS ventilation fan to highest speed when high humidity is detected:
 
 ```yaml
 automation:
   - alias: "Turn basement LUNOS ventilation on maximum speed if high humidity is detected"
     trigger:
       - platform: foobot
-        entity_id: [sensor.basement_airthings_humidity](https://github.com/custom-components/sensor.airthings_wave)
+        entity_id: sensor.basement_humidity
     condition:
       condition: numeric_state
-      entity_id: sensor.basement_airthings_humidity
-      above: 35
+      entity_id: sensor.basement_humidity
+      above: 55
     action:
       - service: fan.turn_on
         entity_id: "fan.basement_lunos"
         data:
           speed: "high"
+
+# similar automation required to turn LUNOS back down to lower speed setting once humidity is within tolerance
 ```
+
+These same strategies can be used with any Home Assistant compatible devices that track humidity (ecobee, Nest thermostat) or, even better, using air quality measuring devices ([Airthings](https://amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?ref=rynoshark-20), [AirVisual IQAir](https://amazon.com/IQAir-AirVisual-Temperature-Real-Time-Forecasting/dp/B0784TZFRW/?ref=rynoshark-20), [Foobot](https://amazon.com/Foobot-Quality-Monitor-Homeowners-Renters/dp/B06Y8VLCH8?tag=rynoshark-20)) that measure CO2, VOCs, etc.
+
+Automatically turning up LUNOS when high CO2 or VOCs are detected can provide a great balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality.
 
 ### Supported Services
 
@@ -113,7 +119,7 @@ automation:
 * LUNOS Universal Controller
 * Home Assistant compatible relay
 
-The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W). To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay) from a single transformer, it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example,  the [Mean Well #RS-50-12](https://smile.amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer produces up to 50W at 12V.
+The LUNOS Universal Controller (5/UNI-FT) is powered by a 12V transformer (e.g. the Mean Well #RS-15-12 12V/1.3A/15.6W). To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 based WiFi relay) from a single transformer, it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example,  the [Mean Well #RS-50-12](https://amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer produces up to 50W at 12V.
 
 #### WiFi Smart Relays
 
