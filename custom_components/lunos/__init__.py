@@ -22,8 +22,7 @@ CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
 LUNOS_CODING_CONFIG = {}
 
-#async def async_setup(hass, config):
-def setup(hass, config):
+async def async_setup(hass, config):
     global LUNOS_CODING_CONFIG
     LUNOS_CODING_CONFIG = yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
     return True

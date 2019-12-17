@@ -50,6 +50,7 @@ STATE_CHANGE_DELAY_SECONDS = 4
 
 ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = 'cmh'
+ATTR_DBA = 'dB'
 ATTR_MODEL_NAME = 'model'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 
@@ -120,10 +121,11 @@ class LUNOSFan(FanEntity):
             ATTR_MODEL_NAME: model_config['name'],
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
-            ATTR_VENTILATION_MODE: 'normal'  # TODO: support summer and exhaust-only
+            ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
+            ATTR_DBA: 'Unknown'
         }
 
-        self.update_estimated_cfm_attribute()
+        self.update_attributes_based_on_mode()
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
@@ -132,14 +134,16 @@ class LUNOSFan(FanEntity):
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
-    def update_estimated_cfm_attribute(self):
+    def update_attributes_based_on_mode(self):
         if self._state != None:
-            model_config = self._state_attrs[CONF_CONTROLLER_CODING]
-            cfm_multiplier = self._fan_count / model_config[CONF_DEFAULT_FAN_COUNT]
-            cfm_for_mode = model_config['cfm'][self._state]
+            controller_config = self._state_attrs[CONF_CONTROLLER_CODING]
 
+            cfm_for_mode = controller_config['cfm'][self._state]
+            cfm_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
             self._state_attrs[ATTR_CFM] = cfm_for_mode * cfm_multiplier
             self._state_attrs[ATTR_CMHR] = self._state_attrs[ATTR_CFM] * CFM_TO_CMH
+
+            #self._state_attrs[ATTR_DBA] = controller_config['dbA'][self._state]
 
     def determine_current_relay_state(self):
         # FIXME:
