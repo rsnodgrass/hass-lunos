@@ -27,19 +27,23 @@ This example configuration assumes that the relay switches are already setup in 
 setup differs substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
 
 ```yaml
-lunos:
-  controllers:
-    - name: "Bedroom Ventilation"
-      relay_w1: switch.lunos_bedrooms_w1
-      relay_w2: switch.lunos_bedrooms_w2
-    - name: "Basement Ventilation"
-      entity: fan.lunos_basement_ventilation
-      relay_w1: switch.lunos_basement_w1
-      relay_w2: switch.lunos_basement_w2
-    - name: "Bathroom Fan"
-      default_speed: high
-      relay_w1: switch.lunos_bathroom_w1
-      relay_w2: switch.lunos_bathroom_w2
+fans:
+  - platform: lunos
+    name: "Bedroom Ventilation"
+    relay_w1: switch.lunos_bedrooms_w1
+    relay_w2: switch.lunos_bedrooms_w2
+  
+  - platform: lunos
+    name: "Basement Ventilation"
+    entity: fan.lunos_basement_ventilation
+    relay_w1: switch.lunos_basement_w1
+    relay_w2: switch.lunos_basement_w2
+
+  - platform: lunos
+    name: "Bathroom Fan"
+    default_speed: high
+    relay_w1: switch.lunos_bathroom_w1
+    relay_w2: switch.lunos_bathroom_w2
 ```
 
 ### Step 3: Add Lovelace Card

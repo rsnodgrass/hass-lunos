@@ -19,6 +19,8 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 LOG = logging.getLogger(__name__)
 
+CONF_CONTROLLERS = 'controllers'
+
 DEFAULT_SPEED = SPEED_MEDIUM
 SPEED_LIST = [
     SPEED_OFF,
@@ -56,41 +58,31 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 )
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Old way of setting up fans"""
-    pass
-
-async def async_setup_entry(hass, config_entry, async_add_entities):
     """Initialize the LUNOS fans from config."""
-    pass
-#    async def async_discover(discovery_info):
-#        await _async_setup_entities(
-#            hass, config_entry, async_add_entities, [discovery_info]
-#        )
-
-async def _async_setup_entities(
-    hass, config_entry, async_add_entities, discovery_infos
-):
-    """Set up the LUNOS fans."""
     fans = []
-#    for discovery_info in discovery_infos:
-#        fans.append(LUNOSFan(**discovery_info))
-         # FIXME: pass in relay_w1 and relay_w2
+
+    conf = config[LUNOS_DOMAIN]
+    for controller_conf in conf[CONF_CONTROLLERS]:
+        LOG.info(f"Found config {controller_conf}")
+        # FIXME: pass in relay_w1 and relay_w2
 
     async_add_entities(fans, update_before_add=True)
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def __init__(self, friendly_name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
+    def __init__(self, conf, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         super().__init__()
 
-        self._relay_w1 = relay_w1
-        self._relay_w2 = relay_w2
+        self._relay_w1 = conf['relay_w1']
+        self._relay_w2 = conf['relay_w2']
         self._default_speed = default_speed
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
+
+        friendly_name = conf['name']
 
         LOG.info(f"Created LUNOS fan controller {friendly_name}")
 
@@ -157,7 +149,7 @@ class LUNOSFan(FanEntity):
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
         if switch_states == None:
-            log.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
+            LOG.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
             return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the

@@ -178,12 +178,3 @@ LUNOS_SETTINGS = {
         'exhaust_only': True # not a HRV
     }
 }
-
-def setup(hass, config):
-    """Set up the individual LUNOS fan controllers"""
-    hass.helpers.discovery.load_platform(hass, 'fan', LUNOS_DOMAIN, {}, config)
-    return True
-
-#async def async_setup(hass, config):
-#    hass.async_create_task(async_load_platform(hass, "fan", LUNOS DOMAIN, {}, config))
-#    return True
