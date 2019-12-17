@@ -23,6 +23,14 @@ comes in supporting a wide variety of automation opportunities when paired with 
 
 * turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
 
+## Support
+
+There is no official support for this add-on and is community supported within the [Home Assistant LUNOS discussion thread](). 
+If you have any proposed changes or bug fixes, please make them on a branch of [hass-lunos GitHub repository](https://github.com/rsnodgrass/hass-lunos)
+and create pull requests for your patches.
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
+
 ## Installation
 
 Visit the Home Assistant community if you need [help with installation and configuration of LUNOS Fan Control]().
