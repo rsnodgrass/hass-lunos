@@ -103,7 +103,7 @@ automation:
 # similar automation required to turn LUNOS back down to lower speed setting once humidity is within tolerance
 ```
 
-These same strategies can be used with any Home Assistant compatible devices that track humidity (ecobee, Nest thermostat) or, even better, using air quality measuring devices ([Airthings](https://amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?ref=rynoshark-20), [AirVisual IQAir](https://amazon.com/IQAir-AirVisual-Temperature-Real-Time-Forecasting/dp/B0784TZFRW/?ref=rynoshark-20), [Foobot](https://amazon.com/Foobot-Quality-Monitor-Homeowners-Renters/dp/B06Y8VLCH8?tag=rynoshark-20)) that measure CO2, VOCs, etc.
+These same strategies can be used with any Home Assistant compatible devices that track humidity ([ecobee](https://smile.amazon.com/ecobee3-lite-Smart-Thermostat-Black/dp/B06W56TBLN?tag=rynoshark-20), [Nest thermostat](https://amazon.com/Nest-T3007ES-Thermostat-Temperature-Generation/dp/B0131RG6VK/?tag=rynoshark-20)) or, even better, using air quality measuring devices ([Airthings](https://amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?tag=rynoshark-20), [AirVisual IQAir](https://amazon.com/IQAir-AirVisual-Temperature-Real-Time-Forecasting/dp/B0784TZFRW/?tag=rynoshark-20), [Foobot](https://amazon.com/Foobot-Quality-Monitor-Homeowners-Renters/dp/B06Y8VLCH8?tag=rynoshark-20)) that measure CO2, VOCs, etc.
 
 Automatically turning up LUNOS when high CO2 or VOCs are detected can provide a great balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality.
 
