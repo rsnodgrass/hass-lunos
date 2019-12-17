@@ -23,6 +23,16 @@ LUNOS Controllers require a pair of switches (W1 and W2) to control the speed of
 Configuration is required to assign the Home Assistant accessible W1 and W2 switches for the fan controller to use
 in operating the LUNOS fan controller.
 
+Configuration variables:
+- **name** (*Optional*): The name of this fan controller.
+- **relay_w1** (*Required*): The entity id for the relay switch that is connected as W1 to the LUNOS controller.
+- **relay_w2** (*Required*): The entity id for the relay switch that is connected as W2 to the LUNOS controller.
+- **controller_coding** (*Optional*): The tag for the LUNOS coding your controller is set to (see lunos-codings.yaml).
+- **fan_count** (*Optional*): The number of fans connected to this LUNOS controller.
+- **default_speed** (*Optional*): The default speed when this LUNOS fan is turned on without any speed indicated.
+
+#### Configuration Example
+
 This example configuration assumes that the relay switches are already setup in Home Assistant, since that
 setup differs substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
 
@@ -47,14 +57,6 @@ fan:
     relay_w1: switch.lunos_bathroom_w1
     relay_w2: switch.lunos_bathroom_w2
 ```
-
-Configuration variables:
-- **name** (*Optional*): The name of this fan controller.
-- **relay_w1** (*Required*): The entity id for the relay switch that is connected as W1 to the LUNOS controller.
-- **relay_w2** (*Required*): The entity id for the relay switch that is connected as W2 to the LUNOS controller.
-- **controller_coding** (*Optional*): The tag for the LUNOS coding your controller is set to (see lunos-codings.yaml).
-- **fan_count** (*Optional*): The number of fans connected to this LUNOS controller.
-- **default_speed** (*Optional*): The default speed when this LUNOS fan is turned on without any speed indicated.
 
 ### Step 3: Add Lovelace Card
 
