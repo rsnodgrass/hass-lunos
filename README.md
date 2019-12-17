@@ -156,15 +156,17 @@ Alexa or other voice enabled smart speaker.
 ## Feature Requests
 
 * add 3+ second delay between state changes (bug fix)
-* attribute of current CFM (based on fan speed, number of fans, and which manual setting the LUNOS Controller is set to)
+* enable summer/night ventilation mode on supported models (e2)
+* add attribute of current CFM (based on fan speed, number of fans, and which manual setting the LUNOS Controller is set to)
+* add attribute indicating ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
+* add service API for changing ventilation mode, if supported by the LUNOS fan model and controller
 
 * automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
 
-## Not Supported
+## Currently Not Supported
 
-* enabling the summer/night ventilation mode on supported models (e2)
-* eGO exhaust only modes
-* e2 four-flow rate mode (non-US models)
+* summer ventilation mode (e2 models)
+* exhaust only ventilation mode (eGO models)
+* fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
-

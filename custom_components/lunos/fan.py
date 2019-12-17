@@ -46,7 +46,8 @@ SPEED_SWITCH_STATES = {
 # delay all state changes to be > 3 seconds since the last switch change
 STATE_CHANGE_DELAY_SECONDS = 4
 
-ATTR_CFM = 'cfm'
+ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
+ATTR_VENTILATION_MODE = 'ventilation_mode'  # [ normal, summer, exhaust-only ]
 
 SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
 SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
