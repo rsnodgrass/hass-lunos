@@ -20,11 +20,10 @@ LUNOS_DOMAIN = 'lunos'
 
 CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
-LUNOS_CODING_CONFIG = yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
+Lunos_Coding_Config = {}
 
 def setup(hass, config):
-    yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
-    
+    global Lunos_Coding_Config = yaml.load('lunos-codings.yaml', Loader=yaml.FullLoader)
 
 # NOTE: for four-speed LUNOS controller settings, adding a 120V switch that turns off the LUNOS
 # transformer entirely would add a Off setting in addition to the four-speeds.
