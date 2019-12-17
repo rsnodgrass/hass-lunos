@@ -2,7 +2,10 @@
 
 # ***NOT YET IMPLEMENTED***
 
-Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using pairs of smart on/off relays. Per the design of the LUNOS low-voltage fan controller, a pair of switches (W1/W2) are used to turn on/off the fans and set the speed settings by setting the switches to specific combinations. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+Provides control of [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) (e2/eGO) using any Home Assistant
+compatible smart relays. The LUNOS low-voltage fan controller is designed to be controlled by turning on/off a pair of switches (W1/W2)
+to turn on/off ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more
+information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -13,9 +16,8 @@ Visit the Home Assistant community if you need [help with installation and confi
 
 ### Step 1: Install Custom Components
 
-Easiest installation is by setting up [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then adding the "Integration" repository: rsnodgrass/hass-lunos.
-
-However you can also manually copy all the files in [lunos/](https://github.com/rsnodgrass/hass-lunos/custom_components/lunos) directory to `/config/custom_components/lunos` on your Home Assistant installation.
+The easiest way to install (and ensure you are always running the latest version), first setup
+[Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: rsnodgrass/hass-lunos
 
 ### Step 2: Configure Home Assistant
 
