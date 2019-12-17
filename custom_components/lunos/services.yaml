@@ -3,4 +3,18 @@ lunos_clear_filter_reminder:
   fields:
     entity_id:
       description: Name(s) of the entities to toggle
-      example: 'fan.living_room'
+      example: 'fan.bedrooms'
+
+lunos_turn_on_summer_ventilation_mode:
+  description: Turn on summer ventilation mode (if supported by the LUNOS fan controller setting)
+  fields:
+    entity_id:
+      description: Name(s) of the entities to toggle
+      example: 'fan.whole_house'
+
+lunos_turn_off_summer_ventilation_mode:
+  description: Turn off summer ventilation mode
+  fields:
+    entity_id:
+      description: Name(s) of the entities to toggle
+      example: 'fan.whole_house

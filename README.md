@@ -155,16 +155,15 @@ Alexa or other voice enabled smart speaker.
 
 ## Feature Requests
 
-* add 3 second delay between state changes (bug fix)
-* automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
+* add 3+ second delay between state changes (bug fix)
+* attribute of current CFM (based on fan speed, number of fans, and which manual setting the LUNOS Controller is set to)
 
-* support for wiring filter LED light to a smart sensor (such as WeMo Maker sensor input)
+* automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
 * NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
-* WARNING: flipping W1 within 3 seconds clears the filter warning light
 
 ## Not Supported
 
-* enabling the summer/night ventilation mode (e2)
+* enabling the summer/night ventilation mode on supported models (e2)
 * eGO exhaust only modes
 * e2 four-flow rate mode (non-US models)
 * LUNOS type RA 15-60 radial duct fan

@@ -46,6 +46,12 @@ SPEED_SWITCH_STATES = {
 # delay all state changes to be > 3 seconds since the last switch change
 STATE_CHANGE_DELAY_SECONDS = 4
 
+ATTR_CFM = 'cfm'
+
+SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
+SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
+SERVICE_TURN_OFF_SUMMER_VENTILATION = 'lunos_turn_off_summer_ventilation'
+
 CONF_RELAY_W1 = 'relay_w1'
 CONF_RELAY_W2 = 'relay_w2'
 CONF_DEFAULT_SPEED = 'default_speed'
@@ -56,52 +62,47 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
-        vol.Optional(CONF_ENTITY_ID): cv.entity_id,
+        vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
 )
 
-SERVICE_CLEAR_FILTER_REMINDER = "lunos_clear_filter_reminder"
-SERVICE_TO_METHOD = {
-    SERVICE_CLEAR_FILTER_REMINDER: { "method": "async_clear_filter_reminder" }
-}
-
+# pylint: disable=unused-argument
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Initialize the LUNOS fans from config."""
-    fans = []
+    name = config.get(CONF_NAME)
+    relay_w1 = config.get(CONF_RELAY_W1)
+    relay_w2 = config.get(CONF_RELAY_W2)
+    default_speed = config.get(CONF_DEFAULT_SPEED)
 
-    conf = config[LUNOS_DOMAIN]
-#    for controller_conf in conf[CONF_CONTROLLERS]:
-#        LOG.info(f"Found config {controller_conf}")
-#        # FIXME: pass in relay_w1 and relay_w2
+    LOG.info(f"Found configuration for LUNOS fan controller '{name} setup with relays W1={relay_w1}, W2={relay_w2}'")
 
-    async_add_entities(fans, update_before_add=True)
+    fan = LUNOSFan(config, name, relay_w1, relay_w2, default_speed)
+    async_add_entities([fan], update_before_add=True)
 
-    async def async_service_handler(service):
-        """Map services to methods on LUNOS."""
-        method = SERVICE_TO_METHOD.get(service.service)
+    #component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER:, {}, "async_clear_filter_reminder")
+    #component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION:, {}, "async_turn_on_summer_ventilation")
+    #component.async_register_entity_service(SERVICE_TURN_OFF_SUMMER_VENTILATION:, {}, "async_turn_off_summer_ventilation")
 
+    return True
 
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def __init__(self, conf, default_speed: str = DEFAULT_SPEED):
+    def __init__(self, conf, name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
-        super().__init__()
-
-        self._relay_w1 = conf['relay_w1']
-        self._relay_w2 = conf['relay_w2']
+        self._name = name
+        self._relay_w1 = relay_w1
+        self._relay_w2 = relay_w2
         self._default_speed = default_speed
+
+        # FUTURE: add Lunos model setting, pulling effective CFM values from setting and number of configured fans
+        # the current cfm expected based on fan speed should be an attribute
+        #self._state_attrs = {ATTR_CFM: 10}
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
 
-        friendly_name = conf['name']
-
-        LOG.info(f"Created LUNOS fan controller {friendly_name}")
-
-#    async def async_added_to_hass(self):
-#        """Run when about to be added to HASS."""
-#        await super().async_added_to_hass()
+        LOG.info(f"Created LUNOS fan controller {name} (W1={relay_w1} / W2={relay_w2} / default_speed={default_speed})")
 
     def determine_current_relay_state(self):
         # FIXME:
@@ -165,7 +166,6 @@ class LUNOSFan(FanEntity):
             LOG.error(f"LUNOS fan '{self._name}' does not support speed '{speed}'; ignoring request to change speed.")
             return
 
-    
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
@@ -185,7 +185,17 @@ class LUNOSFan(FanEntity):
 #            if state is not None:
 #                self._state = VALUE_TO_SPEED.get(state, self._state)
 
-    async def async_clear_filter_reminder_light(self):
+    async def async_clear_filter_reminder(self):
         LOG.error(f"Clearing the LUNOS filter reminder light is not currently supported")
-        # flipping switch W1 within 3 seconds instructs the LUNOS controller to
+        # flipping relay W1 within 3 seconds instructs the LUNOS controller to
         # clear the filter warning light
+
+    async def async_turn_on_summer_ventilation(self):
+        LOG.error(f"LUNOS summer/night ventilation mode not yet supported")
+        # flipping relay W2 within 3 seconds instructs the LUNOS controller to
+        # turn on summer ventilation mode
+
+    async def async_turn_off_summer_ventilation(self):
+        LOG.error(f"LUNOS summer/night ventilation mode not yet supported")
+        # flipping relay W2 within 3 seconds instructs the LUNOS controller to
+        # turn on summer ventilation mode
