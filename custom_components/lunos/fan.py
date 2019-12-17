@@ -68,7 +68,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_SETTINGS.keys()),
+        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_CODING_CONFIG.keys()),
         vol.Optional(CONF_FAN_COUNT, default='2'): vol.In( [ '1', '2', '3', '4' ]), # NOTE: should be controller_type defined
         vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
@@ -108,12 +108,12 @@ class LUNOSFan(FanEntity):
         self._default_speed = default_speed
 
         coding = conf.get(CONF_CONTROLLER_CODING)
-        model_config = LUNOS_SETTINGS[coding]
+        model_config = LUNOS_CODING_CONFIG[coding]
 
         # default fan count differs depending on what fans are attached to the controller (e2 = 2 fans, eGO = 1 fan)
         fan_count = conf.get(CONF_FAN_COUNT)
         if fan_count == None:
-            fan_count = LUNOS_SETTINGS[CONF_DEFAULT_FAN_COUNT]
+            fan_count = model_config[CONF_DEFAULT_FAN_COUNT]
         self._fan_count = fan_count
 
         self._state_attrs = {
