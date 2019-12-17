@@ -180,10 +180,10 @@ LUNOS_SETTINGS = {
 }
 
 def setup(hass, config):
-    """Set up the LUNOS fan controllers"""
-    conf = config[LUNOS_DOMAIN]
-
-    # FIXME: iterate through the config!
-#    for component in conf['controllers']:       
-#        discovery.load_platform(hass, component, LUNOS_DOMAIN, conf, config)
+    """Set up the individual LUNOS fan controllers"""
+    hass.helpers.discovery.load_platform(hass, 'fan', LUNOS_DOMAIN, {}, config)
     return True
+
+#async def async_setup(hass, config):
+#    hass.async_create_task(async_load_platform(hass, "fan", LUNOS DOMAIN, {}, config))
+#    return True
