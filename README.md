@@ -108,7 +108,9 @@ even better, using air quality measuring devices ([Airthings](https://amazon.com
 
 Other LUNOS automation ideas:
 
-* turning up LUNOS when high CO2 or VOCs are detected can provide a great balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality.
+* set LUNUS speeds to maximum when high CO2, VOCs, or radon is detected
+
+* keeping LUNOS running at lower speeds, EXCEPT when air quality issues are detected, could provide a balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality
 
 * increase LUNOS fan speeds to high when kitchen smoke alarm detects smoke
 
