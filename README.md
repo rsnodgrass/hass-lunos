@@ -26,10 +26,10 @@ Configuration is required to assign the Home Assistant accessible W1 and W2 swit
 in operating the LUNOS fan controller.
 
 Configuration variables:
-- **name** (*Optional*): The name of this fan controller.
+- **name** (*Optional*): Friendly name for this fan controller.
 - **relay_w1** (*Required*): The HASS entity id for the relay switch that is connected as W1 to the LUNOS controller.
 - **relay_w2** (*Required*): The HASS entity id for the relay switch that is connected as W2 to the LUNOS controller.
-- **controller_coding** (*Optional*): The tag for the LUNOS coding your controller is set to (see lunos-codings.yaml).
+- **controller_coding** (*Optional*): Slug indicating the manual coding the LUNOS controller is set to (see lunos-codings.yaml).
 - **fan_count** (*Optional*): The number of fans connected to this LUNOS controller.
 - **default_speed** (*Optional*): The default speed when this LUNOS fan is turned on without any speed indicated.
 
