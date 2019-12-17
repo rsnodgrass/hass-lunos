@@ -103,9 +103,9 @@ automation:
 
 ### Supported Services
 
-* lunos_turn_summer_ventilation_on (only for supported LUNOS e2 models)
-* lunos_turn_summer_ventilation_off
-* lunos_clear_filter_change_reminder
+* **lunos_turn_summer_ventilation_on** (only for supported LUNOS e2 models)
+* **lunos_turn_summer_ventilation_off**
+* **lunos_clear_filter_change_reminder**
 
 ## Hardware Requirements
 

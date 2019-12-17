@@ -5,6 +5,7 @@ e2:
   cycle_seconds: 70
   default_fan_count: 2
   supports_summer_vent: false
+  supports_filter_reminder: true
   heat_recovery_efficiency: 0.906
   #humidity_recovery: 
   behavior:
@@ -26,6 +27,7 @@ e2-4speed:
   default_fan_count: 2
   four_speed: true
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 70
   behavior: 
       off:
@@ -43,6 +45,7 @@ e2-short:
   controller_coding: 5
   default_fan_count: 2
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 55
   behavior:
     off:
@@ -60,6 +63,7 @@ e2-usa:
   controller_coding: 6
   default_fan_count: 2
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 70
   behavior:
     off:
@@ -83,6 +87,7 @@ e2-short-usa:
   controller_coding: 7
   default_fan_count: 2
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 55
   behavior: # STRANGE: different sources specific different CFM
     off:
@@ -103,6 +108,7 @@ e2-60:
   controller_coding: 7
   default_fan_count: 2
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 55
   behavior: # STRANGE: different sources specific different CFM
     off:
@@ -120,6 +126,7 @@ ego:
   controller_coding: 9
   default_fan_count: 1
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 50
   behavior:
     off:
@@ -139,6 +146,7 @@ ego-4speed:
   default_fan_count: 1
   four_speed: true
   supports_summer_vent: true
+  supports_filter_reminder: true
   turbo_mode: true
   cycle_seconds: 50
   behavior:
@@ -161,6 +169,7 @@ ego-exhaust-4speed:
   default_fan_count: 1
   four_speed: true
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 50
   behavior:
     off: 
@@ -182,6 +191,7 @@ ego-exhaust:
   four_speed: true
   high_exhaust_only: true
   supports_summer_vent: true
+  supports_filter_reminder: true
   cycle_seconds: 50
   behavior:
     off:
@@ -199,6 +209,7 @@ ra-15-60:
   controller_coding: 0
   default_fan_count: 1
   supports_summer_vent: false
+  supports_filter_reminder: true
   turbo_mode: true # flip W2 on/off < 3 seconds = 60 m3/h
   exhaust_only: true # not a HRV
   behavior:
@@ -223,6 +234,7 @@ ra-15-60-high:
   controller_coding: 1
   default_fan_count: 1
   supports_summer_vent: false
+  supports_filter_reminder: true
   exhaust_only: true # not a HRV
   behavior:
     off:
@@ -240,6 +252,7 @@ ra-15-60-4speed:
   controller_coding: 2
   default_fan_count: 1
   supports_summer_vent: false
+  supports_filter_reminder: true
   exhaust_only: true # not a HRV
   behavior: 
     off:
