@@ -160,6 +160,7 @@ class LUNOSFan(FanEntity):
         """Return true if entity is on."""
         if self._state is None:
             return False
+        # NOTE: for 4-speed fans, there is never a true "OFF" setting
         return self._state != SPEED_OFF
 
     # TOOD: last updated? controller type? cfm?
