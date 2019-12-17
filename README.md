@@ -81,6 +81,12 @@ automation:
           speed: "high"
 ```
 
+### Supported Services
+
+* lunos_turn_summer_ventilation_on (only for supported LUNOS e2 models)
+* lunos_turn_summer_ventilation_off
+* lunos_clear_filter_change_reminder
+
 ## Hardware Requirements
 
 * LUNOS e2 HRV fan pairs or [LUNOS eGO HRV fan](https://foursevenfive.com/blog/introducing-the-lunos-ego/)
@@ -154,19 +160,17 @@ Alexa or other voice enabled smart speaker.
 * https://community.home-assistant.io/t/fibaro-rgbw-to-switch-fan-controller/104872
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-## Feature Requests
+## Currently Not Supported
+
+## TODO
 
 * add 3+ second delay between state changes (bug fix)
-* enable summer/night ventilation mode on supported models (e2)
-* add attribute indicating ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
-* add service API for changing ventilation mode, if supported by the LUNOS fan model and controller
-
 * automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
-* NOTE: flipping W2 (right) on/off within 3 seconds activates Summer ventilation mode
 
 ### Currently Not Supported
 
-* summer ventilation mode (e2 models)
+* automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
+* add attribute indicating ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
 * exhaust only ventilation mode (eGO models)
 * fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
