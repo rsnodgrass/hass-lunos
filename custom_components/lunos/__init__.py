@@ -98,7 +98,7 @@ LUNOS_SETTINGS = {
         summer_vent: true,
         turbo_mode: true,
         cycle_seconds: 50
-    }
+    },
     'ego-exhaust-4speed': {
         name: 'LUNOS eGO (high=exhaust-only, 4-speed)',
         controller_setting: 'B',
