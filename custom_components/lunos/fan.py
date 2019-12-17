@@ -19,6 +19,8 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
+from . import LUNOS_SETTINGS
+
 LOG = logging.getLogger(__name__)
 
 LUNOS_DOMAIN = 'lunos'
@@ -47,7 +49,8 @@ SPEED_SWITCH_STATES = {
 STATE_CHANGE_DELAY_SECONDS = 4
 
 ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
-ATTR_VENTILATION_MODE = 'ventilation_mode'  # [ normal, summer, exhaust-only ]
+ATTR_MODEL_NAME = 'model'
+ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 
 SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
 SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
@@ -57,12 +60,17 @@ CONF_RELAY_W1 = 'relay_w1'
 CONF_RELAY_W2 = 'relay_w2'
 CONF_DEFAULT_SPEED = 'default_speed'
 
+CONF_CONTROLLER_CODING = 'controller_coding'
+CONF_FAN_COUNT = 'fan_count'
+
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
+        vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
+        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_SETTINGS.keys()),
+        vol.Optional(CONF_FAN_COUNT, default='2'): vol.In( [ '1', '2', '3', '4' ]), # NOTE: should be controller_type defined
         vol.Optional(CONF_ENTITY_ID): cv.entity_id
     }
 )
@@ -96,9 +104,26 @@ class LUNOSFan(FanEntity):
         self._relay_w2 = relay_w2
         self._default_speed = default_speed
 
-        # FUTURE: add Lunos model setting, pulling effective CFM values from setting and number of configured fans
+        coding = conf.get(CONF_CONTROLLER_CODING )
+        model_config = LUNOS_SETTINGS[coding]
+
+        # default fan count differs depending on what fans are attached to the controller (e2 = 2 fans, eGO = 1 fan)
+        fan_count = conf.get(CONF_FAN_COUNT)
+        if fan_count == None:
+            fan_count = LUNOS_SETTINGS['default_fan_count']
+        self._fan_count = fan_count
+
+        self._state_attrs = {
+            ATTR_MODEL_NAME: model_config['name'],
+            CONF_CONTROLLER_CODING: coding,
+            CONF_FAN_COUNT: fan_count,
+            ATTR_CFM: 'Unknown',
+            ATTR_VENTILATION_MODE: 'normal'  # TODO: support summer and exhaust-only
+        }
+
+        # FUTURE: pull effective CFM values from setting and number of configured fans
         # the current cfm expected based on fan speed should be an attribute
-        #self._state_attrs = {ATTR_CFM: 10}
+        #self._state_attrs[ATTR_CFM] = 10
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
@@ -153,12 +178,11 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
-    def switch_to_state(switch, state):
+    def set_relay_state(self, relay, state):
         if state == STATE_OFF:
-            switch.turn_off()
+            relay.turn_off()
         else:
-            switch.turn_on()
-
+            relay.turn_on()
         
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
@@ -172,22 +196,21 @@ class LUNOSFan(FanEntity):
         # delay all state changes to be > 3 seconds since the last switch change
         # STATE_CHANGE_DELAY_SECONDS = 4
 
-        switch_to_state(self._switch_w1, switch_states[0])
-        switch_to_state(self._switch_w2, switch_states[1])
+        self.set_relay_state(self._relay_w1, switch_states[0])
+        self.set_relay_state(self._relay_w2, switch_states[1])
         self.async_set_state(speed)
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
-        await super().async_update()
 
-        LOG.warn("LUNOS ventilation fan state update not yet supported!")
+        LOG.error("Updating of LUNOS ventilation fan state update not yet supported!")
 #        if self._fan_channel:
 #            state = await self._fan_channel.get_attribute_value("fan_mode")
 #            if state is not None:
 #                self._state = VALUE_TO_SPEED.get(state, self._state)
 
     async def async_clear_filter_reminder(self):
-        LOG.error(f"Clearing the LUNOS filter reminder light is not currently supported")
+        LOG.warn(f"Clearing the LUNOS filter reminder light is not currently supported")
         # flipping relay W1 within 3 seconds instructs the LUNOS controller to
         # clear the filter warning light
 
