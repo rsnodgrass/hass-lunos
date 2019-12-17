@@ -1,9 +1,24 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
 Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any [Home Assistant](https://www.home-assistant.io/) compatible smart relays.
-The LUNOS low-voltage fan controller is designed to be controlled using a pair of switches (W1/W2) to turn on/off
-ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more
-information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+The design of the LUNOS low-voltage fan controller uses a pair of physical switches (W1/W2) to turn on/off
+ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only
+modes, etc. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+
+This LUNOS integration allows control of the fans through Home Assistant apps and web consoles, as well as a wide variety of
+automation opportunities when paired with other sensors:
+
+* set LUNUS speeds to maximum when high CO2, VOCs, or radon is detected
+
+* keeping LUNOS running at lower speeds, EXCEPT when air quality issues are detected, could provide a balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality
+
+* increase LUNOS fan speeds to high when kitchen smoke alarm detects smoke
+
+* if outside temperature is closer to target temperature on thermostats, engage exhaust only modes in LUNOS devices to expel indoor air (drawing in temperature that is closer to target from leaks in the building envelope or open windows/doors)
+
+* turn off LUNOS air circulation when house vacation mode is set, and re-activate LUNOS air circulation whenever motion is detected (or someone arrives at the house)
+
+* turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
@@ -106,19 +121,6 @@ automation:
 These same strategies can be used with any Home Assistant compatible devices that track humidity ([ecobee](https://smile.amazon.com/ecobee3-lite-Smart-Thermostat-Black/dp/B06W56TBLN?tag=rynoshark-20), [Nest thermostat](https://amazon.com/Nest-T3007ES-Thermostat-Temperature-Generation/dp/B0131RG6VK/?tag=rynoshark-20)) or,
 even better, using air quality measuring devices ([Airthings](https://amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?tag=rynoshark-20), [AirVisual IQAir](https://amazon.com/IQAir-AirVisual-Temperature-Real-Time-Forecasting/dp/B0784TZFRW/?tag=rynoshark-20), [Foobot](https://amazon.com/Foobot-Quality-Monitor-Homeowners-Renters/dp/B06Y8VLCH8?tag=rynoshark-20)) that measure CO2, VOCs, etc.
 
-Other LUNOS automation ideas:
-
-* set LUNUS speeds to maximum when high CO2, VOCs, or radon is detected
-
-* keeping LUNOS running at lower speeds, EXCEPT when air quality issues are detected, could provide a balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality
-
-* increase LUNOS fan speeds to high when kitchen smoke alarm detects smoke
-
-* if outside temperature is closer to target temperature on thermostats, engage exhaust only modes in LUNOS devices to expel indoor air (drawing in temperature that is closer to target from leaks in the building envelope or open windows/doors)
-
-* turn off LUNOS air circulation when house vacation mode is set
-
-* turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
 
 ### Supported Services
 
