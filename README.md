@@ -213,8 +213,8 @@ Alexa or other voice enabled smart speaker.
 ### Currently Not Supported
 
 * automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
-* add attribute indicating ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
-* exhaust only ventilation mode (eGO models)
+* attribute indicating current ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
+* special handling of exhaust only ventilation mode (eGO models)
 * fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
-* LUNOS e2 Neo decibal level attributes
+* LUNOS e2 Neo sound dB differences
