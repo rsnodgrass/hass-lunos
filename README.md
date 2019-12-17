@@ -1,7 +1,5 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-# ***NOT YET IMPLEMENTED***
-
 Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any Home Assistant compatible smart relays. The LUNOS low-voltage fan controller is designed to be controlled using a pair of switches (W1/W2) to turn on/off ventilation, to set fan speeds, and to toggle various additional modes. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -65,7 +63,10 @@ The following is a simple Lovelace card using the [fan-control-entity-row](https
 
 ### Step 4 (Optional): Automation
 
-Example automation to turn on fans when someone arrives:
+While using NodeRED can be used to easily create ventilation automation, here are several example manual
+automations that change the LUNOS fan speeds based on occupancy or air quality issues:
+
+Turn on fans when someone arrives:
 
 ```yaml
 automation:
@@ -77,6 +78,25 @@ automation:
     action:
       - service: fan.turn_on
         entity_id: "fan.lunos"
+        data:
+          speed: "high"
+```
+
+Turn LUNOS ventilation fan to highest speed when [Airthings](https://smile.amazon.com/Airthings-2930-Quality-Detection-Dashboard/dp/B07JB8QWH6/?ref=rynoshark-20)  detects high humidity:
+
+```yaml
+automation:
+  - alias: "Turn basement LUNOS ventilation on maximum speed if high humidity is detected"
+    trigger:
+      - platform: foobot
+        entity_id: [sensor.basement_airthings_humidity](https://github.com/custom-components/sensor.airthings_wave)
+    condition:
+      condition: numeric_state
+      entity_id: sensor.basement_airthings_humidity
+      above: 35
+    action:
+      - service: fan.turn_on
+        entity_id: "fan.basement_lunos"
         data:
           speed: "high"
 ```
@@ -164,8 +184,8 @@ Alexa or other voice enabled smart speaker.
 
 ## TODO
 
-* add 3+ second delay between state changes (bug fix)
-* automation example of poor air quality and auto-turning up the fan (e.g. Foobot or Airwave)
+* BUG: does NOT detect the current relay switch state to determine current speed on startup
+* BUG: add 3+ second delay between state changes
 
 ### Currently Not Supported
 
