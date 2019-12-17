@@ -3,23 +3,22 @@ import time
 import logging
 import voluptuous as vol
 
-from homeassistant.const import CONF_NAME, CONF_ENTITY_ID
+from homeassistant.const import (
+    CONF_NAME, CONF_ENTITY_ID,
+    STATE_ON, STATE_OFF,
+    SERVICE_TURN_ON, SERVICE_TURN_OFF, SERVICE_TOGGLE
+)
 from homeassistant.components.fan import (
     PLATFORM_SCHEMA,
-    SPEED_OFF,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SPEED_HIGH,
     SUPPORT_SET_SPEED,
-    STATE_ON,
-    STATE_OFF,
+    SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH,
     FanEntity
 )
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-from . import LUNOS_SETTINGS
+from . import LUNOS_CODING_CONFIG
 
 LOG = logging.getLogger(__name__)
 
@@ -238,15 +237,15 @@ class LUNOSFan(FanEntity):
 
         # flip W1 on off at least 2 times to clear reminder
         for i in range(3):
-            self.switch_service_call('turn_off', self._relay_w1)
-            self.switch_service_call('turn_on', self._relay_w1)
+            self.switch_service_call(SERVICE_TURN_OFF, self._relay_w1)
+            self.switch_service_call(SERVICE_TURN_ON, self._relay_w1)
 
         # reset back to the speed prior to toggling W1
         self.async_set_speed(save_speed)
 
     def supports_summer_ventilation(self):
         coding = self._state_attrs[CONF_CONTROLLER_CODING]
-        controller_config = LUNOS_SETTINGS[coding]
+        controller_config = LUNOS_CODING_CONFIG[coding]
         return controller_config['supports_summer_vent'] == True
 
     # flipping W2 within 3 seconds instructs the LUNOS controller to turn on summer ventilation mode
@@ -260,8 +259,8 @@ class LUNOSFan(FanEntity):
 
         # flip W2 on off at least 2 times to enable summer ventilation
         for i in range(3):
-            self.switch_service_call('turn_off', self._relay_w2)
-            self.switch_service_call('turn_on', self._relay_w2)
+            self.switch_service_call(SERVICE_TURN_OFF, self._relay_w2)
+            self.switch_service_call(SERVICE_TURN_ON, self._relay_w2)
 
         # reset back to the speed prior to toggling W2
         self.async_set_speed(save_speed)
@@ -274,5 +273,5 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        self.switch_service_call('toggle', self._relay_w2)
-        self.switch_service_call('toggle', self._relay_w2)
+        self.switch_service_call(SERVICE_TOGGLE, self._relay_w2)
+        self.switch_service_call(SERVICE_TOGGLE, self._relay_w2)
