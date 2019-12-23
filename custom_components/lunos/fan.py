@@ -148,14 +148,28 @@ class LUNOSFan(FanEntity):
         if self._state != None:
             coding = self._state_attrs[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
+            behavior = controller_config['behavior']
 
-            LOG.info(f"Updating based on controller config {controller_config}")
-            cfm_for_mode = controller_config['cfm'][self._state]
-            cfm_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
-            self._state_attrs[ATTR_CFM] = cfm_for_mode * cfm_multiplier
-            self._state_attrs[ATTR_CMHR] = self._state_attrs[ATTR_CFM] * CFM_TO_CMH
+            if behavior['cfm']:
+                cfm_for_mode = behavior['cfm'][self._state]
+                fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
+                self._state_attrs[ATTR_CFM] = cfm_for_mode * fan_multiplier
+                self._state_attrs[ATTR_CMHR] = self._state_attrs[ATTR_CFM] * CFM_TO_CMH
+            elif behavior['chm']:
+                chm_for_mode = behavior['chm'][self._state]
+                fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
+                self._state_attrs[ATTR_CMHR] = chm_for_mode * fan_multiplier
+                self._state_attrs[ATTR_CFM] = self._state_attrs[ATTR_CMHR] / CFM_TO_CMH          
+            else:
+                self._state_attrs[ATTR_CFM] = None
+                self._state_attrs[ATTR_CMHR] = None
 
-            #self._state_attrs[ATTR_DBA] = controller_config['dbA'][self._state]
+            if behavior[ATTR_DBA]:
+                self._state_attrs[ATTR_DBA] = controller_config[ATTR_DBA][self._state]
+            else:
+                self._state_attrs[ATTR_DBA] = None
+
+            LOG.info(f"Updated attributes based on controller config {controller_config} -> self._state_attrs")
 
     @property
     def supported_features(self) -> int:

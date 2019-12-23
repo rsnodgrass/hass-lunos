@@ -12,7 +12,7 @@ e2:
       off: 
         cmh: 0
         cfm: 0
-        dBA: 0
+        dB: 0
       low:
         cmh: 15
       medium:
@@ -49,7 +49,7 @@ e2-short:
   cycle_seconds: 55
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low: 
         cmh: 15
     medium: 
@@ -67,16 +67,16 @@ e2-usa:
   cycle_seconds: 70
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low:
         cmh: 10 # 17  
-        dbA: 16.5 
+        dB: 16.5 
     medium:
         cmh: 15 # 25.5  
-        dbA: 19.5
+        dB: 19.5
     high:
         cmh: 20  # 34  
-        dbA: 26.0
+        dB: 26.0
 
 # FIXME: confirm coding 7, different resources list different CFM
 
@@ -91,7 +91,7 @@ e2-short-usa:
   cycle_seconds: 55
   behavior: # STRANGE: different sources specific different CFM
     off:
-        dBA: 0
+        dB: 0
     low:
         cmh: 9
         cfm: 17
@@ -112,7 +112,7 @@ e2-60:
   cycle_seconds: 55
   behavior: # STRANGE: different sources specific different CFM
     off:
-        dBA: 0
+        dB: 0
     low:
         cmh: 15
     medium: 
@@ -130,7 +130,7 @@ ego:
   cycle_seconds: 50
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low:
         cfm: 3
         cmh: 5  # 3 CFM
@@ -152,7 +152,7 @@ ego-4speed:
   behavior:
     off:
         cmh: 5
-        dBA: 0
+        dB: 0
     low:
         cmh: 10
     medium:
@@ -174,7 +174,7 @@ ego-exhaust-4speed:
   behavior:
     off: 
         cmh: 5
-        dBA: 0
+        dB: 0
     low: 
         cmh: 10
     medium: 
@@ -195,7 +195,7 @@ ego-exhaust:
   cycle_seconds: 50
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low:  
         cmh: 5
     medium:
@@ -214,7 +214,7 @@ ra-15-60:
   exhaust_only: true # not a HRV
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low: 
         cfm: 9 # marketing estimate
         cmh: 15
@@ -238,7 +238,7 @@ ra-15-60-high:
   exhaust_only: true # not a HRV
   behavior:
     off:
-        dBA: 0
+        dB: 0
     low:
         cmh: 15 # 9 CFM
     medium:
@@ -258,16 +258,16 @@ ra-15-60-4speed:
     off:
         cmh: 15
         watts: 0.6
-        dBA: 19.5
+        dB: 19.5
     low:
         cmh: 30
         watts: 1.3
-        dBA: 31.5
+        dB: 31.5
     medium:
         cmh: 45
         watts: 3.5
-        dBA: 36.0
+        dB: 36.0
     high:
         cmh: 60
         watts: 7.2
-        dBA: 40.5
+        dB: 40.5
