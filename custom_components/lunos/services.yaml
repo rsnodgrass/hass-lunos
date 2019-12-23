@@ -17,4 +17,4 @@ lunos_turn_off_summer_ventilation_mode:
   fields:
     entity_id:
       description: Name(s) of the entities to toggle
-      example: 'fan.whole_house
+      example: 'fan.whole_house'
