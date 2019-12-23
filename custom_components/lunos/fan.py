@@ -210,10 +210,10 @@ class LUNOSFan(FanEntity):
             LOG.warning(f"LUNOS could not find W2 entity {self._w2_entity_id}, cannot determine fan speed.")
             return False
 
-        current_state = [ w1.state, w2_state ]
+        current_state = [ w1.state, w2.state ]
 
-        for speed, expected_state in SPEED_SWITCH_STATES.iteritems():
-            if current_state == expected_state:
+        for speed, speed_state in SPEED_SWITCH_STATES.items():
+            if current_state == speed_state:
                break
  
         LOG.info(f"Speed = {speed} ({self._w1_entity_id}='{w1.state}', {self._w2_entity_id}='{w2.state}')")
