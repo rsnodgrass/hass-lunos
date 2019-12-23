@@ -216,7 +216,7 @@ class LUNOSFan(FanEntity):
             if current_state == speed_state:
                break
  
-        LOG.info(f"Speed = {speed} ({self._w1_entity_id}='{w1.state}', {self._w2_entity_id}='{w2.state}')")
+        LOG.info(f"Detected LUNOS speed = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
         self._state = speed
 
     async def set_relay_switch_state(self, relay_entity_id, state):
