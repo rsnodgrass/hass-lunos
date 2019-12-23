@@ -184,7 +184,7 @@ class LUNOSFan(FanEntity):
     @property
     def device_state_attributes(self):
         """Return state attributes."""
-        return self.state_attributes
+        return self._state_attrs
 
     async def _async_set_state(self, speed):
         """Handle state update from fan."""
@@ -214,13 +214,13 @@ class LUNOSFan(FanEntity):
             LOG.warning(f"LUNOS could not find W2 entity {self._w2_entity_id}, cannot determine fan speed.")
             return False
 
+        # determine the current speed
         current_state = [ w1.state, w2.state ]
-
         for current_speed, speed_state in SPEED_SWITCH_STATES.items():
             if current_state == speed_state:
                break
  
-        # update the speed, if it has changed
+        # update the speed state, if a change has been detected
         if current_speed != self._state:
             LOG.info(f"Detected LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
             self._state = current_speed
