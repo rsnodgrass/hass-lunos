@@ -216,13 +216,15 @@ class LUNOSFan(FanEntity):
 
         current_state = [ w1.state, w2.state ]
 
-        for speed, speed_state in SPEED_SWITCH_STATES.items():
+        for current_speed, speed_state in SPEED_SWITCH_STATES.items():
             if current_state == speed_state:
                break
  
-        LOG.info(f"Detected LUNOS speed = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
-        self._state = speed
-        self.update_attributes_based_on_mode()
+        # update the speed, if it has changed
+        if current_speed != self._state:
+            LOG.info(f"Detected LUNOS speed = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
+            self._state = speed
+            self.update_attributes_based_on_mode()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
         if state == STATE_OFF:
