@@ -89,7 +89,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     default_speed = config.get(CONF_DEFAULT_SPEED)
 
     LOG.info(f"Coding supported {LUNOS_CODING_CONFIG.keys()}")
-
     LOG.info(f"Found configuration for LUNOS fan controller '{name}' setup with relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
