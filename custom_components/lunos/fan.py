@@ -137,7 +137,7 @@ class LUNOSFan(FanEntity):
         
         self._last_state_change = time.time()
 
-        LOG.info(f"Created LUNOS fan controller {name} (W1={relay_w1} / W2={relay_w2} / default_speed={default_speed})")
+        LOG.info(f"Created LUNOS fan controller {name} (W1={relay_w1_entity_id} / W2={relay_w2_entity_id} / default_speed={default_speed})")
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
