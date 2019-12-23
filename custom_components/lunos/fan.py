@@ -17,7 +17,6 @@ from homeassistant.components.fan import (
     FanEntity
 )
 
-import homeassistant.remote as rem
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
