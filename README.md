@@ -28,8 +28,7 @@ such as Alexa, the real power comes in supporting a wide variety of automation o
 ## Support
 
 There is no official support for this add-on and is community supported within the **[Home Assistant LUNOS discussion thread](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)**. 
-If you have any proposed changes or bug fixes, please make them on a branch of [hass-lunos GitHub repository](https://github.com/rsnodgrass/hass-lunos)
-and create pull requests for your patches.
+If you have any proposed changes or bug fixes, please code them and create pull requests for your patches to the [hass-lunos GitHub repository](https://github.com/rsnodgrass/hass-lunos).
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
@@ -218,7 +217,6 @@ Alexa or other voice enabled smart speaker.
 * special handling of exhaust only ventilation mode (eGO models)
 * fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
-* LUNOS e2 Neo sound dB differences
 
 ## Known Issues
 
@@ -227,10 +225,8 @@ Alexa or other voice enabled smart speaker.
 
 ## See Also
 
+* [Home Assistant LUNOS support discussion](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)
 * [LUNOS Ventilation FAQ](https://foursevenfive.com/blog/lunos-faq/)
-* [Intro to Lunos Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
-* [LUNOS](https://www.lunos.de/en/) (official site)
-* [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA distributor)
+* [Intro to LUNOS Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
-
-* https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
+* [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
