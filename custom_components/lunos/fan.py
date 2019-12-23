@@ -205,9 +205,6 @@ class LUNOSFan(FanEntity):
         """Handle state update from fan."""
         self._state = speed
         self.async_schedule_update_ha_state()
-        
-        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}")
-        self.update_attributes_based_on_mode()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
@@ -272,6 +269,9 @@ class LUNOSFan(FanEntity):
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
         self._async_set_state(speed)
+
+        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}")
+        self.update_attributes_based_on_mode()
 
     def toggle_relay_on_and_off(self, entity_id):
         save_speed = self._state
