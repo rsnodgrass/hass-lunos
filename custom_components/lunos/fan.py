@@ -205,6 +205,8 @@ class LUNOSFan(FanEntity):
         """Handle state update from fan."""
         self._state = speed
         self.async_schedule_update_ha_state()
+        
+        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}")
         self.update_attributes_based_on_mode()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
