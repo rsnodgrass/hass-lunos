@@ -222,7 +222,7 @@ class LUNOSFan(FanEntity):
  
         # update the speed, if it has changed
         if current_speed != self._state:
-            LOG.info(f"Detected LUNOS speed = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
+            LOG.info(f"Detected LUNOS speed for '{self._name]' = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
             self._state = speed
             self.update_attributes_based_on_mode()
 
