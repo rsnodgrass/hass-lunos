@@ -202,12 +202,12 @@ class LUNOSFan(FanEntity):
     def determine_current_speed_setting(self):
         w1 = self._hass.states.get(self._w1_entity_id)
         if not w1:
-            LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}")
+            LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}, cannot determine fan speed.")
             return False
 
         w2 = self._hass.states.get(self._w2_entity_id)
         if not w2:
-            LOG.warning(f"LUNOS could not find W1 entity {self._w2_entity_id}")
+            LOG.warning(f"LUNOS could not find W2 entity {self._w2_entity_id}, cannot determine fan speed.")
             return False
 
         current_state = [ w1.state, w2_state ]
@@ -251,8 +251,7 @@ class LUNOSFan(FanEntity):
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
-
-        LOG.error("Updating of LUNOS ventilation fan state update not yet supported!")
+        self.determine_current_speed_setting()
 
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
     async def async_clear_filter_reminder(self):

@@ -26,5 +26,5 @@ with open(r'custom_components/lunos/lunos-codings.yaml') as file:
     LUNOS_CODING_CONFIG = yaml.full_load(file)
  
 async def async_setup(hass, config):
-    LOG.info(f"LUNOS coding supported: {LUNOS_CODING_CONFIG.keys()}")
+    LOG.info(f"LUNOS controller codings supported: {LUNOS_CODING_CONFIG.keys()}")
     return True
