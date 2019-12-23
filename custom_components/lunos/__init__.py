@@ -21,15 +21,18 @@ LUNOS_DOMAIN = 'lunos'
 
 CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
-LUNOS_CODING_CONFIG = {}
-
+#LUNOS_CODING_CONFIG = {}
+with open(r'custom_components/lunos/lunos-codings.yaml') as file:
+    LUNOS_CODING_CONFIG = yaml.full_load(file)
+ 
 async def async_setup(hass, config):
-    global LUNOS_CODING_CONFIG
+ #   global LUNOS_CODING_CONFIG
 
-    with open(r'custom_components/lunos/lunos-codings.yaml') as file:
-        LUNOS_CODING_CONFIG = yaml.full_load(file)
-        LOG.info( LUNOS_CODING_CONFIG )
-        LOG.info(f"Coding supported (direct) {LUNOS_CODING_CONFIG.keys()}")
+   LOG.info(f"LUNOS coding supported: {LUNOS_CODING_CONFIG.keys()}")
+
+ #   with open(r'custom_components/lunos/lunos-codings.yaml') as file:
+ #       LUNOS_CODING_CONFIG = yaml.full_load(file)
+ #       LOG.info(f"LUNOS coding supported: {LUNOS_CODING_CONFIG.keys()}")
 
     return True
 
