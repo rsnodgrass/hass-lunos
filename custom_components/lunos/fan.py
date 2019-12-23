@@ -54,6 +54,7 @@ ATTR_CMHR = 'cmh'
 ATTR_DBA = 'dB'
 ATTR_MODEL_NAME = 'model'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
+UNKNOWN = 'Unknown'
 
 SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
 SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
@@ -131,7 +132,7 @@ class LUNOSFan(FanEntity):
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
             ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
-            ATTR_DBA: 'Unknown'
+            ATTR_DBA: UNKNOWN
         }
 
         # determine the current speed of the fans by inspecting the switch state and update attributs accordingly
@@ -167,7 +168,7 @@ class LUNOSFan(FanEntity):
             if behavior[ATTR_DBA]:
                 self._state_attrs[ATTR_DBA] = controller_config[ATTR_DBA][self._state]
             else:
-                self._state_attrs[ATTR_DBA] = None
+                self._state_attrs[ATTR_DBA] = UNKNOWN
 
             LOG.info(f"Updated attributes based on controller config {controller_config} -> {self._state_attrs}")
 
@@ -204,6 +205,7 @@ class LUNOSFan(FanEntity):
         """Handle state update from fan."""
         self._state = speed
         self.async_schedule_update_ha_state()
+        self.update_attributes_based_on_mode()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
