@@ -201,7 +201,15 @@ class LUNOSFan(FanEntity):
     def determine_current_speed_setting(self):
         # probe the two relays to determine current state and find the matching speed switch state
         w1 = self._hass.states.get(self._w1_entity_id)
+        if not w1:
+            LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}")
+            return False
+
         w2 = self._hass.states.get(self._w2_entity_id)
+        if not w2:
+            LOG.warning(f"LUNOS could not find W1 entity {self._w2_entity_id}")
+            return False
+
         current_state = [ w1.state, w2_state ]
 
         for speed, expected_state in SPEED_SWITCH_STATES.iteritems():
