@@ -133,9 +133,8 @@ class LUNOSFan(FanEntity):
             ATTR_DBA: 'Unknown'
         }
 
-         # FIXME: determine current state!
+        # determine the current speed of the fans by inspecting the switch state and update attributs accordingly
         self.determine_current_speed_setting()
-
         self.update_attributes_based_on_mode()
         
         self._last_state_change = time.time()
