@@ -1,4 +1,6 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
+# FIXME: can we subscribe to updates from the w1/w2 entities to avoid polling?
+
 import time
 import logging
 import voluptuous as vol
