@@ -68,7 +68,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
-        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vs.string,
+        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): cv.string,
 #        vol.Optional(CONF_CONTROLLER_CODING, default='e2-usa'): vol.In(LUNOS_CODING_CONFIG.keys()),
         vol.Optional(CONF_FAN_COUNT): vol.In( [ '1', '2', '3', '4' ]), # default is based on how controller is coded (see below)
         vol.Optional(CONF_ENTITY_ID): cv.entity_id

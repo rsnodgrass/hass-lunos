@@ -8,10 +8,10 @@ The design of the LUNOS low-voltage fan controller uses a pair of physical switc
 ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only
 modes, etc. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
-While this LUNOS integration allows control of the fan modes through Home Assistant apps and web consoles, the real power
-comes in supporting a wide variety of automation opportunities when paired with other third-party sensors:
+While this LUNOS integration allows control of the fan modes through Home Assistant apps, web consoles, and connected voice assistants
+such as Alexa, the real power comes in supporting a wide variety of automation opportunities when paired with other third-party sensors:
 
-* set LUNUS speeds to maximum when high CO2, VOCs, or radon is detected
+* set LUNOS speeds to maximum when high humidity, CO2, VOCs, or radon is detected
 
 * keeping LUNOS running at lower speeds, EXCEPT when air quality issues are detected, could provide a balance between LUNOS fan noise (which is already a very quiet fan) and maintaining optimal fresh indoor air quality
 
@@ -22,6 +22,8 @@ comes in supporting a wide variety of automation opportunities when paired with 
 * turn off LUNOS air circulation when house vacation mode is set, and re-activate LUNOS air circulation whenever motion is detected (or someone arrives at the house)
 
 * turn off LUNOS air circulation if outside air quality is detected as being very poor (e.g. nearby forest fires or pollution)
+
+* automatically turn on summer ventilation mode when house is set to sleep mode (and return to normal operating mode upon wakeup or specific time during the day)
 
 ## Support
 
