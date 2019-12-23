@@ -67,7 +67,7 @@ CONF_FAN_COUNT = 'fan_count'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_NAME): cv.string,
+        vol.Optional(CONF_NAME, default='LUNOS Fan'): cv.string,
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
