@@ -220,10 +220,9 @@ Alexa or other voice enabled smart speaker.
 * LUNOS type RA 15-60 radial duct fan
 * LUNOS e2 Neo sound dB differences
 
-## Known Bugs
+## Known Issues
 
-* BUG: current relay switch state is not read to determine current speed on startup
-* BUG: automatic speed detection based on relay changes (e.g. manual change or delayed switch update)
+* IMPROVEMENT: fan speed changes are not immediately detected (only on 30 second interval updates)
 * BUG: add 3+ second delay between relay state changes (to avoid accidentally enabling summer ventilation mode or clearing filter reminder)
 
 ## See Also
