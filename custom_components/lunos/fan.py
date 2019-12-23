@@ -17,6 +17,7 @@ from homeassistant.components.fan import (
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_component import EntityComponent
 
 from . import LUNOS_CODING_CONFIG
 
@@ -30,7 +31,6 @@ SPEED_LIST = [
     SPEED_LOW,
     SPEED_MEDIUM,
     SPEED_HIGH
-#    SPEED_ON  # FIXME: remove?  is this really a speed....
 ]
 DEFAULT_SPEED = SPEED_MEDIUM
 
@@ -92,10 +92,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([fan], update_before_add=True)
 
-    # FIXME: actually subscribe to service call APIs
-    #component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER:, {}, "async_clear_filter_reminder")
-    #component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION:, {}, "async_turn_on_summer_ventilation")
-    #component.async_register_entity_service(SERVICE_TURN_OFF_SUMMER_VENTILATION:, {}, "async_turn_off_summer_ventilation")
+    # expose service call APIs
+    component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
+    component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder")
+    component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation")
+    component.async_register_entity_service(SERVICE_TURN_OFF_SUMMER_VENTILATION, {}, "async_turn_off_summer_ventilation")
 
     return True
 
