@@ -4,6 +4,7 @@ https://github.com/rsnodgrass/hass-lunos
 """
 import logging
 import yaml
+import os
 
 from homeassistant.helpers import config_validation as cv, discovery
 from homeassistant.helpers.entity import Entity
@@ -26,6 +27,7 @@ async def async_setup(hass, config):
     global LUNOS_CODING_CONFIG
 
     with open(r'lunos-codings.yaml') as file:
+        LOG.info(f"CWD = {os.getcwd()}")
         LUNOS_CODING_CONFIG = yaml.full_load(file)
         LOG.info( LUNOS_CODING_CONFIG )
         LOG.info(f"Coding supported (direct) {LUNOS_CODING_CONFIG.keys()}")
