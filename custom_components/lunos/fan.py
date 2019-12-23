@@ -242,6 +242,7 @@ class LUNOSFan(FanEntity):
             self.update_attributes_based_on_mode()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
+        LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
         if state == STATE_OFF:
             self.switch_service_call('turn_off', relay_entity_id)
         else:
