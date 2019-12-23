@@ -222,8 +222,8 @@ class LUNOSFan(FanEntity):
  
         # update the speed, if it has changed
         if current_speed != self._state:
-            LOG.info(f"Detected LUNOS speed for '{self._name]' = {speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
-            self._state = speed
+            LOG.info(f"Detected LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
+            self._state = current_speed
             self.update_attributes_based_on_mode()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
