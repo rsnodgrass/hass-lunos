@@ -151,19 +151,21 @@ class LUNOSFan(FanEntity):
             controller_config = LUNOS_CODING_CONFIG[coding]
             behavior = controller_config['behavior']
 
+            cfm = None
+            cmh = None
             if 'cfm' in behavior:
                 cfm_for_mode = behavior['cfm'][self._state]
                 fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
-                self._state_attrs[ATTR_CFM] = cfm_for_mode * fan_multiplier
-                self._state_attrs[ATTR_CMHR] = self._state_attrs[ATTR_CFM] * CFM_TO_CMH
+                cfm = cfm_for_mode * fan_multiplier
+                cmh = cfm * CFM_TO_CMH
             elif 'chm' in behavior:
                 chm_for_mode = behavior['chm'][self._state]
                 fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
-                self._state_attrs[ATTR_CMHR] = chm_for_mode * fan_multiplier
-                self._state_attrs[ATTR_CFM] = self._state_attrs[ATTR_CMHR] / CFM_TO_CMH          
-            else:
-                self._state_attrs[ATTR_CFM] = None
-                self._state_attrs[ATTR_CMHR] = None
+                cmh = chm_for_mode * fan_multiplier
+                cfm = cmh / CFM_TO_CMH
+
+            self._state_attrs[ATTR_CFM] = cfm
+            self._state_attrs[ATTR_CMHR] = cmh
 
             if ATTR_DBA in behavior:
                 self._state_attrs[ATTR_DBA] = controller_config[ATTR_DBA][self._state]
