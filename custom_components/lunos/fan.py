@@ -27,6 +27,7 @@ from . import LUNOS_CODING_CONFIG
 LOG = logging.getLogger(__name__)
 
 LUNOS_DOMAIN = 'lunos'
+DEFAULT_LUNOS_NAME = 'LUNOS Ventilation'
 
 SPEED_TURBO = 'turbo' # FUTURE: support the special W2 extra-high mode
 SPEED_LIST = [
@@ -67,7 +68,7 @@ CONF_FAN_COUNT = 'fan_count'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_NAME, default='LUNOS Fan'): cv.string,
+        vol.Optional(CONF_NAME): cv.string, # NOTE: we default the name later based on software
         vol.Optional(CONF_RELAY_W1): cv.string,  # cv.entity_id
         vol.Optional(CONF_RELAY_W2): cv.string,  # cv.entity_id
         vol.Optional(CONF_DEFAULT_SPEED, default=DEFAULT_SPEED): vol.In(SPEED_LIST),
@@ -84,12 +85,14 @@ CFM_TO_CMH = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Initialize the LUNOS fans from config."""
     name = config.get(CONF_NAME)
+    if not name:
+        name = DEFAULT_LUNOS_NAME
+
     relay_w1 = config.get(CONF_RELAY_W1)
     relay_w2 = config.get(CONF_RELAY_W2)
     default_speed = config.get(CONF_DEFAULT_SPEED)
 
-    LOG.info(f"LUNOS coding supported: {LUNOS_CODING_CONFIG.keys()}")
-    LOG.info(f"Found configuration for LUNOS fan controller '{name}' setup with relays W1={relay_w1}, W2={relay_w2}'")
+    LOG.info(f"Found LUNOS fan controller '{name}' configured with relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([fan], update_before_add=True)
@@ -136,8 +139,8 @@ class LUNOSFan(FanEntity):
         
         self._last_state_change = time.time()
 
-        LOG.info(f"Created LUNOS fan controller '{name}' (W1={relay_w1_entity_id}; W2={relay_w2_entity_id}; default_speed={default_speed})")
         super().__init__()
+        LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1_entity_id}; W2={relay_w2_entity_id}; default_speed={default_speed})")
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
@@ -146,6 +149,7 @@ class LUNOSFan(FanEntity):
             coding = self._state_attrs[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
 
+            LOG.info(f"Updating based on controller config {controller_config}")
             cfm_for_mode = controller_config['cfm'][self._state]
             cfm_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
             self._state_attrs[ATTR_CFM] = cfm_for_mode * cfm_multiplier

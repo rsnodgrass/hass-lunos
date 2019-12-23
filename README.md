@@ -80,12 +80,12 @@ fan:
 
 The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
 
+![LUNOS Simple Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/single-fan-control-example.png?raw=true)
+
 ```yaml
 - entity: fan.lunos_bathroom
   type: custom:fan-control-entity-row
 ```
-
-![LUNOS Simple Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/single-fan-control-example.png?raw=true)
 
 And another example with multiple LUNOS ventilation fans and ability to turn on/off the entire house:
 
