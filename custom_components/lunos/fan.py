@@ -108,8 +108,8 @@ class LUNOSFan(FanEntity):
     def __init__(self, hass, conf, name, relay_w1_entity_id, relay_w2_entity_id, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         self._hass = hass
-
         self._name = name
+        self._state = None
         self._w1_entity_id = relay_w1_entity_id
         self._w2_entity_id = relay_w2_entity_id
         self._default_speed = default_speed
@@ -198,8 +198,8 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
+     # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):
-        # probe the two relays to determine current state and find the matching speed switch state
         w1 = self._hass.states.get(self._w1_entity_id)
         if not w1:
             LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}")
