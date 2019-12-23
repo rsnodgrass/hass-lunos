@@ -131,14 +131,11 @@ class LUNOSFan(FanEntity):
             ATTR_DBA: 'Unknown'
         }
 
-        self.update_attributes_based_on_mode()
-
-        w1_entity = self._hass.states.get(self._w1_entity_id)
-        LOG.info(f"State {self._w1_entity_id} = {w1_entity.state)}")
-        w2_entity = self._hass.states.get(self._w2_entity_id)
-        LOG.info(f"State {self._w2_entity_id} = {w2_entity.state)}")
-
          # FIXME: determine current state!
+        self.determine_current_speed_setting()
+
+        self.update_attributes_based_on_mode()
+        
         self._last_state_change = time.time()
 
         LOG.info(f"Created LUNOS fan controller {name} (W1={relay_w1} / W2={relay_w2} / default_speed={default_speed})")
@@ -203,14 +200,17 @@ class LUNOSFan(FanEntity):
         await self.async_set_speed(SPEED_OFF)
 
     def determine_current_speed_setting(self):
-        w1_entity = self._hass.states.get(self._w1_entity_id)
-        LOG.info(f"State {self._w1_entity_id} = {w1_entity.state)}")
-        w2_entity = self._hass.states.get(self._w2_entity_id)
-        LOG.info(f"State {self._w2_entity_id} = {w2_entity.state)}")
+        # probe the two relays to determine current state and find the matching speed switch state
+        w1 = self._hass.states.get(self._w1_entity_id)
+        w2 = self._hass.states.get(self._w2_entity_id)
+        current_state = [ w1.state, w2_state ]
 
-        # FIXME: probe the two relays to determine current state and match to the SPEED_SWITCH_STATES table
-        # self._state = speed
-        return
+        for speed, expected_state in SPEED_SWITCH_STATES.iteritems():
+            if current_state == expected_state:
+               break
+ 
+        LOG.info(f"Speed = {speed} ({self._w1_entity_id}='{w1.state)}', {self._w2_entity_id}='{w2.state)}')")
+        self._state = speed
 
     async def set_relay_switch_state(self, relay_entity_id, state):
         if state == STATE_OFF:
