@@ -27,7 +27,7 @@ such as Alexa, the real power comes in supporting a wide variety of automation o
 
 ## Support
 
-There is no official support for this add-on and is community supported within the [Home Assistant LUNOS discussion thread](). 
+There is no official support for this add-on and is community supported within the **[Home Assistant LUNOS discussion thread](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)**. 
 If you have any proposed changes or bug fixes, please make them on a branch of [hass-lunos GitHub repository](https://github.com/rsnodgrass/hass-lunos)
 and create pull requests for your patches.
 
