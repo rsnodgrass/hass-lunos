@@ -105,13 +105,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def __init__(self, hass, conf, name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
+    def __init__(self, hass, conf, name, relay_w1_entity_id, relay_w2_entity_id, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         self._hass = hass
 
         self._name = name
-        self._relay_w1 = relay_w1
-        self._relay_w2 = relay_w2
+        self._w1_entity_id = relay_w1_entity_id
+        self._w2_entity_id = relay_w2_entity_id
         self._default_speed = default_speed
 
         coding = conf.get(CONF_CONTROLLER_CODING)
@@ -133,10 +133,10 @@ class LUNOSFan(FanEntity):
 
         self.update_attributes_based_on_mode()
 
-        state = hass.states.get(self._relay_w1)
-        LOG.info(f"State {self._relay_w1} = {state.state)}")
-        state = hass.states.get(self._relay_w2)
-        LOG.info(f"State {self._relay_w2} = {state.state)}")
+        w1_entity = self._hass.states.get(self._w1_entity_id)
+        LOG.info(f"State {self._w1_entity_id} = {w1_entity.state)}")
+        w2_entity = self._hass.states.get(self._w2_entity_id)
+        LOG.info(f"State {self._w2_entity_id} = {w2_entity.state)}")
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
@@ -203,6 +203,11 @@ class LUNOSFan(FanEntity):
         await self.async_set_speed(SPEED_OFF)
 
     def determine_current_speed_setting(self):
+        w1_entity = self._hass.states.get(self._w1_entity_id)
+        LOG.info(f"State {self._w1_entity_id} = {w1_entity.state)}")
+        w2_entity = self._hass.states.get(self._w2_entity_id)
+        LOG.info(f"State {self._w2_entity_id} = {w2_entity.state)}")
+
         # FIXME: probe the two relays to determine current state and match to the SPEED_SWITCH_STATES table
         # self._state = speed
         return
@@ -232,8 +237,8 @@ class LUNOSFan(FanEntity):
             LOG.error("LUNOS currently DOES NOT delay switch toggles by at least 3 seconds to avoid confusing LUNOS controller")
             # FIXME: register a callback to fire after the required delay
 
-        self.set_relay_switch_state(self._relay_w1, switch_states[0])
-        self.set_relay_switch_state(self._relay_w2, switch_states[1])
+        self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
+        self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
 
         self._async_set_state(speed)
 
@@ -249,8 +254,8 @@ class LUNOSFan(FanEntity):
 
         # flip W1 on off at least 2 times to clear reminder
         for i in range(3):
-            self.switch_service_call(SERVICE_TURN_OFF, self._relay_w1)
-            self.switch_service_call(SERVICE_TURN_ON, self._relay_w1)
+            self.switch_service_call(SERVICE_TURN_OFF, self._w1_entity_id)
+            self.switch_service_call(SERVICE_TURN_ON, self._w1_entity_Id)
 
         # reset back to the speed prior to toggling W1
         self.async_set_speed(save_speed)
@@ -271,8 +276,8 @@ class LUNOSFan(FanEntity):
 
         # flip W2 on off at least 2 times to enable summer ventilation
         for i in range(3):
-            self.switch_service_call(SERVICE_TURN_OFF, self._relay_w2)
-            self.switch_service_call(SERVICE_TURN_ON, self._relay_w2)
+            self.switch_service_call(SERVICE_TURN_OFF, self._w2_entity_id)
+            self.switch_service_call(SERVICE_TURN_ON, self._w2_entity_id)
 
         # reset back to the speed prior to toggling W2
         self.async_set_speed(save_speed)
@@ -285,5 +290,5 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        self.switch_service_call(SERVICE_TOGGLE, self._relay_w2)
-        self.switch_service_call(SERVICE_TOGGLE, self._relay_w2)
+        self.switch_service_call(SERVICE_TOGGLE, self._w2_entity_id)
+        self.switch_service_call(SERVICE_TOGGLE, self._w2_entity_id)
