@@ -14,6 +14,8 @@ from homeassistant.components.fan import (
     SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH,
     FanEntity
 )
+
+import homeassistant.remote as rem
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -130,6 +132,11 @@ class LUNOSFan(FanEntity):
         }
 
         self.update_attributes_based_on_mode()
+
+        state = hass.states.get(self._relay_w1)
+        LOG.info(f"State {self._relay_w1} = {state.state)}")
+        state = hass.states.get(self._relay_w2)
+        LOG.info(f"State {self._relay_w2} = {state.state)}")
 
          # FIXME: determine current state!
         self._last_state_change = time.time()
