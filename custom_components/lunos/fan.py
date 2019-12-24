@@ -2,6 +2,7 @@
 # FIXME: can we subscribe to updates from the w1/w2 entities to avoid polling?
 
 import time
+import asyncio
 import logging
 import voluptuous as vol
 
@@ -254,7 +255,7 @@ class LUNOSFan(FanEntity):
             self._state = current_speed
             self.update_attributes_based_on_mode()
 
-    async def set_relay_switch_state(self, relay_entity_id, state):
+    def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
         if state == STATE_OFF:
             self.switch_service_call('turn_off', relay_entity_id)
@@ -276,10 +277,11 @@ class LUNOSFan(FanEntity):
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
-        now = time.time()
-        if now < self._last_state_change + SPEED_CHANGE_DELAY_SECONDS:
-            LOG.error("LUNOS currently DOES NOT delay switch toggles by at least 3 seconds to avoid confusing LUNOS controller")
-            # FIXME: register a callback to fire after the required delay
+        time_passed = time.time() - self._last_state_change
+        if time_passed < SPEED_CHANGE_DELAY_SECONDS:
+            delay = max(0, SPEED_CHANGE_DELAY_SECONDS - time_passed)
+            LOG.error(f"To avoid LUNOS controller confusion, speed changes must >= {SPEED_CHANGE_DELAY_SECONDS} seconds apart; sleeping {delay} seconds")
+            await asyncio.sleep(delay)
 
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
@@ -295,7 +297,7 @@ class LUNOSFan(FanEntity):
             self.switch_service_call(SERVICE_TURN_ON, entity_id)
 
         # reset back to the speed prior to toggling relay
-        self.async_set_speed(save_speed)
+        await self.async_set_speed(save_speed)
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
@@ -324,7 +326,14 @@ class LUNOSFan(FanEntity):
         if not self.supports_summer_ventilation():
             return # silently ignore as it is already off
 
-        # FIXME: must wait 10 seconds since the last time W2 was flipped before turning off ventilation will work
+        # must wait 10 seconds since the last time W2 was flipped before turning off ventilation will work
+        required_delay = 10
+        time_passed = time.time() - self._last_state_change
+        if time_passed < required_delay:
+            delay = max(0, required_delay - time_passed)
+            LOG.error(f"To avoid LUNOS controller confusion, summer ventilation changes >= {required_delay} seconds since last relay switch; sleeping {delay} seconds")
+            await asyncio.sleep(delay)
+
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
