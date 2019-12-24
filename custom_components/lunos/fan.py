@@ -279,7 +279,6 @@ class LUNOSFan(FanEntity):
         # update the state and inform Home Assistant that it has changed
         self._speed = speed
         LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._speed}'")
-        self.async_schedule_update_ha_state()
         self.update_attributes_based_on_mode()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
@@ -296,7 +295,7 @@ class LUNOSFan(FanEntity):
 
     def switch_service_call(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
-        #self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
+        await self._hass.services.async_call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
 
     def set_relay_switch_state(self, relay_entity_id, state):
