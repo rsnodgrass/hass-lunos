@@ -24,6 +24,7 @@ e2-4speed:
   model_number: e2
   controller_coding: 4 
   default_fan_count: 2
+  heat_recovery_efficiency: 0.906
   four_speed: true
   supports_filter_reminder: true
   cycle_seconds: 70
@@ -57,10 +58,12 @@ e2-short:
         cmh: 30
     high: 
         cmh: 38
-    
+
+# Source: https://foursevenfive.com/lunos-e/
 e2-usa:
   name: LUNOS e2 (USA)
   model_number: e2
+  heat_recovery_efficiency: 0.906
   controller_coding: 6
   default_fan_count: 2
   supports_filter_reminder: true
@@ -71,18 +74,42 @@ e2-usa:
     off:
         dB: 0
     low:
-        cmh: 10 # 17  
+        cfm: 10 # 17 cmh
         dB: 16.5 
     medium:
-        cmh: 15 # 25.5  
+        cfm: 15 # 25.5 cmh
         dB: 19.5
     high:
-        cmh: 20  # 34  
+        cfm: 20  # 34 cmh
         dB: 26.0
 
+# Source: https://foursevenfive.com/lunos-e/
+e2-usa-v2:
+    name: LUNOS e2 (USA)
+    model_number: e2
+    heat_recovery_efficiency: 0.906
+    controller_coding: 6
+    default_fan_count: 2
+    supports_filter_reminder: true
+    cycle_seconds: 70
+    supports_summer_vent: true
+    summer_vent_cycle_seconds: 3600
+    behavior:
+      off:
+          dB: 0
+      low:
+          cfm: 9  
+          dB: 16.5 
+      medium:
+          cfm: 18  
+          dB: 19.5
+      high:
+          cfm: 22
+          dB: 26.0
+  
 # FIXME: confirm coding 7, different resources list different CFM
-
-
+  
+# Source: https://foursevenfive.com/content/product/ventilation/lunos_e2/installation_guide_lunos_e2.pdf
 e2-short-usa:
   name: LUNOS e2 Short (USA)
   model_number: e2-short
@@ -96,16 +123,16 @@ e2-short-usa:
     off:
         dB: 0
     low:
-        cmh: 9
-        cfm: 17
+        cmh: 15
+        db: 16.5
     medium: 
-        cmh: 18
-        cfm: 25.5
+        cmh: 30
+        db: 19.5
     high: 
-        cfm: 34
-        cmh: 22
+        cmh: 38
+        db: 26
 
-# source https://www.theheatingcompany.co.nz/product/lunos-e2-short-system/#
+# Source: https://www.theheatingcompany.co.nz/product/lunos-e2-short-system/#
 e2-nz:
     name: LUNOS e2 (New Zealand)
     model_number: e2-nz
@@ -119,18 +146,19 @@ e2-nz:
     behavior:
       off:
           dB: 0
+          watts: 0
       low:
-          cmh: 5
-          cmh_what: 18
+          cmh: 18
           db: 16.5
+          watts: 1.4
       medium: 
-          cmh: 10
-          cmh_what: 31
+          cmh: 31
           db: 19.5
+          watts: 2.8
       high: 
-          cmh: 20
-          cmh_what: 38
+          cmh: 38
           db: 26
+          watts: 3.3
 
 e2-60:
   name: LUNOS e2 60
