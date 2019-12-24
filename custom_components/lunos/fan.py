@@ -110,9 +110,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def copy_model_config_attributes(self, model_config, attributes_list):
-        
-
     def __init__(self, hass, conf, name, relay_w1_entity_id, relay_w2_entity_id, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         self._hass = hass

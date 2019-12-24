@@ -78,7 +78,7 @@ fan:
 
 ### Step 3: Add Lovelace Card
 
-The following is a simple Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
+The following is a basic Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
 
 ![LUNOS Simple Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/single-fan-control-example.png?raw=true)
 
