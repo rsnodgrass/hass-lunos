@@ -52,7 +52,7 @@ SPEED_CHANGE_DELAY_SECONDS = 4
 
 ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = 'cmh'
-ATTR_DBA = 'dB'
+ATTR_DB = 'dB'
 ATTR_MODEL_NAME = 'model'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 UNKNOWN = 'Unknown'
@@ -133,12 +133,11 @@ class LUNOSFan(FanEntity):
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
             ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
-            ATTR_DBA: UNKNOWN
+            ATTR_DB: UNKNOWN
         }
 
         # determine the current speed of the fans by inspecting the switch state and update attributs accordingly
         self.determine_current_speed_setting()
-        
         self._last_state_change = time.time()
 
         super().__init__()
@@ -168,10 +167,10 @@ class LUNOSFan(FanEntity):
             self._state_attrs[ATTR_CFM] = cfm
             self._state_attrs[ATTR_CMHR] = cmh
 
-            if ATTR_DBA in behavior:
-                self._state_attrs[ATTR_DBA] = controller_config[ATTR_DBA][self._state]
+            if ATTR_DB in behavior:
+                self._state_attrs[ATTR_DB] = controller_config[ATTR_DB][self._state]
             else:
-                self._state_attrs[ATTR_DBA] = UNKNOWN
+                self._state_attrs[ATTR_DB] = UNKNOWN
 
             LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes {self._state_attrs} based on controller config {controller_config}")
 
@@ -219,29 +218,17 @@ class LUNOSFan(FanEntity):
         self._state = speed
         self.async_schedule_update_ha_state()
 
-    async def async_turn_on(self, speed: str = None, **kwargs) -> None:
-        """Turn the fan on."""
-        # FIXME: should this turn on to the default speed, or the last speed before turning off?
-        if speed is None:
-            speed = self._default_speed
-
-        await self.async_set_speed(speed)
-
-    async def async_turn_off(self, **kwargs) -> None:
-        """Turn the fan off."""
-        await self.async_set_speed(SPEED_OFF)
-
      # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):
         w1 = self._hass.states.get(self._w1_entity_id)
         if not w1:
             LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}, cannot determine fan speed.")
-            return False
+            return
 
         w2 = self._hass.states.get(self._w2_entity_id)
         if not w2:
             LOG.warning(f"LUNOS could not find W2 entity {self._w2_entity_id}, cannot determine fan speed.")
-            return False
+            return
 
         # determine the current speed
         current_state = [ w1.state, w2.state ]
@@ -255,23 +242,17 @@ class LUNOSFan(FanEntity):
             self._state = current_speed
             self.update_attributes_based_on_mode()
 
-    def set_relay_switch_state(self, relay_entity_id, state):
-        LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
-        if state == STATE_OFF:
-            self.switch_service_call('turn_off', relay_entity_id)
-        else:
-            self.switch_service_call('turn_on', relay_entity_id)
-        
-    def switch_service_call(self, method, relay_entity_id):
-        LOG.info(f"Calling switch {method} for {entity_id}")
-        self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
-        self._last_state_change = time.time()
+        return current_speed
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
         if switch_states == None:
             LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring request to change speed.")
+            return
+
+        # ignore if the fan is already set to this speed
+        if speed == self._state:
             return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
@@ -285,10 +266,36 @@ class LUNOSFan(FanEntity):
 
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
-        await self._async_set_state(speed)
 
+        # update the state and inform Home Assistant that it has changed
+        self._state = speed
         LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}'")
+        self.async_schedule_update_ha_state()
         self.update_attributes_based_on_mode()
+
+    async def async_turn_on(self, speed: str = None, **kwargs) -> None:
+        """Turn the fan on."""
+        # FIXME: should this turn on to the default speed, or the last speed before turning off?
+        if speed is None:
+            speed = self._default_speed
+
+        await self.async_set_speed(speed)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the fan off."""
+        await self.async_set_speed(SPEED_OFF)
+
+    def switch_service_call(self, method, relay_entity_id):
+        LOG.info(f"Calling switch {method} for {relay_entity_id}")
+        self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
+        self._last_state_change = time.time()
+
+    def set_relay_switch_state(self, relay_entity_id, state):
+        LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
+        if state == STATE_OFF:
+            self.switch_service_call('turn_off', relay_entity_id)
+        else:
+            self.switch_service_call('turn_on', relay_entity_id)
 
     def toggle_relay_on_and_off(self, entity_id):
         save_speed = self._state
