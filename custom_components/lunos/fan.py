@@ -98,6 +98,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_add_entities([fan], update_before_add=True)
 
     # expose service call APIs
+    # FIXME: how are these tied to the specificy LUNOSFan instance?
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder")
     component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation")
@@ -174,6 +175,15 @@ class LUNOSFan(FanEntity):
             LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes {self._state_attrs} based on controller config {controller_config}")
 
     @property
+    def should_poll(self):
+        return True
+
+    @property
+    def name(self):
+        """Return the name of the fan."""
+        return self._name
+
+    @property
     def supported_features(self) -> int:
         """Flag supported features."""
         return SUPPORT_SET_SPEED
@@ -210,6 +220,7 @@ class LUNOSFan(FanEntity):
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
+        # FIXME: should this turn on to the default speed, or the last speed before turning off?
         if speed is None:
             speed = self._default_speed
 
@@ -251,7 +262,8 @@ class LUNOSFan(FanEntity):
             self.switch_service_call('turn_on', relay_entity_id)
         
     def switch_service_call(self, method, relay_entity_id):
-        self._hass.services.call('switch', method, { 'entity_id': relay }, False)
+        LOG.info(f"Calling switch {method} for {entity_id}")
+        self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
 
     async def async_set_speed(self, speed: str) -> None:
@@ -271,9 +283,8 @@ class LUNOSFan(FanEntity):
 
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
-        self._async_set_state(speed)
+        await self._async_set_state(speed)
 
-        self._state = speed
         LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}'")
         self.update_attributes_based_on_mode()
 
