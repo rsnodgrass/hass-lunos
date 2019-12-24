@@ -114,7 +114,7 @@ class LUNOSFan(FanEntity):
         """Init this sensor."""
         self._hass = hass
         self._name = name
-        self._state = None
+        self._speed = None
         self._w1_entity_id = relay_w1_entity_id
         self._w2_entity_id = relay_w2_entity_id
         self._default_speed = default_speed
@@ -128,7 +128,7 @@ class LUNOSFan(FanEntity):
             fan_count = model_config[CONF_DEFAULT_FAN_COUNT]
         self._fan_count = fan_count
 
-        self._state_attrs = {
+        self._attributes = {
             ATTR_MODEL_NAME: model_config['name'],
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
@@ -142,7 +142,7 @@ class LUNOSFan(FanEntity):
                            'turbo_mode',
                            'exhaust_only' ]: 
             if attribute in model_config:
-                self._state_attrs[attribute] = model_config[attribute]
+                self._attributes[attribute] = model_config[attribute]
 
         # determine the current speed of the fans
         self.determine_current_speed_setting()
@@ -154,33 +154,33 @@ class LUNOSFan(FanEntity):
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
     def update_attributes_based_on_mode(self):
-        if self._state != None:
-            coding = self._state_attrs[CONF_CONTROLLER_CODING]
+        if self._speed != None:
+            coding = self._attributes[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
             behavior = controller_config['behavior']
 
             cfm = None
             cmh = None
             if 'cfm' in behavior:
-                cfm_for_mode = behavior['cfm'][self._state]
+                cfm_for_mode = behavior['cfm'][self._speed]
                 fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
                 cfm = cfm_for_mode * fan_multiplier
                 cmh = cfm * CFM_TO_CMH
             elif 'chm' in behavior:
-                chm_for_mode = behavior['chm'][self._state]
+                chm_for_mode = behavior['chm'][self._speed]
                 fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
                 cmh = chm_for_mode * fan_multiplier
                 cfm = cmh / CFM_TO_CMH
 
-            self._state_attrs[ATTR_CFM] = cfm
-            self._state_attrs[ATTR_CMHR] = cmh
+            self._attributes[ATTR_CFM] = cfm
+            self._attributes[ATTR_CMHR] = cmh
 
             if ATTR_DB in behavior:
-                self._state_attrs[ATTR_DB] = controller_config[ATTR_DB][self._state]
+                self._attributes[ATTR_DB] = controller_config[ATTR_DB][self._speed]
             else:
-                self._state_attrs[ATTR_DB] = UNKNOWN
+                self._attributes[ATTR_DB] = UNKNOWN
 
-            LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes {self._state_attrs} based on controller config {controller_config}")
+            LOG.info(f"Updated '{self._name}' (speed={self._speed}) attributes {self._attributes} based on controller config {controller_config}")
 
     @property
     def name(self):
@@ -200,26 +200,26 @@ class LUNOSFan(FanEntity):
     @property
     def speed(self) -> str:
         """Return the current speed."""
-        return self._state
+        return self._speed
 
     @property
     def is_on(self) -> bool:
         """Return true if entity is on."""
-        if self._state is None:
+        if self._speed is None:
             return False
         # NOTE: for 4-speed fans, there is never a true "OFF" setting
-        return self._state != SPEED_OFF
+        return self._speed != SPEED_OFF
 
     # TOOD: last updated? controller type? cfm?
     @property
     def device_state_attributes(self):
         """Return state attributes."""
-        return self._state_attrs
+        return self._attributes
 
     async def _async_set_state(self, speed):
         """Handle state update from fan."""
-        LOG.info(f"async changing LUNOS fan '{self._name}' to speed '{self._state}'")
-        self._state = speed
+        LOG.info(f"async changing LUNOS fan '{self._name}' to speed '{self._speed}'")
+        self._speed = speed
         self.async_schedule_update_ha_state()
 
      # probe the two relays to determine current state and find the matching speed switch state
@@ -241,9 +241,9 @@ class LUNOSFan(FanEntity):
                break
  
         # update the speed state, if a change has been detected
-        if current_speed != self._state:
+        if current_speed != self._speed:
             LOG.info(f"Detected LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
-            self._state = current_speed
+            self._speed = current_speed
             self.update_attributes_based_on_mode()
 
         return current_speed
@@ -256,7 +256,7 @@ class LUNOSFan(FanEntity):
             return
 
         # ignore if the fan is already set to this speed
-        if speed == self._state:
+        if speed == self._speed:
             return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
@@ -272,8 +272,8 @@ class LUNOSFan(FanEntity):
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
 
         # update the state and inform Home Assistant that it has changed
-        self._state = speed
-        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._state}'")
+        self._speed = speed
+        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._speed}'")
         self.async_schedule_update_ha_state()
         self.update_attributes_based_on_mode()
 
@@ -302,7 +302,7 @@ class LUNOSFan(FanEntity):
             self.switch_service_call('turn_on', relay_entity_id)
 
     def toggle_relay_to_set_lunos_mode(self, entity_id):
-        save_speed = self._state
+        save_speed = self._speed
         for i in range(3):
             self.switch_service_call(SERVICE_TURN_OFF, entity_id)
             self.switch_service_call(SERVICE_TURN_ON, entity_id)
@@ -320,7 +320,7 @@ class LUNOSFan(FanEntity):
         self.toggle_relay_to_set_lunos_mode(self._w1_entity_id)
 
     def supports_summer_ventilation(self):
-        coding = self._state_attrs[CONF_CONTROLLER_CODING]
+        coding = self._attributes[CONF_CONTROLLER_CODING]
         controller_config = LUNOS_CODING_CONFIG[coding]
         return controller_config['supports_summer_vent'] == True
 
