@@ -54,7 +54,6 @@ ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = 'cmh'
 ATTR_DB = 'dB'
 ATTR_MODEL_NAME = 'model'
-ATTR_CYCLE_SECONDS = 'cycle_seconds'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 UNKNOWN = 'Unknown'
 
