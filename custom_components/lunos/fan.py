@@ -54,6 +54,7 @@ ATTR_CFM = 'cfm' # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = 'cmh'
 ATTR_DB = 'dB'
 ATTR_MODEL_NAME = 'model'
+ATTR_CYCLE_SECONDS = 'cycle_seconds'
 ATTR_VENTILATION_MODE = 'ventilation'  # [ normal, summer, exhaust-only ]
 UNKNOWN = 'Unknown'
 
@@ -110,6 +111,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
+    def copy_model_config_attributes(self, model_config, attributes_list):
+        
+
     def __init__(self, hass, conf, name, relay_w1_entity_id, relay_w2_entity_id, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         self._hass = hass
@@ -136,9 +140,17 @@ class LUNOSFan(FanEntity):
             ATTR_DB: UNKNOWN
         }
 
-        # determine the current speed of the fans by inspecting the switch state and update attributs accordingly
-        self._last_state_change = time.time()
+        for attribute in [ 'cycle_seconds',
+                           'supports_summer_vent',
+                           'supports_filter_reminder',
+                           'turbo_mode',
+                           'exhaust_only' ]: 
+            if attribute in model_config:
+                self._state_attrs[attribute] = model_config[attribute]
+
+        # determine the current speed of the fans
         self.determine_current_speed_setting()
+        self._last_state_change = time.time()
 
         super().__init__()
         LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1_entity_id}; W2={relay_w2_entity_id}; default_speed={default_speed})")

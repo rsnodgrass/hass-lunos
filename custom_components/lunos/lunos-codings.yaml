@@ -7,7 +7,6 @@ e2:
   supports_summer_vent: false
   supports_filter_reminder: true
   heat_recovery_efficiency: 0.906
-  #humidity_recovery: 
   behavior:
       off: 
         cmh: 0
