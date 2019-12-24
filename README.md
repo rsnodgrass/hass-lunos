@@ -52,7 +52,7 @@ operating the LUNOS fan controller.
 - **name** (*Optional*): Friendly name for this fan controller
 - **relay_w1** (*Required*): HASS entity id for the relay switch that is connected as W1 to the LUNOS controller
 - **relay_w2** (*Required*): HASS entity id for the relay switch that is connected as W2 to the LUNOS controller
-- **controller_coding** (*Optional*): Slug indicating the manual coding the LUNOS controller is set to (see [lunos-codings.yaml](custom_components/lunos/lunos-codings.yaml))
+- **controller_coding** (*Optional*): Indicates the manual coding the LUNOS controller is set to (default=e2-usa; see [lunos-codings.yaml](custom_components/lunos/lunos-codings.yaml))
 - **fan_count** (*Optional*): Number of fans connected to this LUNOS controller
 - **default_speed** (*Optional*): Default speed when this LUNOS fan is turned on without any speed indicated
 
