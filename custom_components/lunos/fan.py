@@ -300,7 +300,7 @@ class LUNOSFan(FanEntity):
             self.switch_service_call(SERVICE_TURN_ON, entity_id)
 
         # reset back to the speed prior to toggling relay
-        await self.async_set_speed(save_speed)
+        self.async_set_speed(save_speed)
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
