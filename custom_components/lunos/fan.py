@@ -172,7 +172,7 @@ class LUNOSFan(FanEntity):
             else:
                 self._state_attrs[ATTR_DBA] = UNKNOWN
 
-            LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes based on controller config {controller_config} -> {self._state_attrs}")
+            LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes {self._state_attrs} based on controller config {controller_config}")
 
     @property
     def supported_features(self) -> int:
