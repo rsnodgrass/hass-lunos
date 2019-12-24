@@ -236,13 +236,12 @@ Alexa or other voice enabled smart speaker.
 
 * attribute indicating current ventilation mode: [standard, summer, exhaust-only] (standard = hrv)
 * special handling of exhaust only ventilation mode (eGO models)
-* fan controllers modes which support a fourth flow rate setting (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
+* fan controller modes that support a fourth flow rate (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
 
 ## Known Issues
 
-* IMPROVEMENT: fan speed changes are not immediately detected (only on 30 second interval updates)
-* BUG: add 3+ second delay between relay state changes (to avoid accidentally enabling summer ventilation mode or clearing filter reminder)
+* IMPROVEMENT: manual fan speed changes are not immediately detected (only on 30 second interval updates)
 
 ## See Also
 
