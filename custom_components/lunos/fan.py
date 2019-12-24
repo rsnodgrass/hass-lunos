@@ -133,7 +133,9 @@ class LUNOSFan(FanEntity):
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: fan_count,
             ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
-            ATTR_DB: UNKNOWN
+            ATTR_DB: UNKNOWN,
+            CONF_RELAY_W1: relay_w1_entity_id,
+            CONF_RELAY_W2: relay_w2_entity_id
         }
 
         for attribute in [ 'cycle_seconds',
