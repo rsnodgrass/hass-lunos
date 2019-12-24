@@ -137,8 +137,8 @@ class LUNOSFan(FanEntity):
         }
 
         # determine the current speed of the fans by inspecting the switch state and update attributs accordingly
-        self.determine_current_speed_setting()
         self._last_state_change = time.time()
+        self.determine_current_speed_setting()
 
         super().__init__()
         LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1_entity_id}; W2={relay_w2_entity_id}; default_speed={default_speed})")
@@ -173,10 +173,6 @@ class LUNOSFan(FanEntity):
                 self._state_attrs[ATTR_DB] = UNKNOWN
 
             LOG.info(f"Updated '{self._name}' (speed={self._state}) attributes {self._state_attrs} based on controller config {controller_config}")
-
-    @property
-    def should_poll(self):
-        return True
 
     @property
     def name(self):
@@ -275,7 +271,7 @@ class LUNOSFan(FanEntity):
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
-        # FIXME: should this turn on to the default speed, or the last speed before turning off?
+        # TODO: should this turn on to the default speed, or the last speed before turning off?
         if speed is None:
             speed = self._default_speed
 
