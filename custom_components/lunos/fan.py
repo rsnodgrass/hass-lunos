@@ -293,7 +293,7 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
-    def switch_service_call(self, method, relay_entity_id):
+    async def switch_service_call(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
         await self._hass.services.async_call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
