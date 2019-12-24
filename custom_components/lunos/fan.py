@@ -291,7 +291,7 @@ class LUNOSFan(FanEntity):
 
     def switch_service_call(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
-        self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
+        #self._hass.services.call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
 
     def set_relay_switch_state(self, relay_entity_id, state):
