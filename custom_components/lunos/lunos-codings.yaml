@@ -25,9 +25,10 @@ e2-4speed:
   controller_coding: 4 
   default_fan_count: 2
   four_speed: true
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 70
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior: 
       off:
         cmh: 15
@@ -43,9 +44,10 @@ e2-short:
   model_number: e2-short
   controller_coding: 5
   default_fan_count: 2
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off:
         dB: 0
@@ -61,9 +63,10 @@ e2-usa:
   model_number: e2
   controller_coding: 6
   default_fan_count: 2
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 70
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off:
         dB: 0
@@ -85,9 +88,10 @@ e2-short-usa:
   model_number: e2-short
   controller_coding: 7
   default_fan_count: 2
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior: # STRANGE: different sources specific different CFM
     off:
         dB: 0
@@ -101,14 +105,42 @@ e2-short-usa:
         cfm: 34
         cmh: 22
 
+# source https://www.theheatingcompany.co.nz/product/lunos-e2-short-system/#
+e2-nz:
+    name: LUNOS e2 (New Zealand)
+    model_number: e2-nz
+    controller_coding: 7
+    default_fan_count: 2
+    supports_filter_reminder: true
+    heat_recovery_efficiency: 0.827
+    cycle_seconds: 55  # ???
+    supports_summer_vent: true
+    summer_vent_cycle_seconds: 3600
+    behavior:
+      off:
+          dB: 0
+      low:
+          cmh: 5
+          cmh_what: 18
+          db: 16.5
+      medium: 
+          cmh: 10
+          cmh_what: 31
+          db: 19.5
+      high: 
+          cmh: 20
+          cmh_what: 38
+          db: 26
+
 e2-60:
   name: LUNOS e2 60
   model_number: e2-60
   controller_coding: 7
   default_fan_count: 2
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior: # STRANGE: different sources specific different CFM
     off:
         dB: 0
@@ -124,9 +156,10 @@ ego:
   model_number: eGO
   controller_coding: 9
   default_fan_count: 1
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off:
         dB: 0
@@ -144,10 +177,11 @@ ego-4speed:
   controller_coding: A
   default_fan_count: 1
   four_speed: true
-  supports_summer_vent: true
   supports_filter_reminder: true
   turbo_mode: true
   cycle_seconds: 50
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off:
         cmh: 5
@@ -167,9 +201,10 @@ ego-exhaust-4speed:
   controller_coding: B
   default_fan_count: 1
   four_speed: true
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off: 
         cmh: 5
@@ -189,9 +224,10 @@ ego-exhaust:
   default_fan_count: 1
   four_speed: true
   high_exhaust_only: true
-  supports_summer_vent: true
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_summer_vent: true
+  summer_vent_cycle_seconds: 3600
   behavior:
     off:
         dB: 0

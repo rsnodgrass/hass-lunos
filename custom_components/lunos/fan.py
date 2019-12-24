@@ -180,6 +180,11 @@ class LUNOSFan(FanEntity):
             else:
                 self._attributes[ATTR_DB] = UNKNOWN
 
+            if 'watts' in behavior:
+                self._attributes['watts'] = behavior['watts']
+            else:
+                self._attributes['watts'] = None
+
             LOG.info(f"Updated '{self._name}' (speed={self._speed}) attributes {self._attributes} based on controller config {controller_config}")
 
     @property
@@ -319,6 +324,8 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Clearing the change filter reminder light for LUNOS controller '{self._name}'")
         self.toggle_relay_to_set_lunos_mode(self._w1_entity_id)
 
+    # In summer ventilation mode, the reversing time of the fan is extended to one hour, i.e. the fan will run
+    # for one hour in the supply air mode and the following hour in the exhaust air mode etc. for max. 8 hours
     def supports_summer_ventilation(self):
         coding = self._attributes[CONF_CONTROLLER_CODING]
         controller_config = LUNOS_CODING_CONFIG[coding]
