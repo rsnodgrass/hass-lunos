@@ -275,12 +275,13 @@ class LUNOSFan(FanEntity):
             LOG.error(f"To avoid LUNOS controller confusion, speed changes must >= {SPEED_CHANGE_DELAY_SECONDS} seconds apart; sleeping {delay} seconds")
             await asyncio.sleep(delay)
 
+        # FIXME: can we synchronously change the switches (or at least not have this fan auto-update/detect based on current settings for N seconds)
+        LOG.info(f"Changing LUNOS fan '{self._name}' to speed '{self._speed}'")
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
 
         # update the state and inform Home Assistant that it has changed
         self._speed = speed
-        LOG.info(f"Changed LUNOS fan '{self._name}' to speed '{self._speed}'")
         self.update_attributes_based_on_mode()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
@@ -318,7 +319,14 @@ class LUNOSFan(FanEntity):
 
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
-        self.determine_current_speed_setting()
+        # FIXME: temporary hack...do not update immediately while waiting for relay switch state to change
+        required_delay = 30
+        time_passed = time.time() - self._last_state_change
+        if time_passed < required_delay:
+            delay = max(0, required_delay - time_passed)
+            LOG.error(f"To avoid BUG when relay switch states change, wait >= {required_delay} seconds to last switch change before updating")
+            await asyncio.sleep(delay)
+            self.determine_current_speed_setting()
 
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
     async def async_clear_filter_reminder(self):
