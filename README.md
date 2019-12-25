@@ -214,7 +214,7 @@ For more information on flashing ESP8266 based relays:
 * https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-#### Example Wiring with [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20)
+#### Example Wiring with [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) (RECOMMENDED)
 
 ![LUNOS 4-Chan WiFi Case Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-switch-case.png?raw=true)
 
@@ -226,7 +226,7 @@ The following is an example connecting a [LC Technology 12V ESP8266 Four-Channel
 
 ### Wireless and Alexa Integration
 
-For a clean LUNOS installation, assigning a [Lutron Caséta Pico Fan Speed Controller](http://www.lutron.com/TechnicalDocumentLibrary/Caseta_Fan_Control_Sell_Sheet.pdf) (PD-FSQN-WH-R) to a
+One idea for a clean physical LUNOS switch installation is assigning a [Lutron Caséta Pico Fan Speed Controller](http://www.lutron.com/TechnicalDocumentLibrary/Caseta_Fan_Control_Sell_Sheet.pdf) (PD-FSQN-WH-R) to a
 LUNOS fan within Home Assistant allows extremely slick and simple control of a LUNOS fan in a single gang outlet box in
 an occupied space. The larger W1 and W2 control switches can then be "hidden" in a utility room or closet.
 
