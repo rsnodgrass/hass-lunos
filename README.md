@@ -214,13 +214,16 @@ For more information on flashing ESP8266 based relays:
 * https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-#### Example Wiring with [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) (RECOMMENDED)
+#### Example Wiring with [WiFi Relay Switch Module (SANT-4CH)](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20)
 
 ![LUNOS 4-Chan WiFi Case Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-switch-case.png?raw=true)
+
+The only downside of the SANT-4CH relay switch is that the four pins (GND, VCC, TXD, RXD) are solder filled which makes it difficult to temporarily hook up wires to flash Tasmota. 
 
 #### Example Wiring with ESP8266 WiFi Relay
 
 The following is an example connecting a [LC Technology 12V ESP8266 Four-Channel WiFi Relay](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) to the LUNOS Controller.
+Additional controllers that should work including the [Sonoff 4CH](https://amazon.com/Sonoff-4CH-Appliances-independently-Compatible/dp/B071JB5LXR?tag=rynoshark-20).
 
 ![LUNOS ESP8266 Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-esp8266.png?raw=true)
 
