@@ -244,9 +244,9 @@ Alexa or other voice enabled smart speaker.
 * LUNOS type RA 15-60 radial duct fan
 
 
-#### Identical modes to LUNOS Control4 integration
+#### LUNOS Control4 KMX Module Consistency
 
-Align this plugin with how LUNOS provides support via the Control4 KMX integration:
+Ideally, we would update this integration to follow naming/conventions similar to what LUNOS provides with the the Control4 [KMX](https://www.home-assistant.io/integrations/knx/) module (which, btw, may provide an alternative way of integrating LUNOS ventilation with Home Assistant).
 
 * Comfort mode (HVAC)
 * Standby operation (HVAC)
