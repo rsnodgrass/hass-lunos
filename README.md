@@ -243,6 +243,20 @@ Alexa or other voice enabled smart speaker.
 * fan controller modes that support a fourth flow rate (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
 
+
+#### Identical modes to LUNOS Control4 integration
+
+Align this plugin with how LUNOS provides support via the Control4 KMX integration:
+
+* Comfort mode (HVAC)
+* Standby operation (HVAC)
+* Night operation (HVAC)
+* Temperature protection mode (HVAC)
+* Shock ventilation (extended HVAC mode)
+* Sleep (Off) (extended HVAC mode)
+* Summer mode (switch object)
+* Night operation (switch object)
+
 ## Known Issues
 
 * IMPROVEMENT: manual fan speed changes are not immediately detected (only on 30 second interval updates)
@@ -254,3 +268,4 @@ Alexa or other voice enabled smart speaker.
 * [Intro to LUNOS Heat Recovery Ventilation](https://foursevenfive.com/blog/introduction-to-lunos-e-heat-recovery-ventilation/)
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 * [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
+* [LUNOS Control4 KMX module](https://www.lunos.de/en/product/control4-e/) (KNX-LUNOS-CONTROL4) appears to offer sensor data such as indoor/outdoor temp
