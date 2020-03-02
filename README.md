@@ -1,13 +1,16 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
+![beta_badge](https://img.shields.io/badge/maturity-Alpha-red.png)
+![release_badge](https://img.shields.io/github/v/release/rsnodgrass/hass-lunos.svg)
+![release_date](https://img.shields.io/github/release-date/rsnodgrass/hass-lunos.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
 Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any [Home Assistant](https://www.home-assistant.io/) compatible smart relays.
 The design of the LUNOS low-voltage fan controller uses a pair of physical switches (W1/W2) to turn on/off
-ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only
-modes, etc. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
+ventilation, set fan speeds, and to toggle various additional modes such as summertime ventilation, exhaust only modes, etc. See the LUNOS installation details for more information on [how the LUNOS wall switches are installed](https://youtu.be/wQxiYQebs10?t=418).
 
 While this LUNOS integration allows control of the fan modes through Home Assistant apps, web consoles, and connected voice assistants
 such as Alexa, the real power comes in supporting a wide variety of automation opportunities when paired with other third-party sensors:
