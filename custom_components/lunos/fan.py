@@ -233,12 +233,12 @@ class LUNOSFan(FanEntity):
     def determine_current_speed_setting(self):
         w1 = self._hass.states.get(self._w1_entity_id)
         if not w1:
-            LOG.warning(f"LUNOS could not find W1 entity {self._w1_entity_id}, cannot determine fan speed.")
+            LOG.error(f"W1 entity {self._w1_entity_id} not found, cannot determine LUNOS fan speed.")
             return
 
         w2 = self._hass.states.get(self._w2_entity_id)
         if not w2:
-            LOG.warning(f"LUNOS could not find W2 entity {self._w2_entity_id}, cannot determine fan speed.")
+            LOG.error(f"W2 entity {self._w2_entity_id} not found, cannot determine LUNOS fan speed.")
             return
 
         # determine the current speed
@@ -249,7 +249,7 @@ class LUNOSFan(FanEntity):
  
         # update the speed state, if a change has been detected
         if current_speed != self._speed:
-            LOG.info(f"Detected LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
+            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
             self._speed = current_speed
             self.update_attributes_based_on_mode()
 
@@ -259,7 +259,7 @@ class LUNOSFan(FanEntity):
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
         if switch_states == None:
-            LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring request to change speed.")
+            LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed changesy.")
             return
 
         # ignore if the fan is already set to this speed
