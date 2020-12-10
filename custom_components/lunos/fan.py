@@ -213,11 +213,13 @@ class LUNOSFan(FanEntity):
         w1 = self._hass.states.get(self._w1_entity_id)
         if not w1:
             LOG.error(f"W1 entity {self._w1_entity_id} not found, cannot determine LUNOS fan speed.")
+            self._speed = UNKNOWN
             return
 
         w2 = self._hass.states.get(self._w2_entity_id)
         if not w2:
             LOG.error(f"W2 entity {self._w2_entity_id} not found, cannot determine LUNOS fan speed.")
+            self._speed = UNKNOWN
             return
 
         # determine the current speed
@@ -237,7 +239,7 @@ class LUNOSFan(FanEntity):
     async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
-        if switch_states == None:
+        if not switch_states:
             LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change.")
             return
 
@@ -255,7 +257,7 @@ class LUNOSFan(FanEntity):
             await asyncio.sleep(delay)
 
         # FIXME: can we synchronously change the switches (or at least not have this fan auto-update/detect based on current settings for N seconds)
-        LOG.info(f"Changing LUNOS fan '{self._name}' to speed '{self._speed}'")
+        LOG.info(f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}")
         self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
         self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
 
