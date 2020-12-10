@@ -72,13 +72,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     relay_w2 = config.get(CONF_RELAY_W2)
     default_speed = config.get(CONF_DEFAULT_SPEED)
 
-    LOG.info(f"Found LUNOS fan controller '{name}' configured with relays W1={relay_w1}, W2={relay_w2}'")
+    LOG.info(f"LUNOS fan controller '{name}' using relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([fan], update_before_add=True)
 
     # expose service call APIs
-    # FIXME: how are these tied to the specificy LUNOSFan instance?
+    # FIXME: how are these tied to a specific LUNOS fan instance?
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     component.async_register_entity_service(SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder")
     component.async_register_entity_service(SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation")
@@ -166,7 +166,7 @@ class LUNOSFan(FanEntity):
             else:
                 self._attributes['watts'] = None
 
-            LOG.info(f"Updated '{self._name}' (speed={self._speed}) attributes {self._attributes} based on controller config {controller_config}")
+            LOG.info(f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}")
 
     @property
     def name(self):
@@ -238,7 +238,7 @@ class LUNOSFan(FanEntity):
         """Set the speed of the fan."""
         switch_states = SPEED_SWITCH_STATES[speed]
         if switch_states == None:
-            LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed changesy.")
+            LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change.")
             return
 
         # ignore if the fan is already set to this speed
@@ -283,12 +283,14 @@ class LUNOSFan(FanEntity):
     def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
         if state == STATE_OFF:
-            self.switch_service_call('turn_off', relay_entity_id)
+            self.switch_service_call(SERVICE_TURN_OFF, relay_entity_id)
         else:
-            self.switch_service_call('turn_on', relay_entity_id)
+            self.switch_service_call(SERVICE_TURN_ON, relay_entity_id)
 
     def toggle_relay_to_set_lunos_mode(self, entity_id):
         save_speed = self._speed
+
+        # FIXME: why loop 3 times???
         for i in range(3):
             self.switch_service_call(SERVICE_TURN_OFF, entity_id)
             self.switch_service_call(SERVICE_TURN_ON, entity_id)
@@ -309,7 +311,7 @@ class LUNOSFan(FanEntity):
 
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
     async def async_clear_filter_reminder(self):
-        LOG.info(f"Clearing the change filter reminder light for LUNOS controller '{self._name}'")
+        LOG.info(f"Clearing the filter change reminder light for LUNOS controller '{self._name}'")
         self.toggle_relay_to_set_lunos_mode(self._w1_entity_id)
 
     # In summer ventilation mode, the reversing time of the fan is extended to one hour, i.e. the fan will run
