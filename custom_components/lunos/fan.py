@@ -38,6 +38,8 @@ from .const import (
 
 LOG = logging.getLogger(__name__)
 
+DELAY_BETWEEN_FLIPS = 0.100
+
 # configuration of switch states to active LUNOS speedsy
 SPEED_SWITCH_STATES = {
     SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
@@ -277,7 +279,7 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_speed(SPEED_OFF)
 
-    async def switch_service_call(self, method, relay_entity_id):
+    async def call_switch_service(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
         await self._hass.services.async_call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
@@ -285,20 +287,19 @@ class LUNOSFan(FanEntity):
     async def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay {relay_entity_id} to {state}")
         if state == STATE_OFF:
-            await self.switch_service_call(SERVICE_TURN_OFF, relay_entity_id)
+            await self.call_switch_service(SERVICE_TURN_OFF, relay_entity_id)
         else:
-            await self.switch_service_call(SERVICE_TURN_ON, relay_entity_id)
+            await self.call_switch_service(SERVICE_TURN_ON, relay_entity_id)
 
     async def toggle_relay_to_set_lunos_mode(self, entity_id):
         saved_speed = self._speed
 
         # LUNOS requires flipping switches on/off 3 times to set mode
-        delay_between_flips = 0.100
         for unused in range(3):
-            await self.switch_service_call(SERVICE_TURN_OFF, entity_id)
-            await asyncio.sleep(delay_between_flips)
-            await self.switch_service_call(SERVICE_TURN_ON, entity_id)
-            await asyncio.sleep(delay_between_flips)
+            await self.call_switch_service(SERVICE_TURN_OFF, entity_id)
+            await asyncio.sleep(DELAY_BETWEEN_FLIPS)
+            await self.call_switch_service(SERVICE_TURN_ON, entity_id)
+            await asyncio.sleep(DELAY_BETWEEN_FLIPS)
 
         # restore speed state back to state before toggling relay
         await self.async_set_speed(saved_speed)
@@ -350,5 +351,6 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        await self.switch_service_call(SERVICE_TOGGLE, self._w2_entity_id)
-        await self.switch_service_call(SERVICE_TOGGLE, self._w2_entity_id)
+        await self.call_switch_service(SERVICE_TOGGLE, self._w2_entity_id)
+        await asyncio.sleep(DELAY_BETWEEN_FLIPS)
+        await self.call_switch_service(SERVICE_TOGGLE, self._w2_entity_id)
