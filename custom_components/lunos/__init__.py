@@ -7,20 +7,9 @@ import logging
 import os
 import yaml
 
-from homeassistant.helpers import config_validation as cv, discovery
-from homeassistant.helpers.entity import Entity
-from homeassistant.components.fan import (
-    SPEED_OFF,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SPEED_HIGH,
-)
+from .const import LUNOS_DOMAIN, CFM_TO_CMH
 
 LOG = logging.getLogger(__name__)
-
-LUNOS_DOMAIN = 'lunos'
-
-CFM_TO_CMHR = 1.69901 # 1 cubic feet/minute = 1.69901 cubic meters/hour
 
 # read the configuration that describes each of the LUNOS controller coding settings
 LUNOS_CODING_CONFIG = {}
