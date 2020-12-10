@@ -283,7 +283,7 @@ class LUNOSFan(FanEntity):
         self._last_state_change = time.time()
 
     def set_relay_switch_state(self, relay_entity_id, state):
-        LOG.info(f"Setting relay '{relay_entity_id}' to {state}")
+        LOG.info(f"Setting relay {relay_entity_id} to {state}")
         if state == STATE_OFF:
             self.switch_service_call(SERVICE_TURN_OFF, relay_entity_id)
         else:
@@ -292,12 +292,10 @@ class LUNOSFan(FanEntity):
     def toggle_relay_to_set_lunos_mode(self, entity_id):
         save_speed = self._speed
 
-        # FIXME: why loop 3 times???
-        for i in range(3):
-            self.switch_service_call(SERVICE_TURN_OFF, entity_id)
-            self.switch_service_call(SERVICE_TURN_ON, entity_id)
+        self.switch_service_call(SERVICE_TURN_OFF, entity_id)
+        self.switch_service_call(SERVICE_TURN_ON, entity_id)
 
-        # reset back to the speed prior to toggling relay
+        # restore speed state back to state before toggling relay
         self.async_set_speed(save_speed)
 
     async def async_update(self):
