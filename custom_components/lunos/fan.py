@@ -151,7 +151,7 @@ class LUNOSFan(FanEntity):
 
     def subscribe_to_state_changes(self, entity_id):
         LOG.info(f"Listening for state changes to entity {entity_id}")
-        self._hass.listen_event(self.relay_state_changed_callback, "state_changed", entity_id=entity_id)
+        #self._hass.listen_event(self.relay_state_changed_callback, "state_changed", entity_id=entity_id)
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
