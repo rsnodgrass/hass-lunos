@@ -22,7 +22,7 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import async_track_state_change_event
 
 from . import LUNOS_CODING_CONFIG
 from .const import (
@@ -88,34 +88,35 @@ class LUNOSFan(FanEntity):
         """Init this sensor."""
         self._hass = hass
         self._name = name
+
         self._speed = None
+        self._default_speed = default_speed
 
         # specify W1/W2 relays to use and setup listener for state changes on those relays
         self._relay_w1 = relay_w1
         self._relay_w2 = relay_w2
-        async_track_state_change(hass, [ relay_w1, relay_w2 ], self._async_relay_state_changed )
-
-        self._default_speed = default_speed
+        async_track_state_change_event(hass, [ relay_w1, relay_w2 ], self._async_relay_state_changed )
 
         coding = conf.get(CONF_CONTROLLER_CODING)
         model_config = LUNOS_CODING_CONFIG[coding]
 
-        # default fan count differs depending on what fans are attached to the controller (e2 = 2 fans, eGO = 1 fan)
+        # default fan count differs depending on controller mode (e2 = 2 fans, eGO = 1 fan)
         fan_count = conf.get(CONF_FAN_COUNT)
         if fan_count == None:
             fan_count = model_config[CONF_DEFAULT_FAN_COUNT]
         self._fan_count = fan_count
 
         self._attributes = {
-            ATTR_MODEL_NAME: model_config['name'],
+            ATTR_MODEL_NAME:        model_config['name'],
             CONF_CONTROLLER_CODING: coding,
-            CONF_FAN_COUNT: fan_count,
+            CONF_FAN_COUNT:         fan_count,
             ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
-            ATTR_DB: UNKNOWN,
-            CONF_RELAY_W1: relay_w1,
-            CONF_RELAY_W2: relay_w2
+            ATTR_DB:                UNKNOWN,
+            CONF_RELAY_W1:          relay_w1,
+            CONF_RELAY_W2:          relay_w2
         }
 
+        # copy select fields from the model config into the attributes
         for attribute in [ 'cycle_seconds',
                            'supports_summer_vent',
                            'supports_filter_reminder',
@@ -131,13 +132,13 @@ class LUNOSFan(FanEntity):
         super().__init__()
         LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1}; W2={relay_w2}; default_speed={default_speed})")
 
-    async def _async_relay_state_changed(self, event, data, kwargs):
+    async def _async_relay_state_changed(self, event):
         """When either W1 or W2 relays change state, the fan speed needs to be updated"""
-        old_state = data['old_state']['state']
-        new_state = data['new_state']['state']
+        from_state = event.data.get("old_state")
+        to_state = event.data.get("new_state")
 
-        if new_state != old_state:
-            LOG.info(f"Detected change in {data['entity_id']} relay from {old_state} to {new_state}, forcing fan update")        
+        if to_state != from_state:
+            LOG.info(f"Detected change in {event.entity_id} relay from {from_state} to {to_state}, forcing fan update")        
             await self.async_update_ha_state()
 
 #homeassistant.helpers.event.async_track_state_change_event(hass: homeassistant.core.HomeAssistant, entity_ids: Union[str, Iterable[str]], action: Callable[[homeassistant.core.Event], Any]) → Callable[[], None][source]
