@@ -144,8 +144,10 @@ class LUNOSFan(FanEntity):
         """When either W1 or W2 relays change state, the fan speed needs to be updated"""
         old_state = data['old_state']['state']
         new_state = data['new_state']['state']
-        LOG.info(f"Detected change in {data['entity_id']} relay from {old_state} to {new_state}, forcing fan update")        
-        self.async_schedule_update_ha_state()
+
+        if new_state != old_state:
+            LOG.info(f"Detected change in {data['entity_id']} relay from {old_state} to {new_state}, forcing fan update")        
+            self.async_schedule_update_ha_state()
 
     def subscribe_to_state_changes(self, entity_id):
         LOG.info(f"Listening for state changes to entity {entity_id}")
@@ -267,7 +269,6 @@ class LUNOSFan(FanEntity):
             LOG.error(f"To avoid LUNOS controller confusion, speed changes must >= {SPEED_CHANGE_DELAY_SECONDS} seconds apart; sleeping {delay} seconds")
             await asyncio.sleep(delay)
 
-        # FIXME: can we synchronously change the switches (or at least not have this fan auto-update/detect based on current settings for N seconds)
         LOG.info(f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}")
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
