@@ -39,6 +39,7 @@ from .const import (
 LOG = logging.getLogger(__name__)
 
 DELAY_BETWEEN_FLIPS = 0.100
+MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 30.0
 
 # configuration of switch states to active LUNOS speedsy
 SPEED_SWITCH_STATES = {
@@ -91,13 +92,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
-    def __init__(self, hass, conf, name, relay_w1_entity_id, relay_w2_entity_id, default_speed: str = DEFAULT_SPEED):
+    def __init__(self, hass, conf, name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
         self._hass = hass
         self._name = name
         self._speed = None
-        self._w1_entity_id = relay_w1_entity_id
-        self._w2_entity_id = relay_w2_entity_id
+        self._w1 = relay_w1
+        self._w2 = relay_w2
         self._default_speed = default_speed
 
         coding = conf.get(CONF_CONTROLLER_CODING)
@@ -115,8 +116,8 @@ class LUNOSFan(FanEntity):
             CONF_FAN_COUNT: fan_count,
             ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
             ATTR_DB: UNKNOWN,
-            CONF_RELAY_W1: relay_w1_entity_id,
-            CONF_RELAY_W2: relay_w2_entity_id
+            CONF_RELAY_W1: relay_w1,
+            CONF_RELAY_W2: relay_w2
         }
 
         for attribute in [ 'cycle_seconds',
@@ -132,7 +133,7 @@ class LUNOSFan(FanEntity):
         self._last_state_change = time.time()
 
         super().__init__()
-        LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1_entity_id}; W2={relay_w2_entity_id}; default_speed={default_speed})")
+        LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1}; W2={relay_w2}; default_speed={default_speed})")
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
@@ -142,8 +143,7 @@ class LUNOSFan(FanEntity):
             controller_config = LUNOS_CODING_CONFIG[coding]
             behavior = controller_config['behavior']
 
-            cfm = None
-            cmh = None
+            cfm = cmh = None
             if 'cfm' in behavior:
                 cfm_for_mode = behavior['cfm'][self._speed]
                 fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
@@ -163,10 +163,7 @@ class LUNOSFan(FanEntity):
             else:
                 self._attributes[ATTR_DB] = UNKNOWN
 
-            if 'watts' in behavior:
-                self._attributes['watts'] = behavior['watts']
-            else:
-                self._attributes['watts'] = None
+            self._attributes['watts'] = behavior.get('watts')
 
             LOG.info(f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}")
 
@@ -212,15 +209,15 @@ class LUNOSFan(FanEntity):
 
      # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):
-        w1 = self._hass.states.get(self._w1_entity_id)
+        w1 = self._hass.states.get(self._w1)
         if not w1:
-            LOG.error(f"W1 entity {self._w1_entity_id} not found, cannot determine LUNOS fan speed.")
+            LOG.error(f"W1 entity {self._w1} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
             return
 
-        w2 = self._hass.states.get(self._w2_entity_id)
+        w2 = self._hass.states.get(self._w2)
         if not w2:
-            LOG.error(f"W2 entity {self._w2_entity_id} not found, cannot determine LUNOS fan speed.")
+            LOG.error(f"W2 entity {self._w2} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
             return
 
@@ -228,11 +225,11 @@ class LUNOSFan(FanEntity):
         current_state = [ w1.state, w2.state ]
         for current_speed, speed_state in SPEED_SWITCH_STATES.items():
             if current_state == speed_state:
-               break
+                break
  
         # update the speed state, if a change has been detected
         if current_speed != self._speed:
-            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} ({self._w1_entity_id}={w1.state}, {self._w2_entity_id}={w2.state})")
+            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} (W1 {self._w1}={w1.state}, W2 {self._w2}={w2.state})")
             self._speed = current_speed
             self.update_attributes_based_on_mode()
 
@@ -246,8 +243,7 @@ class LUNOSFan(FanEntity):
             return
 
         # ignore if the fan is already set to this speed
-        if speed == self._speed:
-            return
+        return if speed == self._speed
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
@@ -260,8 +256,8 @@ class LUNOSFan(FanEntity):
 
         # FIXME: can we synchronously change the switches (or at least not have this fan auto-update/detect based on current settings for N seconds)
         LOG.info(f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}")
-        self.set_relay_switch_state(self._w1_entity_id, switch_states[0])
-        self.set_relay_switch_state(self._w2_entity_id, switch_states[1])
+        await self.set_relay_switch_state(self._w1, switch_states[0])
+        await self.set_relay_switch_state(self._w2, switch_states[1])
 
         # update the state and inform Home Assistant that it has changed
         self._speed = speed
@@ -286,19 +282,19 @@ class LUNOSFan(FanEntity):
 
     async def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay {relay_entity_id} to {state}")
-        if state == STATE_OFF:
-            await self.call_switch_service(SERVICE_TURN_OFF, relay_entity_id)
-        else:
-            await self.call_switch_service(SERVICE_TURN_ON, relay_entity_id)
+
+        method = SERVICE_TURN_ON if state == STATE_ON else SERVICE_TURN_OFF
+        await self.call_switch_service(method, relay_entity_id)
 
     async def toggle_relay_to_set_lunos_mode(self, entity_id):
         saved_speed = self._speed
 
         # LUNOS requires flipping switches on/off 3 times to set mode
-        for unused in range(3):
-            await self.call_switch_service(SERVICE_TURN_OFF, entity_id)
-            await asyncio.sleep(DELAY_BETWEEN_FLIPS)
-            await self.call_switch_service(SERVICE_TURN_ON, entity_id)
+        toggle_methods = [ SERVICE_TURN_OFF, SERVICE_TURN_ON,
+                           SERVICE_TURN_OFF, SERVICE_TURN_ON,
+                           SERVICE_TURN_OFF, SERVICE_TURN_ON ] 
+        for method in toggle_methods:
+            await self.call_switch_service(method, entity_id)
             await asyncio.sleep(DELAY_BETWEEN_FLIPS)
 
         # restore speed state back to state before toggling relay
@@ -307,18 +303,18 @@ class LUNOSFan(FanEntity):
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
         # FIXME: temporary hack...do not update immediately while waiting for relay switch state to change
-        required_delay = 30
+        required_delay = MINIMUM_DELAY_BETWEEN_STATE_CHANGES
         time_passed = time.time() - self._last_state_change
         if time_passed < required_delay:
             delay = max(0, required_delay - time_passed)
-            LOG.error(f"To avoid BUG when relay switch states change, wait >= {required_delay} seconds to last switch change before updating")
+            LOG.error(f"To avoid BUG when relay switch states change, waiting >= {required_delay} sec from last switch change before updating")
             await asyncio.sleep(delay)
             self.determine_current_speed_setting()
 
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
     async def async_clear_filter_reminder(self):
         LOG.info(f"Clearing the filter change reminder light for LUNOS '{self._name}'")
-        self.toggle_relay_to_set_lunos_mode(self._w1_entity_id)
+        self.toggle_relay_to_set_lunos_mode(self._w1)
 
     # In summer ventilation mode, the reversing time of the fan is extended to one hour, i.e. the fan will run
     # for one hour in the supply air mode and the following hour in the exhaust air mode etc. for max. 8 hours
@@ -334,7 +330,7 @@ class LUNOSFan(FanEntity):
             return
 
         LOG.info(f"Turning summer ventilation mode ON for LUNOS controller '{self._name}'")
-        await self.toggle_relay_to_set_lunos_mode(self._w2_entity_id)
+        await self.toggle_relay_to_set_lunos_mode(self._w2)
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
@@ -351,6 +347,6 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        await self.call_switch_service(SERVICE_TOGGLE, self._w2_entity_id)
+        await self.call_switch_service(SERVICE_TOGGLE, self._w2)
         await asyncio.sleep(DELAY_BETWEEN_FLIPS)
-        await self.call_switch_service(SERVICE_TOGGLE, self._w2_entity_id)
+        await self.call_switch_service(SERVICE_TOGGLE, self._w2)
