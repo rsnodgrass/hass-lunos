@@ -52,6 +52,8 @@ e2-short:
   behavior:
     off:
         dB: 0
+        cfm: 0
+        watts: 0
     low: 
         cmh: 15
     medium: 
@@ -73,6 +75,8 @@ e2-usa:
   behavior:
     off:
         dB: 0
+        cfm: 0
+        watts: 0
     low:
         cfm: 10 # 17 cmh
         dB: 16.5 
@@ -97,6 +101,8 @@ e2-usa-v2:
     behavior:
       off:
           dB: 0
+          cfm: 0
+          watts: 0
       low:
           cfm: 9  
           dB: 16.5 
@@ -122,6 +128,8 @@ e2-short-usa:
   behavior: # STRANGE: different sources specific different CFM
     off:
         dB: 0
+        cfm: 0
+        watts: 0
     low:
         cmh: 15
         db: 16.5
@@ -146,6 +154,7 @@ e2-nz:
     behavior:
       off:
           dB: 0
+          cfm: 0
           watts: 0
       low:
           cmh: 18
@@ -172,6 +181,8 @@ e2-60:
   behavior: # STRANGE: different sources specific different CFM
     off:
         dB: 0
+        cfm: 0
+        watts: 0
     low:
         cmh: 15
     medium: 
@@ -191,6 +202,8 @@ ego:
   behavior:
     off:
         dB: 0
+        cfm: 0
+        watts: 0
     low:
         cfm: 3
         cmh: 5  # 3 CFM
@@ -259,6 +272,8 @@ ego-exhaust:
   behavior:
     off:
         dB: 0
+        cmh: 0
+        watts: 0
     low:  
         cmh: 5
     medium:
@@ -278,6 +293,8 @@ ra-15-60:
   behavior:
     off:
         dB: 0
+        cmh: 0
+        watts: 0
     low: 
         cfm: 9 # marketing estimate
         cmh: 15
@@ -302,6 +319,8 @@ ra-15-60-high:
   behavior:
     off:
         dB: 0
+        cmh: 0
+        watts: 0
     low:
         cmh: 15 # 9 CFM
     medium:

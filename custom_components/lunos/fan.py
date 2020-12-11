@@ -142,8 +142,6 @@ class LUNOSFan(FanEntity):
         """ Once entity has been added to HASS, subscribe to state changes. """
         await super().async_added_to_hass()
 
-        LOG.info(f"Added to hass {self.entity_id}  {self.hass}")
-
         # setup listeners to track changes to the W1/W2 relays
         async_track_state_change_event(self.hass, [ self._relay_w1, self._relay_w2 ],
                                        self._relay_state_changed )
@@ -165,7 +163,7 @@ class LUNOSFan(FanEntity):
 #        LOG.info(f"WTF {self} {self.entity_id} {self.hass}")
 
         if not from_state or to_state != from_state:
-            LOG.info(f"{entity} changed from {from_state} to {to_state}, updating {self.entity_id}")
+            LOG.info(f"{entity} changed from {from_state} to {to_state}, updating '{self._name}'")
             self.schedule_update_ha_state()
 
 
@@ -259,6 +257,13 @@ class LUNOSFan(FanEntity):
         self._last_state_change = time.time()
         self.update_attributes()
 
+    async def _throttle_state_changes(self, required_delay):
+        time_passed = time.time() - self._last_state_change
+        if time_passed < required_delay:
+            delay = max(0, required_delay - time_passed)
+            LOG.error(f"To avoid LUNOS '{self._name}' controller race conditions, sleeping {delay} seconds")
+            await asyncio.sleep(delay)
+
     async def async_set_speed(self, speed: str) -> None:
         """ Set the fan speed """
         switch_states = SPEED_SWITCH_STATES[speed]
@@ -342,29 +347,22 @@ class LUNOSFan(FanEntity):
     # flipping W2 within 3 seconds instructs the LUNOS controller to turn on summer ventilation mode
     async def async_turn_on_summer_ventilation(self):
         if not self.supports_summer_ventilation():
-            LOG.info(f"LUNOS controller '{self._name}' is coded and DOES NOT support summer ventilation")
+            LOG.info(f"LUNOS controller '{self._name}' DOES NOT support summer ventilation")
             return
 
-        LOG.info(f"Enabling summer ventilation mode for LUNOS controller '{self._name}'")
+        LOG.info(f"Enabling summer ventilation mode for LUNOS '{self._name}'")
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
         self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_SUMMER 
 
-    async def _throttle_state_changes(self, required_delay):
-        time_passed = time.time() - self._last_state_change
-        if time_passed < required_delay:
-            delay = max(0, required_delay - time_passed)
-            LOG.error(f"To avoid {self.entity_id} controller race conditions, sleeping {delay} seconds")
-            await asyncio.sleep(delay)
-
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
-            return # silently ignore as it is already off
+            return
 
         # LUNOS requires waiting for a while after the last time W2 was flipped before turning off ventilation
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
-        LOG.info(f"Disabling summer ventilation mode for LUNOS controller '{self._name}'")
+        LOG.info(f"Disabling summer ventilation mode for LUNOS '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
         await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
