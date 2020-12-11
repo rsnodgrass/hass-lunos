@@ -187,11 +187,12 @@ purchasing multi-relay modules typically costs less than separate single-channel
 
 Example relays compatible with Home Assistant:
 
-| Model | Relays | Tasmota Supported | Manual Buttons | Power |
+| Model | Relays | Communication | Manual Buttons | Power |
 |-------|:------:|:-----------------:|:--------------:|-------|
-| [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) | 4 | Y | Y | 5V USB |
-| [MHCOZY 4-channel WiFI wireless switch](https://amazon.com/Channel-Momentary-Inching-Self-lock-Controller/dp/B071KFX63R/?tag=rynoshark-20) | 4 | Y | N | 5-32V |
-| [LC Technology 4X WiFi Relay (12V ESP8266)](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) | 4 | Y | N | 12V |
+| [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) | 4 | Tasmota | Y | 5V USB |
+| * [Denkovi 8 Relay Ethernet Module](http://denkovi.com/snmp-eight-relay-board-for-temperature-measurement-lm35dz-v2) | 8 | SNMP | N | 12VDC |
+| [MHCOZY 4-channel WiFI wireless switch](https://amazon.com/Channel-Momentary-Inching-Self-lock-Controller/dp/B071KFX63R/?tag=rynoshark-20) | 4 | Tasmota | N | 5-32V |
+| [LC Technology 4X WiFi Relay (12V ESP8266)](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) | 4 | Tasmota | N | 12V |
 
 #### Tasmota Setup
 
@@ -277,8 +278,3 @@ Ideally, we would update this integration to follow naming/conventions similar t
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 * [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
 * [LUNOS Control4 KMX module](https://www.lunos.de/en/product/control4-e/) (KNX-LUNOS-CONTROL4) appears to offer sensor data such as indoor/outdoor temp
-
-### Hardware Ideass
-
-* [Denkovi 8 Relay Ethernet Module](http://denkovi.com/snmp-eight-relay-board-for-temperature-measurement-lm35dz-v2)
-
