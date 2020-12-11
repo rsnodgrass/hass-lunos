@@ -137,7 +137,7 @@ class LUNOSFan(FanEntity):
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
-    def update_attributes_based_on_mode(self):
+    def update_attributes(self):
         if self._speed != None:
             coding = self._attributes[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
@@ -231,7 +231,7 @@ class LUNOSFan(FanEntity):
         if current_speed != self._speed:
             LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} (W1 {self._relay_w1}={w1.state}, W2 {self._relay_w2}={w2.state})")
             self._speed = current_speed
-            self.update_attributes_based_on_mode()
+            self.update_attributes()
 
         return current_speed
 
@@ -240,10 +240,6 @@ class LUNOSFan(FanEntity):
         switch_states = SPEED_SWITCH_STATES[speed]
         if not switch_states:
             LOG.error(f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change.")
-            return
-
-        # ignore if the fan is already set to this speed
-        if speed == self._speed:
             return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
@@ -262,7 +258,7 @@ class LUNOSFan(FanEntity):
 
         # update the state and inform Home Assistant that it has changed
         self._speed = speed
-        self.update_attributes_based_on_mode()
+        self.update_attributes()
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
@@ -330,22 +326,22 @@ class LUNOSFan(FanEntity):
             LOG.info(f"LUNOS controller '{self._name}' is coded and DOES NOT support summer ventilation")
             return
 
-        LOG.info(f"Turning summer ventilation mode ON for LUNOS controller '{self._name}'")
+        LOG.info(f"Enabling summer ventilation mode for LUNOS controller '{self._name}'")
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
             return # silently ignore as it is already off
 
-        # must wait 10 seconds since the last time W2 was flipped before turning off ventilation will work
-        required_delay = 10
+        # LUNOS requires waiting for a while after the last time W2 was flipped before turning off ventilation
+        required_delay = MINIMUM_DELAY_BETWEEN_STATE_CHANGES
         time_passed = time.time() - self._last_state_change
         if time_passed < required_delay:
             delay = max(0, required_delay - time_passed)
             LOG.error(f"To avoid LUNOS controller confusion, summer ventilation changes >= {required_delay} seconds since last relay switch; sleeping {delay} seconds")
             await asyncio.sleep(delay)
 
-        LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
+        LOG.info(f"Disabling summer ventilation mode for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
         await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
