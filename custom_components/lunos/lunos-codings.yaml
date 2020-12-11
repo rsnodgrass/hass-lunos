@@ -30,7 +30,7 @@ e2-4speed:
   cycle_seconds: 70
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
-  behavior: 
+  behavior:
       off:
         cmh: 15
       low: 
@@ -54,11 +54,11 @@ e2-short:
         dB: 0
         cfm: 0
         watts: 0
-    low: 
+    low:
         cmh: 15
-    medium: 
+    medium:
         cmh: 30
-    high: 
+    high:
         cmh: 38
 
 # Source: https://foursevenfive.com/lunos-e/
@@ -79,7 +79,7 @@ e2-usa:
         watts: 0
     low:
         cfm: 10 # 17 cmh
-        dB: 16.5 
+        dB: 16.5
     medium:
         cfm: 15 # 25.5 cmh
         dB: 19.5
@@ -104,10 +104,10 @@ e2-usa-v2:
           cfm: 0
           watts: 0
       low:
-          cfm: 9  
-          dB: 16.5 
+          cfm: 9
+          dB: 16.5
       medium:
-          cfm: 18  
+          cfm: 18
           dB: 19.5
       high:
           cfm: 22
@@ -336,7 +336,7 @@ ra-15-60-4speed:
   supports_summer_vent: false
   supports_filter_reminder: true
   exhaust_only: true # not a HRV
-  behavior: 
+  behavior:
     off:
         cmh: 15
         watts: 0.6
