@@ -264,6 +264,11 @@ Ideally, we would update this integration to follow naming/conventions similar t
 
 * IMPROVEMENT: manual fan speed changes are not immediately detected (only on 30 second interval updates)
 
+
+## Future Ideas
+
+* allow setting direction of fans individually (async_set_direction), exhaust only, etc (flag SUPPORT_DIRECTION)
+
 ## See Also
 
 * [Home Assistant LUNOS support discussion](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)
@@ -272,3 +277,8 @@ Ideally, we would update this integration to follow naming/conventions similar t
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 * [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
 * [LUNOS Control4 KMX module](https://www.lunos.de/en/product/control4-e/) (KNX-LUNOS-CONTROL4) appears to offer sensor data such as indoor/outdoor temp
+
+### Hardware Ideass
+
+* [Denkovi 8 Relay Ethernet Module](http://denkovi.com/snmp-eight-relay-board-for-temperature-measurement-lm35dz-v2)
+

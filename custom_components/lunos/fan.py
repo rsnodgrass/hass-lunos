@@ -44,6 +44,11 @@ SPEED_CHANGE_DELAY_SECONDS = 4
 DELAY_BETWEEN_FLIPS = 0.100
 MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 30.0
 
+# FIXME: support enabling exhaust-only mode
+VENTILATION_NORMAL = 'normal'
+VENTILATION_SUMMER = 'summer'
+VENTILATION_EXHAUST = 'exhaust-only'
+
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_NAME): cv.string, # NOTE: we default the name later based on software
@@ -86,7 +91,8 @@ class LUNOSFan(FanEntity):
 
     def __init__(self, hass, conf, name, relay_w1, relay_w2, default_speed: str = DEFAULT_SPEED):
         """Init this sensor."""
-        self._hass = hass
+        super().__init__()
+        self.hass = hass
         self._name = name
 
         self._speed = None
@@ -95,22 +101,22 @@ class LUNOSFan(FanEntity):
         # specify W1/W2 relays to use and setup listener for state changes on those relays
         self._relay_w1 = relay_w1
         self._relay_w2 = relay_w2
-        async_track_state_change_event(hass, [ relay_w1, relay_w2 ], self._async_relay_state_changed )
+        async_track_state_change_event(hass,
+                                       [ relay_w1, relay_w2 ],
+                                       self._async_relay_state_changed )
 
         coding = conf.get(CONF_CONTROLLER_CODING)
         model_config = LUNOS_CODING_CONFIG[coding]
 
         # default fan count differs depending on controller mode (e2 = 2 fans, eGO = 1 fan)
-        fan_count = conf.get(CONF_FAN_COUNT)
-        if fan_count == None:
-            fan_count = model_config[CONF_DEFAULT_FAN_COUNT]
-        self._fan_count = fan_count
+        self._fan_count = conf.get(CONF_FAN_COUNT,
+                                   model_config[CONF_DEFAULT_FAN_COUNT])
 
         self._attributes = {
             ATTR_MODEL_NAME:        model_config['name'],
             CONF_CONTROLLER_CODING: coding,
-            CONF_FAN_COUNT:         fan_count,
-            ATTR_VENTILATION_MODE: 'normal',  # TODO: support summer and exhaust-only
+            CONF_FAN_COUNT:         self._fan_count,
+            ATTR_VENTILATION_MODE:  VENTILATION_NORMAL,
             ATTR_DB:                UNKNOWN,
             CONF_RELAY_W1:          relay_w1,
             CONF_RELAY_W2:          relay_w2
@@ -129,20 +135,17 @@ class LUNOSFan(FanEntity):
         self.determine_current_speed_setting()
         self._last_state_change = time.time()
 
-        super().__init__()
         LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1}; W2={relay_w2}; default_speed={default_speed})")
 
     async def _async_relay_state_changed(self, event):
         """When either W1 or W2 relays change state, the fan speed needs to be updated"""
+        entity_id = UNKNOWN
         from_state = event.data.get("old_state")
         to_state = event.data.get("new_state")
 
         if to_state != from_state:
-            LOG.info(f"Detected change in {event.entity_id} relay from {from_state} to {to_state}, forcing fan update")        
+            LOG.info(f"Detected change in {entity_id} relay from {from_state} to {to_state}, forcing fan update")        
             await self.async_update_ha_state()
-
-#homeassistant.helpers.event.async_track_state_change_event(hass: homeassistant.core.HomeAssistant, entity_ids: Union[str, Iterable[str]], action: Callable[[homeassistant.core.Event], Any]) → Callable[[], None][source]
-#.async_track_state_change(self._hass, [ entity_id ], self.relay_state_changed_callback )
 
 
     # calculate the current CFM based on the current fan speed as well as the
@@ -151,29 +154,29 @@ class LUNOSFan(FanEntity):
         if self._speed != None:
             coding = self._attributes[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
-            behavior = controller_config['behavior']
 
+            # load the behaviors of the fan for the current speed setting
+            behavior = controller_config['behavior'].get(self._speed)
+
+            fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
+
+            # FIXME: I believe this needs to be loaded from behavior[self._speed]!
             cfm = cmh = None
             if 'cfm' in behavior:
                 cfm_for_mode = behavior['cfm'][self._speed]
-                fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
                 cfm = cfm_for_mode * fan_multiplier
                 cmh = cfm * CFM_TO_CMH
             elif 'chm' in behavior:
                 chm_for_mode = behavior['chm'][self._speed]
-                fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
                 cmh = chm_for_mode * fan_multiplier
                 cfm = cmh / CFM_TO_CMH
 
             self._attributes[ATTR_CFM] = cfm
             self._attributes[ATTR_CMHR] = cmh
 
-            if ATTR_DB in behavior:
-                self._attributes[ATTR_DB] = controller_config[ATTR_DB][self._speed]
-            else:
-                self._attributes[ATTR_DB] = UNKNOWN
-
-            self._attributes['watts'] = behavior.get('watts')
+            # if sound level (dB) is defined for the speed, include it in attributes
+            self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
+            self._attributes['watts'] = behavior.get('watts', None)
 
             LOG.info(f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}")
 
@@ -219,13 +222,13 @@ class LUNOSFan(FanEntity):
 
      # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):
-        w1 = self._hass.states.get(self._relay_w1)
+        w1 = self.hass.states.get(self._relay_w1)
         if not w1:
             LOG.error(f"W1 entity {self._relay_w1} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
             return
 
-        w2 = self._hass.states.get(self._relay_w2)
+        w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.error(f"W2 entity {self._relay_w2} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
@@ -283,7 +286,7 @@ class LUNOSFan(FanEntity):
 
     async def call_switch_service(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
-        await self._hass.services.async_call('switch', method, { 'entity_id': relay_entity_id }, False)
+        await self.hass.services.async_call('switch', method, { 'entity_id': relay_entity_id }, False)
         self._last_state_change = time.time()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
@@ -338,6 +341,8 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Enabling summer ventilation mode for LUNOS controller '{self._name}'")
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
+        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_SUMMER 
+
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
             return # silently ignore as it is already off
@@ -356,3 +361,5 @@ class LUNOSFan(FanEntity):
         await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
         await asyncio.sleep(DELAY_BETWEEN_FLIPS)
         await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
+
+        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_NORMAL
