@@ -94,10 +94,8 @@ class LUNOSFan(FanEntity):
 
         self.hass = hass
         self._name = name
-        #self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, name, hass=hass)
+        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, name, hass=hass)
         super().__init__()
-
-        #LOG.info(f"Creating FanEntity hass={hass} {self.hass}")
 
         self._speed = None
         self._default_speed = default_speed
@@ -166,17 +164,21 @@ class LUNOSFan(FanEntity):
             LOG.info(f"{entity} changed from {from_state} to {to_state}, updating '{self._name}'")
             self.schedule_update_ha_state()
 
-
     def update_attributes(self):
         """ Calculate the current CFM based on the current fan speed as well as the
             number of fans configured by the user. """
         if self._speed is not None:
             coding = self._attributes[CONF_CONTROLLER_CODING]
             controller_config = LUNOS_CODING_CONFIG[coding]
+            LOG.info(f"coding = {coding}; config = {controller_config}")
+
             fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
 
             # load the behaviors of the fan for the current speed setting
-            behavior = controller_config['behavior'].get(self._speed)
+            behavior_config = controller_config.get('behavior')
+            if not behavior_config:
+                LOG.error(f"Missing behavior config for coding {coding}: {controller_config}")
+            behavior = behavior_config.get(self._speed, {})
 
             # determine the air flow rates based on fan behavior at the current speed
             cfm = cmh = None
@@ -288,8 +290,8 @@ class LUNOSFan(FanEntity):
 
         LOG.info(f"{self.entity_id} async_update()")
 
-        # update the speed state, if a change has been detected
-        await self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
+        # throttle to allow switch changes to converge
+        await self._throttle_state_changes(1.0)
         current_speed = self._determine_current_speed()
 
         if current_speed != self._speed:
@@ -342,7 +344,7 @@ class LUNOSFan(FanEntity):
     def supports_summer_ventilation(self):
         coding = self._attributes[CONF_CONTROLLER_CODING]
         controller_config = LUNOS_CODING_CONFIG[coding]
-        return controller_config['supports_summer_vent'] == True
+        return controller_config['supports_summer_vent']
 
     # flipping W2 within 3 seconds instructs the LUNOS controller to turn on summer ventilation mode
     async def async_turn_on_summer_ventilation(self):
@@ -353,7 +355,7 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Enabling summer ventilation mode for LUNOS '{self._name}'")
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
-        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_SUMMER 
+        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_SUMMER
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
