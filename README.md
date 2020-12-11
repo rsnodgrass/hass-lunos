@@ -1,6 +1,6 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-![beta_badge](https://img.shields.io/badge/maturity-Alpha-red.png)
+![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 ![release_badge](https://img.shields.io/github/v/release/rsnodgrass/hass-lunos.svg)
 ![release_date](https://img.shields.io/github/release-date/rsnodgrass/hass-lunos.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
