@@ -249,6 +249,7 @@ class LUNOSFan(FanEntity):
         current_state = [ w1.state, w2.state ]
         for speed, speed_state in SPEED_SWITCH_STATES.items():
             if current_state == speed_state:
+                LOG.info(f"LUNOS speed for '{self._name}' = {speed} (W1/W2={current_state})")
                 return speed
         return None
 
@@ -268,7 +269,7 @@ class LUNOSFan(FanEntity):
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
         # delay all state changes to be > 3 seconds since the last switch change
-        self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
+        await self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
 
         LOG.info(f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}")
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
@@ -283,13 +284,10 @@ class LUNOSFan(FanEntity):
         LOG.info(f"{self.entity_id} async_update()")
 
         # update the speed state, if a change has been detected
-        self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
+        await self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
         current_speed = self._determine_current_speed()
 
-        # FIXME: need to wait after a state change for the W1/W2 relay states to converge
-
         if current_speed != self._speed:
-            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} (W1 {self._relay_w1}={w1.state}, W2 {self._relay_w2}={w2.state})")
             self._update_speed(current_speed)         
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
