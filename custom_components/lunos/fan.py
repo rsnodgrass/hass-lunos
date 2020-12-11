@@ -22,11 +22,12 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_component import EntityComponent
+from homeassistant.helpers.event import async_track_state_change
 
 from . import LUNOS_CODING_CONFIG
 from .const import (
     LUNOS_DOMAIN, DEFAULT_LUNOS_NAME,
-    SPEED_TURBO, SPEED_LIST, DEFAULT_SPEED,
+    SPEED_TURBO, SPEED_LIST, SPEED_SWITCH_STATES, DEFAULT_SPEED, 
     ATTR_CFM, ATTR_CMHR, ATTR_DB, ATTR_MODEL_NAME, ATTR_VENTILATION_MODE,
     CONF_CONTROLLER_CODING, CONF_RELAY_W1, CONF_RELAY_W2, CONF_DEFAULT_SPEED,
     CONF_DEFAULT_FAN_COUNT, CONF_FAN_COUNT,
@@ -38,19 +39,10 @@ from .const import (
 
 LOG = logging.getLogger(__name__)
 
-DELAY_BETWEEN_FLIPS = 0.100
-MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 30.0
-
-# configuration of switch states to active LUNOS speedsy
-SPEED_SWITCH_STATES = {
-    SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
-    SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-    SPEED_MEDIUM: [ STATE_OFF, STATE_ON  ],
-    SPEED_HIGH:   [ STATE_ON,  STATE_ON  ]
-}
-
 # delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
 SPEED_CHANGE_DELAY_SECONDS = 4
+DELAY_BETWEEN_FLIPS = 0.100
+MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 30.0
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -98,11 +90,10 @@ class LUNOSFan(FanEntity):
         self._name = name
         self._speed = None
 
+        # specify W1/W2 relays to use and setup listener for state changes on those relays
         self._relay_w1 = relay_w1
-        self.subscribe_to_state_changes(relay_w1)
-
         self._relay_w2 = relay_w2
-        self.subscribe_to_state_changes(relay_w2)
+        async_track_state_change(hass, [ relay_w1, relay_w2 ], self._async_relay_state_changed )
 
         self._default_speed = default_speed
 
@@ -140,18 +131,18 @@ class LUNOSFan(FanEntity):
         super().__init__()
         LOG.info(f"Created LUNOS fan controller '{self._name}' (W1={relay_w1}; W2={relay_w2}; default_speed={default_speed})")
 
-    def relay_state_changed_callback(self, event, data, kwargs):
+    async def _async_relay_state_changed(self, event, data, kwargs):
         """When either W1 or W2 relays change state, the fan speed needs to be updated"""
         old_state = data['old_state']['state']
         new_state = data['new_state']['state']
 
         if new_state != old_state:
             LOG.info(f"Detected change in {data['entity_id']} relay from {old_state} to {new_state}, forcing fan update")        
-            self.async_schedule_update_ha_state()
+            await self.async_update_ha_state()
 
-    def subscribe_to_state_changes(self, entity_id):
-        LOG.info(f"Listening for state changes to entity {entity_id}")
-        #self._hass.listen_event(self.relay_state_changed_callback, "state_changed", entity_id=entity_id)
+#homeassistant.helpers.event.async_track_state_change_event(hass: homeassistant.core.HomeAssistant, entity_ids: Union[str, Iterable[str]], action: Callable[[homeassistant.core.Event], Any]) → Callable[[], None][source]
+#.async_track_state_change(self._hass, [ entity_id ], self.relay_state_changed_callback )
+
 
     # calculate the current CFM based on the current fan speed as well as the
     # number of fans configured by the user
@@ -223,7 +214,7 @@ class LUNOSFan(FanEntity):
         """Handle state update from fan."""
         LOG.info(f"async changing LUNOS fan '{self._name}' to speed '{self._speed}'")
         self._speed = speed
-        self.async_schedule_update_ha_state()
+        await self.async_update_ha_state()
 
      # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):

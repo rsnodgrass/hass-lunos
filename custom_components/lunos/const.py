@@ -19,7 +19,7 @@ SPEED_LIST = [
 ]
 DEFAULT_SPEED = SPEED_MEDIUM
 
-# configuration of switch states to active LUNOS speedsy
+# configuration of switch states to active LUNOS speeds
 SPEED_SWITCH_STATES = {
     SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
     SPEED_LOW:    [ STATE_ON,  STATE_OFF ],

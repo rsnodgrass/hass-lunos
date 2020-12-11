@@ -69,15 +69,15 @@ substantially depending on the type of relay hardware being used (e.g. Tasmota M
 fan:
   - platform: lunos
     name: Basement Ventilation
-    relay_w1: switch.lunos_basement_w1
-    relay_w2: switch.lunos_basement_w2
+    relay_w1: switch.lunos_basement_1
+    relay_w2: switch.lunos_basement_2
 
   - platform: lunos
     name: Bathroom Fan
     default_speed: high
     controller_coding: ego
-    relay_w1: switch.lunos_bathroom_w1
-    relay_w2: switch.lunos_bathroom_w2
+    relay_w1: switch.lunos_bathroom_1
+    relay_w2: switch.lunos_bathroom_2
 ```
 
 ### Step 3: Add Lovelace Card
