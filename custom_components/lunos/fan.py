@@ -97,8 +97,8 @@ class LUNOSFan(FanEntity):
         self._hass = hass
         self._name = name
         self._speed = None
-        self._w1 = relay_w1
-        self._w2 = relay_w2
+        self._relay_w1 = relay_w1
+        self._relay_w2 = relay_w2
         self._default_speed = default_speed
 
         coding = conf.get(CONF_CONTROLLER_CODING)
@@ -209,15 +209,15 @@ class LUNOSFan(FanEntity):
 
      # probe the two relays to determine current state and find the matching speed switch state
     def determine_current_speed_setting(self):
-        w1 = self._hass.states.get(self._w1)
+        w1 = self._hass.states.get(self._relay_w1)
         if not w1:
-            LOG.error(f"W1 entity {self._w1} not found, cannot determine LUNOS fan speed.")
+            LOG.error(f"W1 entity {self._relay_w1} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
             return
 
-        w2 = self._hass.states.get(self._w2)
+        w2 = self._hass.states.get(self._relay_w2)
         if not w2:
-            LOG.error(f"W2 entity {self._w2} not found, cannot determine LUNOS fan speed.")
+            LOG.error(f"W2 entity {self._relay_w2} not found, cannot determine LUNOS fan speed.")
             self._speed = UNKNOWN
             return
 
@@ -229,7 +229,7 @@ class LUNOSFan(FanEntity):
  
         # update the speed state, if a change has been detected
         if current_speed != self._speed:
-            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} (W1 {self._w1}={w1.state}, W2 {self._w2}={w2.state})")
+            LOG.info(f"LUNOS speed for '{self._name}' = {current_speed} (W1 {self._relay_w1}={w1.state}, W2 {self._relay_w2}={w2.state})")
             self._speed = current_speed
             self.update_attributes_based_on_mode()
 
@@ -243,7 +243,8 @@ class LUNOSFan(FanEntity):
             return
 
         # ignore if the fan is already set to this speed
-        return if speed == self._speed
+        if speed == self._speed:
+            return
 
         # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
         # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
@@ -256,8 +257,8 @@ class LUNOSFan(FanEntity):
 
         # FIXME: can we synchronously change the switches (or at least not have this fan auto-update/detect based on current settings for N seconds)
         LOG.info(f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}")
-        await self.set_relay_switch_state(self._w1, switch_states[0])
-        await self.set_relay_switch_state(self._w2, switch_states[1])
+        await self.set_relay_switch_state(self._relay_w1, switch_states[0])
+        await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
         # update the state and inform Home Assistant that it has changed
         self._speed = speed
@@ -314,7 +315,7 @@ class LUNOSFan(FanEntity):
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
     async def async_clear_filter_reminder(self):
         LOG.info(f"Clearing the filter change reminder light for LUNOS '{self._name}'")
-        self.toggle_relay_to_set_lunos_mode(self._w1)
+        self.toggle_relay_to_set_lunos_mode(self._relay_w1)
 
     # In summer ventilation mode, the reversing time of the fan is extended to one hour, i.e. the fan will run
     # for one hour in the supply air mode and the following hour in the exhaust air mode etc. for max. 8 hours
@@ -330,7 +331,7 @@ class LUNOSFan(FanEntity):
             return
 
         LOG.info(f"Turning summer ventilation mode ON for LUNOS controller '{self._name}'")
-        await self.toggle_relay_to_set_lunos_mode(self._w2)
+        await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
@@ -347,6 +348,6 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Turning summer ventilation mode OFF for LUNOS controller '{self._name}'")
 
         # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        await self.call_switch_service(SERVICE_TOGGLE, self._w2)
+        await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
         await asyncio.sleep(DELAY_BETWEEN_FLIPS)
-        await self.call_switch_service(SERVICE_TOGGLE, self._w2)
+        await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
