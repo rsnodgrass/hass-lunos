@@ -190,7 +190,7 @@ Example relays compatible with Home Assistant:
 | Model | Relays | Communication | Manual Buttons | Power |
 |-------|:------:|:-----------------:|:--------------:|-------|
 | [WiFi Relay Switch Module](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20) | 4 | Tasmota | Y | 5V USB |
-| * [Denkovi 8 Relay Ethernet Module](http://denkovi.com/snmp-eight-relay-board-for-temperature-measurement-lm35dz-v2) | 8 | SNMP | N | 12VDC |
+| [Denkovi 8 Relay Ethernet Module](http://denkovi.com/snmp-eight-relay-board-for-temperature-measurement-lm35dz-v2) | 8 | SNMP | N | 12VDC |
 | [MHCOZY 4-channel WiFI wireless switch](https://amazon.com/Channel-Momentary-Inching-Self-lock-Controller/dp/B071KFX63R/?tag=rynoshark-20) | 4 | Tasmota | N | 5-32V |
 | [LC Technology 4X WiFi Relay (12V ESP8266)](https://www.banggood.com/DC12V-ESP8266-Four-Channel-Wifi-Relay-IOT-Smart-Home-Phone-APP-Remote-Control-Switch-p-1317255.html) | 4 | Tasmota | N | 12V |
 
