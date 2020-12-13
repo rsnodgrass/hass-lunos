@@ -110,13 +110,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     # FIXME: how are these tied to a specific LUNOS fan instance?
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     component.async_register_entity_service(
-        SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder"
+        SERVICE_CLEAR_FILTER_REMINDER, {},
+        "async_clear_filter_reminder"
     )
     component.async_register_entity_service(
-        SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation"
+        SERVICE_TURN_ON_SUMMER_VENTILATION, {},
+        "async_turn_on_summer_ventilation"
     )
     component.async_register_entity_service(
-        SERVICE_TURN_OFF_SUMMER_VENTILATION, {}, "async_turn_off_summer_ventilation"
+        SERVICE_TURN_OFF_SUMMER_VENTILATION, {},
+        "async_turn_off_summer_ventilation"
     )
 
     return True
@@ -199,8 +202,6 @@ class LUNOSFan(FanEntity):
         # sometimes there is no from_state
         old_state = event.data.get("old_state")
         from_state = old_state.state if old_state else None
-
-        #        LOG.info(f"WTF {self} {self.entity_id} {self.hass}")
 
         if not from_state or to_state != from_state:
             LOG.info(
