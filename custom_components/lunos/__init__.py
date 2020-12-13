@@ -3,11 +3,11 @@ LUNOS Ventilation Fan Control for Home Assistant
 https://github.com/rsnodgrass/hass-lunos
 """
 import logging
-
 import os
+
 import yaml
 
-from .const import LUNOS_DOMAIN, CFM_TO_CMH
+from .const import CFM_TO_CMH, LUNOS_DOMAIN
 
 LOG = logging.getLogger(__name__)
 
@@ -20,6 +20,7 @@ try:
         LUNOS_CODING_CONFIG = yaml.full_load(file)
 except:
     LOG.error(f"Failed to load LUNOS config {config_file}")
+
 
 async def async_setup(hass, config):
     LOG.info(f"LUNOS controller codings supported: {LUNOS_CODING_CONFIG.keys()}")
