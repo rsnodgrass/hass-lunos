@@ -270,6 +270,7 @@ Ideally, we would update this integration to follow naming/conventions similar t
 ## Future Ideas
 
 * allow setting direction of fans individually (async_set_direction), exhaust only, etc (flag SUPPORT_DIRECTION)
+* this could possibly be replaced as a HA Blueprint (but at this point probably doesn't make sense to do)
 
 ## See Also
 
