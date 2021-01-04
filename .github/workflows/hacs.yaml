@@ -27,7 +27,7 @@ jobs:
           ignore: brands wheels
       - uses: KTibow/ha-blueprint@stable
         name: CI
-       with:
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ignore: brands wheels
 
