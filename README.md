@@ -247,7 +247,7 @@ Alexa or other voice enabled smart speaker.
 * special handling of exhaust only ventilation mode (eGO models)
 * fan controller modes that support a fourth flow rate (either when it can never be shut off, *OR* the turbo mode when W1 is pressed twice)
 * LUNOS type RA 15-60 radial duct fan
-
+* [LUNOS Smart Comfort Control 5/SC-FT](https://www.lunos.de/files/Downloads/Einbauanleitungen/Funktionsbeschreibung_Folientastatur.pdf)
 
 #### LUNOS Control4 KMX Module Consistency
 
@@ -266,11 +266,10 @@ Ideally, we would update this integration to follow naming/conventions similar t
 
 * IMPROVEMENT: manual fan speed changes are not immediately detected (only on 30 second interval updates)
 
-
 ## Future Ideas
 
-* allow setting direction of fans individually (async_set_direction), exhaust only, etc (flag SUPPORT_DIRECTION)
-* this could possibly be replaced as a HA Blueprint (but at this point probably doesn't make sense to do)
+* allow setting direction of fans individually (async_set_direction), exhaust only, balanced intake air for fireplace, etc (flag SUPPORT_DIRECTION)
+* add more of the control features patterned off the [LUNOS 5/SC-FT](https://www.lunos.de/files/Downloads/Einbauanleitungen/Funktionsbeschreibung_Folientastatur.pdf)
 
 ## See Also
 
