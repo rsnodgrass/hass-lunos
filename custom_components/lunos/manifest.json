@@ -3,6 +3,7 @@
   "name": "LUNOS Heat Recovery Ventilation",
   "documentation": "https://github.com/rsnodgrass/hass-lunos/",
   "issue_tracker": "https://github.com/rsnodgrass/hass-lunos/issues",
+  "version": "0.1.2",
   "requirements": [],
   "dependencies": [],
   "codeowners": ["@rsnodgrass"]
