@@ -110,16 +110,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     # FIXME: how are these tied to a specific LUNOS fan instance?
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     component.async_register_entity_service(
-        SERVICE_CLEAR_FILTER_REMINDER, {},
-        "async_clear_filter_reminder"
+        SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder"
     )
     component.async_register_entity_service(
-        SERVICE_TURN_ON_SUMMER_VENTILATION, {},
-        "async_turn_on_summer_ventilation"
+        SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation"
     )
     component.async_register_entity_service(
-        SERVICE_TURN_OFF_SUMMER_VENTILATION, {},
-        "async_turn_off_summer_ventilation"
+        SERVICE_TURN_OFF_SUMMER_VENTILATION, {}, "async_turn_off_summer_ventilation"
     )
 
     return True
@@ -181,7 +178,7 @@ class LUNOSFan(FanEntity):
         )
 
     async def async_added_to_hass(self) -> None:
-        """ Once entity has been added to HASS, subscribe to state changes. """
+        """Once entity has been added to HASS, subscribe to state changes."""
         await super().async_added_to_hass()
 
         # setup listeners to track changes to the W1/W2 relays
@@ -195,7 +192,7 @@ class LUNOSFan(FanEntity):
 
     @callback
     def _relay_state_changed(self, event):
-        """ Whenever W1 or W2 relays change state, the fan speed needs to be updated """
+        """Whenever W1 or W2 relays change state, the fan speed needs to be updated"""
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
 
@@ -282,7 +279,7 @@ class LUNOSFan(FanEntity):
         return self._attributes
 
     def _determine_current_speed(self):
-        """ Probe the two relays to determine current state and find the matching speed switch state """
+        """Probe the two relays to determine current state and find the matching speed switch state"""
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
             LOG.warning(
@@ -308,7 +305,7 @@ class LUNOSFan(FanEntity):
         return None
 
     def _update_speed(self, speed):
-        """ Update to the new speed and update any dependent attributes """
+        """Update to the new speed and update any dependent attributes"""
         self._speed = speed
         self._last_state_change = time.time()
         self.update_attributes()
@@ -323,7 +320,7 @@ class LUNOSFan(FanEntity):
             await asyncio.sleep(delay)
 
     async def async_set_speed(self, speed: str) -> None:
-        """ Set the fan speed """
+        """Set the fan speed"""
         switch_states = SPEED_SWITCH_STATES[speed]
         if not switch_states:
             LOG.warning(
