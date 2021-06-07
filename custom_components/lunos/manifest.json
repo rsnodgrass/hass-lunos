@@ -6,5 +6,6 @@
   "issue_tracker": "https://github.com/rsnodgrass/hass-lunos/issues",
   "requirements": [],
   "dependencies": [],
-  "codeowners": ["@rsnodgrass"]
+  "codeowners": ["@rsnodgrass"],
+  "iot_class": "local_polling"
 }
