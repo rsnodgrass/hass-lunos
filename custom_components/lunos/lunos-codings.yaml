@@ -4,6 +4,7 @@ e2:
   controller_coding: 3
   cycle_seconds: 70
   default_fan_count: 2
+  supports_night_mode: true
   supports_summer_vent: false
   supports_filter_reminder: true
   heat_recovery_efficiency: 0.906
@@ -25,9 +26,10 @@ e2-4speed:
   controller_coding: 4 
   default_fan_count: 2
   heat_recovery_efficiency: 0.906
-  four_speed: true
-  supports_filter_reminder: true
   cycle_seconds: 70
+  four_speed: true
+  supports_night_mode: true
+  supports_filter_reminder: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -47,6 +49,7 @@ e2-short:
   default_fan_count: 2
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -70,6 +73,7 @@ e2-usa:
   default_fan_count: 2
   supports_filter_reminder: true
   cycle_seconds: 70
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -96,6 +100,7 @@ e2-usa-v2:
     default_fan_count: 2
     supports_filter_reminder: true
     cycle_seconds: 70
+    supports_night_mode: true
     supports_summer_vent: true
     summer_vent_cycle_seconds: 3600
     behavior:
@@ -123,6 +128,7 @@ e2-short-usa:
   default_fan_count: 2
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior: # STRANGE: different sources specific different CFM
@@ -149,6 +155,7 @@ e2-nz:
     supports_filter_reminder: true
     heat_recovery_efficiency: 0.827
     cycle_seconds: 55  # ???
+    supports_night_mode: true
     supports_summer_vent: true
     summer_vent_cycle_seconds: 3600
     behavior:
@@ -176,6 +183,7 @@ e2-60:
   default_fan_count: 2
   supports_filter_reminder: true
   cycle_seconds: 55
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior: # STRANGE: different sources specific different CFM
@@ -197,6 +205,7 @@ ego:
   default_fan_count: 1
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -221,6 +230,7 @@ ego-4speed:
   supports_filter_reminder: true
   turbo_mode: true
   cycle_seconds: 50
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -244,6 +254,7 @@ ego-exhaust-4speed:
   four_speed: true
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -267,6 +278,7 @@ ego-exhaust:
   high_exhaust_only: true
   supports_filter_reminder: true
   cycle_seconds: 50
+  supports_night_mode: true
   supports_summer_vent: true
   summer_vent_cycle_seconds: 3600
   behavior:
@@ -286,6 +298,7 @@ ra-15-60:
   model_number: RA-15-60
   controller_coding: 0
   default_fan_count: 1
+  supports_night_mode: false
   supports_summer_vent: false
   supports_filter_reminder: true
   turbo_mode: true # flip W2 on/off < 3 seconds = 60 m3/h
@@ -313,6 +326,7 @@ ra-15-60-high:
   model_number: RA-15-60
   controller_coding: 1
   default_fan_count: 1
+  supports_night_mode: false
   supports_summer_vent: false
   supports_filter_reminder: true
   exhaust_only: true # not a HRV
@@ -333,6 +347,7 @@ ra-15-60-4speed:
   model_number: RA-15-60
   controller_coding: 2
   default_fan_count: 1
+  supports_night_mode: false
   supports_summer_vent: false
   supports_filter_reminder: true
   exhaust_only: true # not a HRV
