@@ -220,11 +220,13 @@ For more information on flashing ESP8266 based relays:
 * https://community.home-assistant.io/t/diy-cheap-3-esp8266-based-wifi-relay-switch-with-mqtt/40401
 * https://github.com/arendst/Tasmota/wiki/LC-Technology-WiFi-Relay
 
-#### Example Wiring with [WiFi Relay Switch Module (SANT-4CH)](https://amazon.com/Channel-Momentary-Inching-Self-Locking-Control/dp/B08211H51X/?tag=rynoshark-20)
+#### Example Wiring with [MHCOZY 4CH WiFi RF Wireless Switch Relay](https://amazon.com/gp/product/B07TDJG2GJ?tag=rynoshark-20)
 
 ![LUNOS 4-Chan WiFi Case Example](https://github.com/rsnodgrass/hass-lunos/blob/master/img/lunos-switch-case.png?raw=true)
 
-The only downside of the SANT-4CH relay switch is that the four pins (GND, VCC, TXD, RXD) are solder filled which makes it difficult to temporarily hook up wires to flash Tasmota. 
+You need to put the 4-Channel smart relay into latching mode. Depending on the size of your 12V transformer, the MHCOZY can also be powered off the same 12V transformer used by the LUNOS controllers.
+
+The only downside of the relay switch is that the four pins (GND, VCC, TXD, RXD) are solder filled which makes it difficult to temporarily hook up wires to flash Tasmota. 
 
 #### Example Wiring with ESP8266 WiFi Relay
 
