@@ -282,3 +282,4 @@ Ideally, we would update this integration to follow naming/conventions similar t
 * [LUNOS Operating Manual](https://foursevenfive.com/content/product/ventilation/lunos_e2/operating_manual_lunos_e2.pdf)
 * [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
 * [LUNOS Control4 KMX module](https://www.lunos.de/en/product/control4-e/) (KNX-LUNOS-CONTROL4) appears to offer sensor data such as indoor/outdoor temp
+* [eWeLink Sonoff Device Control in Home Assistant](https://sonoff.tech/product-review/tutorial/how-to-add-your-sonoff-devices-on-home-assistant/)
