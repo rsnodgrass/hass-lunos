@@ -274,7 +274,7 @@ class LUNOSFan(FanEntity):
         return self._speed != SPEED_OFF
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return state attributes."""
         return self._attributes
 
