@@ -176,6 +176,10 @@ e2-nz:
           db: 26
           watts: 3.3
 
+e2-mini:
+  name: LUNOS e2 Mini
+  controller_coding: 8
+
 e2-60:
   name: LUNOS e2 60
   model_number: e2-60
@@ -220,7 +224,7 @@ ego:
         cmh: 10  # 6 CFM
     high: 
         cmh: 20   # 12 CFM
-    
+
 ego-4speed:
   name: LUNOS eGO (4-speed)
   model_number: eGO
@@ -292,7 +296,7 @@ ego-exhaust:
         cmh: 10
     high:
         cmh: 45 # exhaust only
-        
+
 ra-15-60:
   name: LUNOS RA 15-60 radial duct fan
   model_number: RA-15-60
