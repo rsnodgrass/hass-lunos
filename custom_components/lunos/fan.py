@@ -344,13 +344,13 @@ class LUNOSFan(FanEntity):
         """Probe the two relays to determine current state and find the matching speed switch state"""
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
-            LOG.warning(f"W1 entity {self._relay_w1} not found, cannot determine LUNOS fan speed.")
+            LOG.warning(f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS fan speed.")
             return
 
         w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.warning(
-                f"W2 entity {self._relay_w2} not found, cannot determine LUNOS fan speed."
+                f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS fan speed."
             )
             return
 
@@ -378,9 +378,11 @@ class LUNOSFan(FanEntity):
         if time_passed < required_delay:
             delay = max(0, required_delay - time_passed)
             LOG.warning(
-                f"To avoid LUNOS '{self._name}' controller race conditions, sleeping {delay} seconds"
+                f"To avoid LUNOS '{self._name}' controller race conditions, sleeping {delay} seconds before changing relay."
             )
             await asyncio.sleep(delay)
+            return True
+        return False
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the fan speed"""
@@ -408,10 +410,10 @@ class LUNOSFan(FanEntity):
     async def async_update(self):
         """Attempt to retrieve current state of the fan by inspecting the switch state."""
 
-        # throttle to allow switch changes to converge
-        await self._throttle_state_changes(1.0)
-        current_speed = self._determine_current_speed()
+        # delay reading allow any pending switch changes to be applied
+        await asyncio.sleep(1.0)
 
+        current_speed = self._determine_current_speed()
         if current_speed != self._speed:
             self._update_speed(current_speed)
 
@@ -429,7 +431,6 @@ class LUNOSFan(FanEntity):
 
         if percentage:
             await self.async_set_percentage(percentage)
-
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
@@ -464,7 +465,7 @@ class LUNOSFan(FanEntity):
             await self.call_switch_service(method, entity_id)
             await asyncio.sleep(DELAY_BETWEEN_FLIPS)
 
-        # restore speed state back to state before toggling relay
+        # restore speed state back to the previous state before toggling relay
         await self.async_set_speed(saved_speed)
 
     # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
