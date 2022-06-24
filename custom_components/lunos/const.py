@@ -1,20 +1,32 @@
-from homeassistant.components.fan import SPEED_HIGH, SPEED_LOW, SPEED_MEDIUM, SPEED_OFF
 from homeassistant.const import STATE_OFF, STATE_ON
 
 LUNOS_DOMAIN = "lunos"
 DEFAULT_LUNOS_NAME = "LUNOS Ventilation"
 
-SPEED_TURBO = "turbo"  # FUTURE: support the special W2 extra-high mode
-SPEED_LIST = [SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH]
+SPEED_TURBO = 'turbo'  # FUTURE: support the special W2 extra-high mode
+SPEED_MAX = 'max' # what is max vs high vs ??? is it more logical
+SPEED_HIGH = 'high'
+SPEED_MEDIUM = 'medium'
+SPEED_LOW = 'low'
+SPEED_OFF = 'off'
+
+SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
 DEFAULT_SPEED = SPEED_MEDIUM
+
+PRESET_ECO = 'eco'
+PRESET_SUMMER_VENT = 'summer' # also known as night mode
+PRESET_EXHAUST_ONLY = 'exhaust'
+PRESET_TURBO = 'turbo'
 
 # configuration of switch states to active LUNOS speeds
 SPEED_SWITCH_STATES = {
-    SPEED_OFF: [STATE_OFF, STATE_OFF],
-    SPEED_LOW: [STATE_ON, STATE_OFF],
-    SPEED_MEDIUM: [STATE_OFF, STATE_ON],
-    SPEED_HIGH: [STATE_ON, STATE_ON],
+    SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
+    SPEED_LOW:    [ STATE_ON, STATE_OFF ],
+    SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+    SPEED_HIGH:   [ STATE_ON, STATE_ON ],
 }
+
+# set_percentage
 
 # delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
 SPEED_CHANGE_DELAY_SECONDS = 4
