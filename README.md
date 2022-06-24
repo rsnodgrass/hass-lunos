@@ -179,10 +179,10 @@ it is recommended the LUNOS included 12V transformer be upgraded to a larger uni
 
 #### LUNOS Controller Models
 
-| Model    | No.   | DIPS | Power          | Notes |
-|----------|:-----:|:----:|----------------|-------|
-| 5/UNI    | 39975 | None | 60W max load, 12VDC, 5A | Thru April 2022 (e.g. version V3.8) |
-| 5/UNI-FT | ????? |  4   | 60W max load, 12VDC, 5A | European? (e.g. version V4.10) |
+| Model    | Number | DIPS | Power          | Notes |
+|----------|:------:|:----:|----------------|-------|
+| [5/UNI](https://www.youtube.com/watch?v=wQxiYQebs10) | 39975 | None | 60W max load, 12VDC, 5A | Thru April 2022 (e.g. version V3.8) |
+| [5/UNI-FT](https://www.lueftung-shop.de/WebRoot/Store10/Shops/62067764/5665/7B9D/A50F/5108/9D00/C0A8/2ABA/F36B/UNI-FT.pdf) | 40089 |  4   | 60W max load, 12VDC, 5A | European? (e.g. version V4.10) |
 | [5/UNI-FR](https://www.youtube.com/watch?v=JqGWZRYL3q0) | 40269 |  4   | 60W, 12VDC, 5A | April 2022 onwards; released to support e2-60 |
 
 #### WiFi Smart Relays
