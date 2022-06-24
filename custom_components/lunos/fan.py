@@ -11,7 +11,7 @@ from homeassistant.components.fan import (
     PLATFORM_SCHEMA,
     ATTR_PRESET_MODES,
     FanEntity,
-    FanEntityMode
+    FanEntityFeature
 )
 from homeassistant.const import (
     CONF_ENTITY_ID,
@@ -30,30 +30,7 @@ from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.event import async_track_state_change_event
 
 from . import LUNOS_CODING_CONFIG
-from .const import (
-    ATTR_CFM,
-    ATTR_CMHR,
-    ATTR_DB,
-    ATTR_MODEL_NAME,
-    ATTR_VENTILATION_MODE,
-    CFM_TO_CMH,
-    CONF_CONTROLLER_CODING,
-    CONF_DEFAULT_FAN_COUNT,
-    CONF_DEFAULT_SPEED,
-    CONF_FAN_COUNT,
-    CONF_RELAY_W1,
-    CONF_RELAY_W2,
-    DEFAULT_LUNOS_NAME,
-    DEFAULT_SPEED,
-    LUNOS_DOMAIN,
-    SERVICE_CLEAR_FILTER_REMINDER,
-    SERVICE_TURN_OFF_SUMMER_VENTILATION,
-    SERVICE_TURN_ON_SUMMER_VENTILATION,
-    SPEED_LIST,
-    SPEED_SWITCH_STATES,
-    SPEED_TURBO,
-    UNKNOWN,
-)
+from .const import *
 
 LOG = logging.getLogger(__name__)
 
@@ -94,13 +71,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     relay_w1 = config.get(CONF_RELAY_W1)
     relay_w2 = config.get(CONF_RELAY_W2)
-    default_preset = config.get(CONF_DEFAULT_SPEED)
+    default_speed = config.get(CONF_DEFAULT_SPEED)
 
     LOG.info(
         f"LUNOS fan controller '{name}' using relays W1={relay_w1}, W2={relay_w2}'"
     )
 
-    fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_preset)
+    fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([fan], update_before_add=True)
 
     # expose service call APIs
@@ -123,7 +100,7 @@ class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
     def __init__(
-        self, hass, conf, name, relay_w1, relay_w2, default_preset: str = DEFAULT_PRESET
+        self, hass, conf, name, relay_w1, relay_w2, default_preset: str = PRESET_ECO
     ):
         """Init this sensor."""
 
@@ -224,7 +201,7 @@ class LUNOSFan(FanEntity):
     def update_attributes(self):
         """Calculate the current CFM based on the current fan speed as well as the
         number of fans configured by the user."""
-        self._attributes[ATTR_PRESET_MODE] = self._preset_mode
+        #self._attributes[ATTR_PRESET_MODE] = self._preset_mode
 
         if self._speed is not None:
             coding = self._attributes[CONF_CONTROLLER_CODING]
@@ -268,10 +245,10 @@ class LUNOSFan(FanEntity):
         return self._name
     
     @property
-    def percentage(self) -> Optional[int]:
+    def percentage(self):
         if self._speed is None:
             return None
-        return percentage_for_speed(self._speed)
+        return self.percentage_for_speed(self._speed)
 
     def speed_for_percentage(self, percentage: int) -> str:
         # FIXME: what about max? turbo?
@@ -300,17 +277,17 @@ class LUNOSFan(FanEntity):
             return 100
 
     async def async_set_percentage(self, percentage: int) -> None:        
-        speed = speed_for_percentage(percentage)
+        speed = self.speed_for_percentage(percentage)
 
         # convert speed back to a percentage to get scaled value
-        scaled_percentage = percentage_for_speed(speed)
+        scaled_percentage = self.percentage_for_speed(speed)
 
         # FIXME: what about for fans that cannot be turned off?
         # FIXME: for those that don't support off...what is the speed? (minimum cfm / max cfm?)
         if self._speed != speed:
             LOG.info(f"Manual speed change to {percentage}%: changing to {speed} ({scaled_percentage}%) from {self._speed}")
 
-        _update_speed(self, speed)
+        self._update_speed(speed)
 
         if self._preset_mode != PRESET_ECO:
             LOG.info(f"Manual speed change triggered preset reset to {PRESET_ECO}")
@@ -328,7 +305,7 @@ class LUNOSFan(FanEntity):
             return False
 
         # NOTE: for some 4-speed fan settings, there is never a true "OFF" setting
-        if not model_config.get('supports_off'):
+        if not self._model_config.get('supports_off'):
             return False
 
         return self._speed != SPEED_OFF

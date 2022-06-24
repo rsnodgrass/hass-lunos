@@ -17,6 +17,7 @@ PRESET_ECO = 'eco'
 PRESET_SUMMER_VENT = 'summer' # also known as night mode
 PRESET_EXHAUST_ONLY = 'exhaust'
 PRESET_TURBO = 'turbo'
+PRESET_OFF = SPEED_OFF
 
 # configuration of switch states to active LUNOS speeds
 SPEED_SWITCH_STATES = {
