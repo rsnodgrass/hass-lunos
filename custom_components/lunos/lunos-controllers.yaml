@@ -1,0 +1,127 @@
+# NOTE: The coding settings actually vary based on which 5/UNI controller is used
+
+lunos:
+  - number: 40269
+    type: "5/UNI-FR"
+    dip:
+      1:
+      2:
+      3:
+      4:
+        +: None
+	0: Standard Fan
+	-: Short Fan
+    codes:
+      0:
+        type: RA 15-60
+        cfm:
+          - 0
+          - 10
+          - 20
+          - 25
+      1:
+        type: RA 15-60
+        cfm:
+          - 0
+          - 10
+          - 20
+          - 35
+      2:
+        fan: RA 15-60
+        cfm:
+          - 10
+          - 20
+          - 25
+          - 35
+      3:
+        fan: e²
+        program: e² Short
+        cfm:
+          - 0
+          - 10
+          - 15
+          - 22
+      4:
+        fan: e²
+        program: e² Short
+        cfm:
+          - 10
+          - 15
+          - 20
+          - 22
+      5:
+        fan: e² 60
+        program: e² 60 Short
+        cfm:
+          - 0
+          - 10
+          - 15
+          - 20
+      6:
+        fan: e² 60
+        program: e² 60 Short
+        cfm:
+          - 5
+          - 10
+          - 15
+          - 25
+      7:
+        type: e² 60
+        program: e² 60 Short
+        cfm:
+          - 0
+          - 10
+          - 20
+          - 35
+      8:
+        type: e² 60
+        program: e² 60 Short
+        cfm:
+          - 10
+          - 20
+          - 25
+          - 35
+      9:
+        type: ego
+        program: Level III HRV 10cfm
+        cfm:
+          - 0
+          - 3
+          - 6
+          - 26
+      A:
+        type: ego
+        program: Level III HRV 10cfm
+        cfm:
+          - 3
+          - 6
+          - 10
+          - 26
+      B:
+        type: ego
+        program: Level III HRV 10cfm
+        cfm:
+          - 6
+          - 10
+          - 26
+          - 26
+      C: 
+        type: e² 60
+        program: e² 60 Short (no pairing)
+        cfm:
+          - 0
+          - 10
+          - 20
+          - 35
+        paired: false
+      D: 
+        type: e² 60
+        program: e² 60 Short (no pairing)
+        cfm:
+          - 10
+          - 20
+          - 25
+          - 35
+        paired: false
+      E:
+        type: 0-10 V

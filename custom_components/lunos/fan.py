@@ -141,15 +141,15 @@ class LUNOSFan(FanEntity):
 
         # enable various preset modes depending on the fan configuration
         if model_config.get('supports_summer_vent'):
-            self._preset_modes += PRESET_SUMMER_VENT
+            self._preset_modes.append(PRESET_SUMMER_VENT)
         if model_config.get('supports_exhaust_only'):
-            self._preset_modes += PRESET_EXHAUST_ONLY
+            self._preset_modes.append(PRESET_EXHAUST_ONLY)
         if model_config.get('supports_turbo_mode'):
-            self._preset_modes += PRESET_TURBO
+            self._preset_modes.append(PRESET_TURBO)
 
         # since the HASS fan API no longer has speed names, each speed name becomes a preset
         for speed in model_config.get('speeds'):
-            self._preset_modes += speed
+            self._preset_modes.append(speed)
 
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 

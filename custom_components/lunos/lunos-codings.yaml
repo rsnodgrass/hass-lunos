@@ -1,3 +1,5 @@
+# NOTE: The coding settings actually vary based on which 5/UNI controller is used
+
 e2:
   name: LUNOS e2 (non-USA)
   model_number: e2
@@ -388,3 +390,34 @@ ra-15-60-4speed:
         cmh: 60
         watts: 7.2
         decibel: 40.5
+
+e2-60:
+  name: LUNOS e2 60
+  controller_coding: D
+  behavior:
+    "off":
+        cfm: 10
+    low:
+        cfm: 20
+    medium:
+        cfm: 30
+    high:
+        cfm: 35  
+  peak_efficiency: 96
+  max_cmh: 60
+  power_consumption: 3.3             # 0.4 - 3.3W
+  specific_power_consumption: 0.11   # 0.11 W/m³/h
+  humidity_recovery_min: 20
+  humidity_recovery_max: 30
+  description: "The e²60 is pressure-optimised to ensures constant volume flow even in areas with very high back pressures, such as on the coast or at high altitudes."
+
+e2-60-short:
+  name: LUNOS e2 60 Short
+  peak_efficiency: 90
+  max_cmh: 60
+  power_consumption: 3.3             # 0.4 - 3.3W
+  specific_power_consumption: 0.11   # 0.11 W/m³/h
+  humidity_recovery_min: 20
+  humidity_recovery_max: 30
+  description: "The e²60 is pressure-optimised to ensures constant volume flow even in areas with very high back pressures, such as on the coast or at high altitudes."
+

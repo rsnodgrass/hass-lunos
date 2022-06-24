@@ -177,6 +177,14 @@ To power more than one LUNOS Controllers and fan sets (plus powering a ESP8266 b
 it is recommended the LUNOS included 12V transformer be upgraded to a larger unit. For example, the
 [Mean Well #RS-50-12](https://amazon.com/MEAN-WELL-RS-50-12-Supply-Single/dp/B005T8WCHC?tag=rynoshark-20) transformer produces up to 50W at 12V.
 
+#### LUNOS Controller Models
+
+| Model    | No.   | DIPS | Power          | Notes |
+|----------|:-----:|:----:|----------------|-------|
+| 5/UNI    | 39975 | None | 60W max load, 12VDC, 5A | Thru April 2022 (e.g. version V3.8) |
+| 5/UNI-FT | ????? |  4   | 60W max load, 12VDC, 5A | European? (e.g. version V4.10) |
+| [5/UNI-FR](https://www.youtube.com/watch?v=JqGWZRYL3q0) | 40269 |  4   | 60W, 12VDC, 5A | April 2022 onwards; released to support e2-60 |
+
 #### WiFi Smart Relays
 
 IMPORTANT: The pair of smart switches CANNOT be 120V switches as they MUST NOT be connected to any power source. For non-smart
