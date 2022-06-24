@@ -181,8 +181,8 @@ it is recommended the LUNOS included 12V transformer be upgraded to a larger uni
 
 | Model    | Number | DIPS | Power          | Notes |
 |----------|:------:|:----:|----------------|-------|
-| [5/UNI](https://www.youtube.com/watch?v=wQxiYQebs10) | 39975 | None | 60W max load, 12VDC, 5A | Thru April 2022 (e.g. version V3.8) |
-| [5/UNI-FT](https://www.lueftung-shop.de/WebRoot/Store10/Shops/62067764/5665/7B9D/A50F/5108/9D00/C0A8/2ABA/F36B/UNI-FT.pdf) | 40089 |  4   | 60W max load, 12VDC, 5A | European? (e.g. version V4.10) |
+| [5/UNI](https://www.youtube.com/watch?v=wQxiYQebs10) | 39975 | None | 60W max load, 12VDC, 5A | Thru April 2022 |
+| [5/UNI-FT](https://www.lueftung-shop.de/WebRoot/Store10/Shops/62067764/5665/7B9D/A50F/5108/9D00/C0A8/2ABA/F36B/UNI-FT.pdf) | 40089 |  4   | 60W max load, 12VDC, 5A | European?|
 | [5/UNI-FR](https://www.youtube.com/watch?v=JqGWZRYL3q0) | 40269 |  4   | 60W, 12VDC, 5A | April 2022 onwards; released to support e2-60 |
 
 #### WiFi Smart Relays
@@ -291,3 +291,4 @@ Ideally, we would update this integration to follow naming/conventions similar t
 * [LUNOS](https://www.lunos.de/en/) (official site) and [475 High Performance Supply](https://foursevenfive.com/lunos-e/) (USA LUNOS distributor)
 * [LUNOS Control4 KMX module](https://www.lunos.de/en/product/control4-e/) (KNX-LUNOS-CONTROL4) appears to offer sensor data such as indoor/outdoor temp
 * [eWeLink Sonoff Device Control in Home Assistant](https://sonoff.tech/product-review/tutorial/how-to-add-your-sonoff-devices-on-home-assistant/)
+* [LUNOS Advanced Controller Settings - 40269](https://store-b79re8owlk.mybigcommerce.com/content/product/ventilation/lunos_e2/advanced_controller_settings_guide.pdf)
