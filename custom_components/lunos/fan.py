@@ -315,24 +315,24 @@ class LUNOSFan(FanEntity):
         """Get the list of available preset modes."""
         return self._preset_modes
 
-    async def async_set_preset_mode(self, mode: str) -> None:
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the fan speed"""
         if mode not in self.preset_modes:
-            LOG.warning(f"LUNOS preset mode '{mode}' is not valid: {self.preset_modes}")
+            LOG.warning(f"LUNOS preset mode '{preset_mode}' is not valid: {self.preset_modes}")
             return
 
-        if mode == PRESET_OFF:
+        if preset_mode == PRESET_OFF:
             await self.turn_off()
 
-        elif mode == PRESET_ECO:
+        elif preset_mode == PRESET_ECO:
             # FIXME: reset
             self._preset_mode = PRESET_ECO
 
-        elif mode == PRESET_SUMMER_VENT:
+        elif preset_mode == PRESET_SUMMER_VENT:
             await self.async_turn_on_summer_ventilation()
 
         else:
-            LOG.warning(f"LUNOS preset mode '{mode}' is NOT YET IMPLEMENTED!")
+            LOG.warning(f"LUNOS preset mode '{preset_mode}' is NOT YET IMPLEMENTED!")
             self._preset_mode = PRESET_ECO
 
     @property
