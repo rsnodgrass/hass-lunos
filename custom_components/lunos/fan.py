@@ -238,7 +238,7 @@ class LUNOSFan(FanEntity):
             LOG.debug(
                 f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}"
             )
-            
+
     @property
     def name(self):
         """Return the name of the fan."""
@@ -345,14 +345,14 @@ class LUNOSFan(FanEntity):
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
             LOG.warning(f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS fan speed.")
-            return
+            return None
 
         w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.warning(
                 f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS fan speed."
             )
-            return
+            return None
 
         # determine the current speed based on relay W1/W2 state
         current_state = [ w1.state, w2.state ]
@@ -366,6 +366,9 @@ class LUNOSFan(FanEntity):
 
     def _update_speed(self, speed):
         """Update the speed along with any dependent attributes"""
+        if speed == None:
+            return
+        
         self._speed = speed
         self._last_state_change = time.time()
         self.update_attributes()
@@ -434,7 +437,7 @@ class LUNOSFan(FanEntity):
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
-        await self.async_set_precentage(0)
+        await self.async_set_percentage(0)
 
     async def call_switch_service(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
