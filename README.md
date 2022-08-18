@@ -9,6 +9,7 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [🥈](https://www.home-assistant.io/docs/quality_scale/)
+[Community Support](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)
 
 Provides control of decentralized [LUNOS Heat Recovery Ventilation fans](https://foursevenfive.com/blog/lunos-faq/) using any [Home Assistant](https://www.home-assistant.io/) compatible smart relays.
 The design of the LUNOS low-voltage fan controller uses a pair of physical switches (W1/W2) to turn on/off
