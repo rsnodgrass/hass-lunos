@@ -317,7 +317,7 @@ class LUNOSFan(FanEntity):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the fan speed"""
-        if mode not in self.preset_modes:
+        if preset_mode not in self.preset_modes:
             LOG.warning(f"LUNOS preset mode '{preset_mode}' is not valid: {self.preset_modes}")
             return
 
