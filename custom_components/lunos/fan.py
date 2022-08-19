@@ -1,5 +1,7 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
 
+# FIXME: disable polling now that this actually subscribes to relay switch updates
+
 import asyncio
 import logging
 import time
@@ -32,11 +34,6 @@ from . import LUNOS_CODING_CONFIG
 from .const import *
 
 LOG = logging.getLogger(__name__)
-
-# delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
-SPEED_CHANGE_DELAY_SECONDS = 4
-DELAY_BETWEEN_FLIPS = 0.100
-MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 15.0
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -221,7 +218,7 @@ class LUNOSFan(FanEntity):
         from_state = old_state.state if old_state else None
 
         if to_state != from_state:
-            LOG.info(f"{entity} change: {from_state} -> {to_state}, updating '{self._name}'")
+            LOG.info(f"{entity} changed: {from_state} -> {to_state}, updating '{self._name}'")
             self.schedule_update_ha_state()
             
     def update_attributes(self):
@@ -296,10 +293,10 @@ class LUNOSFan(FanEntity):
         # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
         else:
             speed_levels = {
-                SPEED_LOW: 25,
-                SPEED_MEDIUM: 50,
-                SPEED_HIGH: 75,
-                SPEED_TURBO: 100
+                SPEED_SILENT: 25,
+                SPEED_LOW: 50,
+                SPEED_MEDIUM: 75,
+                SPEED_HIGH: 100
             }
 
         # sort the speed levels based on the speed percentage
@@ -319,10 +316,10 @@ class LUNOSFan(FanEntity):
         # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
         else:
             return {
-                SPEED_LOW:    [ STATE_OFF, STATE_OFF ],
-                SPEED_MEDIUM: [ STATE_ON,  STATE_OFF ],
-                SPEED_HIGH:   [ STATE_OFF, STATE_ON ],
-                SPEED_TURBO:  [ STATE_ON,  STATE_ON ],
+                SPEED_SILENT: [ STATE_OFF, STATE_OFF ],
+                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
+                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
             }
     
     def speed_name_for_percentage(self, percentage: int) -> str:
@@ -337,7 +334,7 @@ class LUNOSFan(FanEntity):
             return None
         return self.speed_percentages.get(speed)
 
-    async def async_set_percentage(self, percentage: int) -> None:        
+    async def async_set_percentage(self, percentage: int) -> None:
         speed = self.speed_name_for_percentage(percentage)
 
         # convert speed name back to a percentage to get scaled value
@@ -492,7 +489,7 @@ class LUNOSFan(FanEntity):
             preset = self._default_preset
             await self.async_set_preset_mode(preset)
 
-        if percentage:
+        if percentage is not None:
             await self.async_set_percentage(percentage)
 
     async def async_turn_off(self, **kwargs) -> None:

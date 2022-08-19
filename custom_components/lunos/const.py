@@ -3,33 +3,29 @@ from homeassistant.const import STATE_OFF, STATE_ON
 LUNOS_DOMAIN = "lunos"
 DEFAULT_LUNOS_NAME = "LUNOS Ventilation"
 
-SPEED_TURBO = 'turbo'
+SPEED_TURBO = 'turbo' # not sure what this speed is ;)
 SPEED_HIGH = 'high'
 SPEED_MEDIUM = 'medium'
 SPEED_LOW = 'low'
+SPEED_SILENT = 'silent' # for 4-speed fans when there is no off
 SPEED_OFF = 'off'
 
 SPEED_MAX = 'max' # logical speed that is the lowest speed the fan can run
 SPEED_MIN = 'min' # logical speed that is the fastest speed the fan can run
 
-SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH, SPEED_TURBO ]
+SPEED_LIST = [ SPEED_OFF, SPEED_SILENT, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH, SPEED_TURBO ]
 DEFAULT_SPEED = SPEED_MEDIUM
 
+PRESET_SILENT = SPEED_SILENT
 PRESET_LOW = SPEED_LOW
 PRESET_MEDIUM = SPEED_MEDIUM
 PRESET_HIGH = SPEED_HIGH
 PRESET_TURBO = SPEED_TURBO
 
-# configuration of switch states to active LUNOS speeds
-SPEED_SWITCH_STATES = {
-    SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
-    SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-    SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-    SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
-}
-
 # delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
 SPEED_CHANGE_DELAY_SECONDS = 4
+DELAY_BETWEEN_FLIPS = 0.100
+MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 15.0
 
 ATTR_CFM = "cfm"  # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = "cmh"
