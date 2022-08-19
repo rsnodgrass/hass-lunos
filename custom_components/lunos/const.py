@@ -39,7 +39,7 @@ ATTR_WATTS = "watts"
 ATTR_SPEED = "speed"
 UNKNOWN = "Unknown"
 
-ATTR_VENTILATION_MODE = "vent_mode"
+ATTR_VENT_MODE = "vent_mode"
 VENT_ECO = 'eco'
 VENT_SUMMER = 'summer' # also known as night mode
 VENT_EXHAUST_ONLY = 'exhaust'

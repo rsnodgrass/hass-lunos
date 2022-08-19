@@ -38,11 +38,6 @@ SPEED_CHANGE_DELAY_SECONDS = 4
 DELAY_BETWEEN_FLIPS = 0.100
 MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 15.0
 
-# FIXME: support enabling exhaust-only mode
-VENTILATION_NORMAL = "normal"
-VENTILATION_SUMMER = "summer"
-VENTILATION_EXHAUST = "exhaust-only"
-
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(
@@ -153,7 +148,7 @@ class LUNOSFan(FanEntity):
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
         # air is circulated through the fan (eco, exhaust-only, summer-vent)
-        self._vent_modes = [ VENTILATION_NORMAL ]
+        self._vent_modes = [ VENT_ECO ]
 
         # enable various preset modes depending on the fan configuration
         if model_config.get('supports_summer_vent'):
@@ -162,7 +157,7 @@ class LUNOSFan(FanEntity):
             self._vent_modes.append(VENT_EXHAUST_ONLY)
 
         self._attributes |= {
-            ATTR_VENTILATION_MODE: VENTILATION_NORMAL,
+            ATTR_VENT_MODE: DEFAULT_VENT_MODE,
             'vent_modes': self._vent_modes
         }
 
@@ -558,7 +553,7 @@ class LUNOSFan(FanEntity):
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
         self._preset_mode = PRESET_SUMMER_VENT
-        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_SUMMER
+        self._attributes[ATTR_VENT_MODE] = VENT_SUMMER
 
     async def async_turn_off_summer_ventilation(self):
         if not self.supports_summer_ventilation():
@@ -575,4 +570,4 @@ class LUNOSFan(FanEntity):
         await self.async_call_switch_service(SERVICE_TOGGLE, self._relay_w2)
 
         self._preset_mode = DEFAULT_VENT_MODE
-        self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_NORMAL
+        self._attributes[ATTR_VENT_MODE] = DEFAULT_VENT_MODE
