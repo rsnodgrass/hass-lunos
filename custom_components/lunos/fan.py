@@ -148,14 +148,11 @@ class LUNOSFan(FanEntity):
             self._preset_modes.append(PRESET_TURBO)
 
         # since the HASS fan API no longer has speed names, each speed name becomes a preset
-        for speed in model_config.get('speeds'):
-            self._preset_modes.append(speed)
+        #for speed in model_config.get('speeds'):
+        #    self._preset_modes.append(speed)
 
         # NOTE: the next line may duplicate what is in the configuration
-        self._preset_modes.append(self.speed_presets().keys())
-
-        # ensure only one instance of each preset is in the modes list
-        self._preset_modes = list(set(self._preset_modes))
+        self._preset_modes.append(self.speed_presets.keys())
 
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 
@@ -256,6 +253,7 @@ class LUNOSFan(FanEntity):
             return None
         return self.percentage_for_speed(self._speed)
 
+    @property
     def speed_presets(self):
         speed_levels = {}
         
@@ -302,7 +300,7 @@ class LUNOSFan(FanEntity):
             }
     
     def speed_for_percentage(self, percentage: int) -> str:
-        for preset, preset_percent in self.speed_presets().items():
+        for preset, preset_percent in self.speed_presets.items():
             if percentage <= preset_percent:
                 return preset
             
