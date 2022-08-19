@@ -12,13 +12,13 @@ SPEED_OFF = 'off'
 SPEED_MAX = 'max' # logical speed that is the lowest speed the fan can run
 SPEED_MIN = 'min' # logical speed that is the fastest speed the fan can run
 
-SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
+SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH, SPEED_TURBO ]
 DEFAULT_SPEED = SPEED_MEDIUM
 
 PRESET_LOW = SPEED_LOW
 PRESET_MEDIUM = SPEED_MEDIUM
 PRESET_HIGH = SPEED_HIGH
-PRESET_TURBO = 'turbo'
+PRESET_TURBO = SPEED_TURBO
 
 # configuration of switch states to active LUNOS speeds
 SPEED_SWITCH_STATES = {

@@ -443,23 +443,17 @@ class LUNOSFan(FanEntity):
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the fan speed"""
-        switch_states = SPEED_SWITCH_STATES[speed]
+        switch_states = self.speed_switch_states.get(speed)
         if not switch_states:
             LOG.warning(
-                f"LUNOS fan '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change."
+                f"LUNOS '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change."
             )
             return
 
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
-        LOG.info(
-            f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}"
-        )
-        
-        # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
-        # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
-        # delay all state changes to be > 3 seconds since the last switch change
+        LOG.info(f"Changing LUNOS '{self._name}' speed: {self._speed} -> {speed}")
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
