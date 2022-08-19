@@ -163,10 +163,12 @@ class LUNOSFan(FanEntity):
 
         # determine the current speed of the fans
         current_speed = self._determine_current_speed()
-        self._update_speed(current_speed)
+        if current_speed:
+            self._update_speed(current_speed)
+        self.update_attributes()
 
         LOG.info(
-            f"Created LUNOS fan controller '{self._name}': W1={relay_w1}; W2={relay_w2}; presets={self.preset_modes}"
+            f"Created LUNOS fan '{self._name}': W1={relay_w1}; W2={relay_w2};  presets={self.preset_modes}"
         )
 
     async def async_added_to_hass(self) -> None:
@@ -204,41 +206,44 @@ class LUNOSFan(FanEntity):
         self._attributes[ATTR_SPEED] = self._speed
         #self._attributes[ATTR_PRESET_MODE] = self._preset_mode
 
-        if self._speed is not None:
-            coding = self._attributes[CONF_CONTROLLER_CODING]
-            controller_config = LUNOS_CODING_CONFIG[coding]
+        if self._speed is None:
+            return
 
-            fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
+        coding = self._attributes[CONF_CONTROLLER_CODING]
+        controller_config = LUNOS_CODING_CONFIG[coding]
+        if not controller_config:
+            LOG.error(f"Missing control config for {coding}!")
+            return
 
-            # load the behaviors of the fan for the current speed setting
-            behavior_config = controller_config.get("behavior")
-            if not behavior_config:
-                LOG.error(
-                    f"Missing behavior config for coding {coding}: {controller_config}"
-                )
-            behavior = behavior_config.get(self._speed, {})
+        fan_multiplier = self._fan_count / controller_config[CONF_DEFAULT_FAN_COUNT]
 
-            # determine the air flow rates based on fan behavior at the current speed
-            cfm = cmh = None
-            if "cfm" in behavior:
-                cfm_for_mode = behavior["cfm"]
-                cfm = cfm_for_mode * fan_multiplier
-                cmh = cfm * CFM_TO_CMH
-            elif "chm" in behavior:
-                chm_for_mode = behavior["chm"]
-                cmh = chm_for_mode * fan_multiplier
-                cfm = cmh / CFM_TO_CMH
+        # load the behaviors of the fan for the current speed setting
+        behavior_config = controller_config.get("behavior")
+        if not behavior_config:
+            LOG.error(f"Missing behavior config for {coding}: {controller_config}")
+            return
+            
+        behavior = behavior_config.get(self._speed, {})
 
-            self._attributes[ATTR_CFM] = cfm
-            self._attributes[ATTR_CMHR] = cmh
+        # determine the air flow rates based on fan behavior at the current speed
+        cfm = cmh = None
+        if "cfm" in behavior:
+            cfm_for_mode = behavior["cfm"]
+            cfm = cfm_for_mode * fan_multiplier
+            cmh = cfm * CFM_TO_CMH
+        elif "chm" in behavior:
+            chm_for_mode = behavior["chm"]
+            cmh = chm_for_mode * fan_multiplier
+            cfm = cmh / CFM_TO_CMH
 
-            # if sound level (dB) is defined for the speed, include it in attributes
-            self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
-            self._attributes[ATTR_WATTS] = behavior.get("watts", None)
+        self._attributes[ATTR_CFM] = cfm
+        self._attributes[ATTR_CMHR] = cmh
+            
+        # if sound level (dB) is defined for the speed, include it in attributes
+        self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
+        self._attributes[ATTR_WATTS] = behavior.get("watts", None)
 
-            LOG.debug(
-                f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}"
-            )
+        #LOG.debug(f"Updated '{self._name}': speed={self._speed}; config {controller_config}: {self._attributes}")
 
     @property
     def name(self):
@@ -375,17 +380,17 @@ class LUNOSFan(FanEntity):
         return self._attributes
 
     def _determine_current_speed(self):
-        """Probe the two relays to determine current state and find the matching speed switch state"""
+        """Probe W1/W2 relays for current states and then match to a speed"""
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
-            LOG.warning(f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS fan speed.")
+            LOG.warning(
+                f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS speed.")
             return None
 
         w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.warning(
-                f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS fan speed."
-            )
+                f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS speed.")
             return None
 
         # determine the current speed based on relay W1/W2 states
