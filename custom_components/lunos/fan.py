@@ -163,7 +163,7 @@ class LUNOSFan(FanEntity):
 
         self._attributes |= {
             ATTR_VENTILATION_MODE: VENTILATION_NORMAL,
-            'vent_modes': self._ventilation_modes
+            'vent_modes': self._vent_modes
         }
 
     def _init_presets(self, model_config, default_preset):
@@ -453,14 +453,16 @@ class LUNOSFan(FanEntity):
             )
             return
 
-        # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
-        # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
-        # delay all state changes to be > 3 seconds since the last switch change
-        await self._throttle_state_changes(SPEED_CHANGE_DELAY_SECONDS)
+        # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
+        await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
         LOG.info(
             f"Changing LUNOS fan '{self._name}' speed from {self._speed} to {speed}"
         )
+        
+        # flipping W1 or W2 within 3 seconds instructs the LUNOS controller to either clear the
+        # filter warning light (W1) or turn on the summer/night ventilation mode (W2), thus
+        # delay all state changes to be > 3 seconds since the last switch change
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
@@ -542,7 +544,6 @@ class LUNOSFan(FanEntity):
     # nighttime to allow cooler air into the house.
     def supports_summer_ventilation(self):
         return PRESET_SUMMER_VENT in self._vent_modes
-
     
     async def async_turn_on_summer_ventilation(self):
         if not self.supports_summer_ventilation():
@@ -561,9 +562,9 @@ class LUNOSFan(FanEntity):
         if not self.supports_summer_ventilation():
             return
 
-        # LUNOS requires waiting several seconds after W2 was last changed before turning off ventilation
+        # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
-
+        
         LOG.info(f"Disabling summer vent mode for LUNOS '{self._name}'")
 
         # toggle W2 relay once to clear summer ventilation (and return to previous speed)
