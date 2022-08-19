@@ -174,6 +174,10 @@ class LUNOSFan(FanEntity):
         for speed in self._relay_state_map:
             self._fan_speeds.append(speed)
 
+        self._attributes |= {
+            'fan_speeds': self._fan_speeds
+        }
+
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
         # air is circulated through the fan (eco, exhaust-only, summer-vent)
@@ -298,6 +302,8 @@ class LUNOSFan(FanEntity):
 
     @property
     def percentage(self):
+        if not self._current_speed:
+            return None
         return ordered_list_item_to_percentage(self._fan_speeds, self._current_speed)
 
     @property
@@ -357,7 +363,7 @@ class LUNOSFan(FanEntity):
 
         if preset_mode in self._fan_speeds:
             percentage = ordered_list_item_to_percentage(self._fan_speeds, preset_mode)            
-            LOG.info(f"Applying LUNOS speed preset '{preset_mode}' = {percentage}%")
+            LOG.info(f"Applying LUNOS speed '{preset_mode}' = {percentage}%")
             await self.async_set_percentage(percentage)
 
         elif preset_mode in self._vent_modes:
