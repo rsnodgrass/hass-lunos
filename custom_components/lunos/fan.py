@@ -88,7 +88,7 @@ class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
     def __init__(
-        self, hass, conf, name, relay_w1, relay_w2, default_preset: str = PRESET_ECO
+        self, hass, conf, name, relay_w1, relay_w2, default_preset: str = DEFAULT_VENT_MODE
     ):
         """Init this sensor."""
 
