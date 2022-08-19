@@ -3,12 +3,14 @@ from homeassistant.const import STATE_OFF, STATE_ON
 LUNOS_DOMAIN = "lunos"
 DEFAULT_LUNOS_NAME = "LUNOS Ventilation"
 
-SPEED_TURBO = 'turbo'  # FUTURE: support the special W2 extra-high mode
-SPEED_MAX = 'max' # what is max vs high vs ??? is it more logical
+SPEED_TURBO = 'turbo'
 SPEED_HIGH = 'high'
 SPEED_MEDIUM = 'medium'
 SPEED_LOW = 'low'
 SPEED_OFF = 'off'
+
+SPEED_MAX = 'max' # logical speed that is the lowest speed the fan can run
+SPEED_MIN = 'min' # logical speed that is the fastest speed the fan can run
 
 SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
 DEFAULT_SPEED = SPEED_MEDIUM
@@ -16,15 +18,18 @@ DEFAULT_SPEED = SPEED_MEDIUM
 PRESET_ECO = 'eco'
 PRESET_SUMMER_VENT = 'summer' # also known as night mode
 PRESET_EXHAUST_ONLY = 'exhaust'
+PRESET_LOW = SPEED_LOW
+PRESET_MEDIUM = SPEED_MEDIUM
+PRESET_HIGH = SPEED_HIGH
 PRESET_TURBO = 'turbo'
 PRESET_OFF = SPEED_OFF
 
 # configuration of switch states to active LUNOS speeds
 SPEED_SWITCH_STATES = {
     SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
-    SPEED_LOW:    [ STATE_ON, STATE_OFF ],
+    SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
     SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-    SPEED_HIGH:   [ STATE_ON, STATE_ON ],
+    SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
 # set_percentage

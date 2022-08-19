@@ -151,6 +151,12 @@ class LUNOSFan(FanEntity):
         for speed in model_config.get('speeds'):
             self._preset_modes.append(speed)
 
+        # NOTE: the next line may duplicate what is in the configuration
+        self._preset_modes.append(self.speed_presets().keys())
+
+        # ensure only one instance of each preset is in the modes list
+        self._preset_modes = [*set(self._preset_modes)]
+
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 
         # copy select fields from the model config into the attributes
@@ -250,31 +256,63 @@ class LUNOSFan(FanEntity):
             return None
         return self.percentage_for_speed(self._speed)
 
-    def speed_for_percentage(self, percentage: int) -> str:
-        # FIXME: what about max? turbo?
-        if percentage is None:
-            return None
-        elif percentage == 0:
-            return SPEED_OFF
-        elif percentage <= 33:
-            return SPEED_LOW
-        elif percentage <= 67:
-            return SPEED_MEDIUM
-        else:
-            return SPEED_HIGH
+    def speed_presets(self):
+        speed_levels = {}
+        
+        # If the model configuration indicates this LUNOS fan supports  OFF then the
+        # fan is configured via the LUNOS hardware controller with only three speeds total.
+        if self._model_config.get('supports_off'):
+            speed_levels = {
+                PRESET_OFF: 0,
+                PRESET_LOW: 33,
+                PRESET_MEDIUM: 66,
+                PRESET_HIGH: 100
+            }
 
-    def percentage_for_speed(self, speed: str) -> int:
-        # FIXME: this should actually be in YAML to dictate percentages (and whether 0 is allowed)
+        # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
+        else:
+            speed_levels = {
+                PRESET_LOW: 25,
+                PRESET_MEDIUM: 50,
+                PRESET_HIGH: 75,
+                PRESET_TURBO: 100
+            }
+
+        # sort the speed levels based on the speed percentage
+        return dict(sorted(speed_levels.items(), key=lambda item: item[1]))
+
+    def speed_switch_states(self):
+        # If the model configuration indicates this LUNOS fan supports OFF then the
+        # fan is configured via the LUNOS hardware controller with only three speeds total.
+        if self._model_config.get('supports_off'):
+            return {
+                SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
+                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
+                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
+            }
+
+        # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
+        else:
+            return {
+                SPEED_LOW:    [ STATE_OFF, STATE_OFF ],
+                SPEED_MEDIUM: [ STATE_ON,  STATE_OFF ],
+                SPEED_HIGH:   [ STATE_OFF, STATE_ON ],
+                SPEED_TURBO:  [ STATE_ON,  STATE_ON ],
+            }
+    
+    def speed_for_percentage(self, percentage: int) -> str:
+        for preset, preset_percent in self.speed_presets().items():
+            if percentage <= preset_percent:
+                return preset
+            
+        LOG.error(f"No speed preset exists for fan percentage {percentage} (must be 0-100)!!!")
+        return SPEED_OFF
+
+    def percentage_for_speed(self, speed: str) -> int:        
         if speed is None:
             return None
-        elif speed == SPEED_OFF:
-            return 0
-        elif speed == SPEED_LOW:
-            return 33
-        elif speed == SPEED_MEDIUM:
-            return 67
-        else:
-            return 100
+        return self.speed_presets.get(speed)
 
     async def async_set_percentage(self, percentage: int) -> None:        
         speed = self.speed_for_percentage(percentage)
@@ -282,7 +320,6 @@ class LUNOSFan(FanEntity):
         # convert speed back to a percentage to get scaled value
         scaled_percentage = self.percentage_for_speed(speed)
 
-        # FIXME: what about for fans that cannot be turned off?
         # FIXME: for those that don't support off...what is the speed? (minimum cfm / max cfm?)
         if self._speed != speed:
             LOG.info(f"Manual speed change to {percentage}%: changing to {speed} ({scaled_percentage}%) from {self._speed}")
@@ -318,9 +355,11 @@ class LUNOSFan(FanEntity):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the fan speed"""
         if preset_mode not in self.preset_modes:
-            LOG.warning(f"LUNOS preset mode '{preset_mode}' is not valid: {self.preset_modes}")
+            LOG.warning(f"LUNOS preset '{preset_mode}' is not valid: {self.preset_modes}")
             return
 
+        speeds = self.preset_speeds()
+        
         if preset_mode == PRESET_OFF:
             await self.turn_off()
 
@@ -331,8 +370,14 @@ class LUNOSFan(FanEntity):
         elif preset_mode == PRESET_SUMMER_VENT:
             await self.async_turn_on_summer_ventilation()
 
+        elif preset_mode in speeds:
+            # set the fan percentage based on the supplied preset mode name
+            percentage = speeds.get(preset_mode)
+            LOG.info(f"Applying LUNOS speed preset '{preset_mode}' as percentage {percentage}")
+            await self.async_set_percentage(percentage)
+    
         else:
-            LOG.warning(f"LUNOS preset mode '{preset_mode}' is NOT YET IMPLEMENTED!")
+            LOG.warning(f"LUNOS preset '{preset_mode}' not supported: {self.preset_modes}")
             self._preset_mode = PRESET_ECO
 
     @property
@@ -356,7 +401,7 @@ class LUNOSFan(FanEntity):
 
         # determine the current speed based on relay W1/W2 state
         current_state = [ w1.state, w2.state ]
-        for speed, speed_state in SPEED_SWITCH_STATES.items():
+        for speed, speed_state in self.speed_switch_states().items():
             if current_state == speed_state:
                 LOG.info(
                     f"LUNOS speed for '{self._name}' = {speed} (W1/W2={current_state})"
