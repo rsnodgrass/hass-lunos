@@ -291,7 +291,7 @@ class LUNOSFan(FanEntity):
         return self._name
 
     @property
-    def percentage(self) -> Optional[int]:
+    def percentage(self):
         return ordered_list_item_to_percentage(self._fan_speeds, self._current_speed)
 
     @property
