@@ -204,6 +204,7 @@ class LUNOSFan(FanEntity):
     def update_attributes(self):
         """Calculate the current CFM based on the current fan speed as well as the
         number of fans configured by the user."""
+        self._attributes[ATTR_SPEED] = self._speed
         #self._attributes[ATTR_PRESET_MODE] = self._preset_mode
 
         if self._speed is not None:
@@ -236,7 +237,7 @@ class LUNOSFan(FanEntity):
 
             # if sound level (dB) is defined for the speed, include it in attributes
             self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
-            self._attributes["watts"] = behavior.get("watts", None)
+            self._attributes[ATTR_WATTS] = behavior.get("watts", None)
 
             LOG.debug(
                 f"Updated '{self._name}': speed={self._speed}; attributes {self._attributes}; controller config {controller_config}"
@@ -299,13 +300,12 @@ class LUNOSFan(FanEntity):
                 SPEED_TURBO:  [ STATE_ON,  STATE_ON ],
             }
     
-    def speed_for_percentage(self, percentage: int) -> str:
+    def speed_name_for_percentage(self, percentage: int) -> str:
         for preset, preset_percent in self.speed_presets.items():
             if percentage <= preset_percent:
                 return preset
-            
-        LOG.error(f"No speed preset exists for fan percentage {percentage} (must be 0-100)!!!")
-        return SPEED_OFF
+        LOG.error(f"Invalid fan percentage {percentage} (must be 0-100)!")
+        return None
 
     def percentage_for_speed(self, speed: str) -> int:        
         if speed is None:
@@ -313,20 +313,14 @@ class LUNOSFan(FanEntity):
         return self.speed_presets.get(speed)
 
     async def async_set_percentage(self, percentage: int) -> None:        
-        speed = self.speed_for_percentage(percentage)
+        speed = self.speed_name_for_percentage(percentage)
 
-        # convert speed back to a percentage to get scaled value
+        # convert speed name back to a percentage to get scaled value
         scaled_percentage = self.percentage_for_speed(speed)
-
-        # FIXME: for those that don't support off...what is the speed? (minimum cfm / max cfm?)
-        if self._speed != speed:
-            LOG.info(f"Manual speed change to {percentage}%: changing to {speed} ({scaled_percentage}%) from {self._speed}")
-
+        
+        if self._speed != speed and percentage != scaled_percentage:
+            LOG.info(f"Set to {percentage}% speed (changed {self._speed} to {speed}) rescaled to {scaled_percentage}%")
         self._update_speed(speed)
-
-        if self._preset_mode != PRESET_ECO:
-            LOG.info(f"Manual speed change triggered preset reset to {PRESET_ECO}")
-            self._preset_mode = PRESET_ECO
 
     @property
     def speed(self) -> str:
@@ -397,10 +391,10 @@ class LUNOSFan(FanEntity):
             )
             return None
 
-        # determine the current speed based on relay W1/W2 state
+        # determine the current speed based on relay W1/W2 states
         current_state = [ w1.state, w2.state ]
-        for speed, speed_state in self.speed_switch_states().items():
-            if current_state == speed_state:
+        for speed, switch_state in self.speed_switch_states().items():
+            if current_state == switch_state:
                 LOG.info(
                     f"LUNOS speed for '{self._name}' = {speed} (W1/W2={current_state})"
                 )
@@ -415,9 +409,6 @@ class LUNOSFan(FanEntity):
         self._speed = speed
         self._last_state_change = time.time()
         self.update_attributes()
-
-        # FIXME: percentage 0 means OFF for those that support off!
-        # FIXME: for those that don't support off...what is the speed? (minimum cfm / max cfm?)
 
     async def _throttle_state_changes(self, required_delay):
         time_passed = time.time() - self._last_state_change
