@@ -1,4 +1,10 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
+#
+# FUTURE:
+#   - add switches (instead of presets) for the ventilation modes?
+#     the docs recommend this https://developers.home-assistant.io/docs/core/entity/fan/
+#     since the presets are sticky even if you change speed on the fan
+#   "Manually setting a speed must disable any set preset mode. If it is possible to set a percentage speed manually without disabling the preset mode, create a switch or service to represent the mode."
 
 import asyncio
 import logging
@@ -317,6 +323,20 @@ class LUNOSFan(FanEntity):
     def is_on(self) -> bool:
         """Return true if entity is on."""
         return self._current_speed != SPEED_OFF
+
+    async def async_turn_off(self, **kwargs) -> None:
+        if not SPEED_OFF in self._fan_speeds:
+            LOG.warning(f"LUNOS '{self._name}' hardware is not configured to support turning off!")
+            return
+        await self.async_set_percentage(0)
+
+    async def async_turn_on(self, speed = None, percentage = None, preset_mode = None, **kwargs) -> None:
+        if speed:
+            await self.async_set_preset_mode(speed)
+        elif percentage:
+            await self.async_set_percentage(percentage)
+        elif preset_mode:
+            await self.async_set_preset_mode(preset_mode)
 
     @property
     def preset_mode(self) -> str:
