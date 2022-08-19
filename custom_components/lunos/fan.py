@@ -142,10 +142,31 @@ class LUNOSFan(FanEntity):
         )
 
     def _init_fan_speeds(self, model_config):
+        self._relay_state_map = {}
+
+        # If the model configuration indicates this LUNOS fan supports OFF then the
+        # fan is configured via the LUNOS hardware controller with only three speeds total.
         if model_config.get('supports_off'):
-            self._fan_speeds = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
+            self._relay_state_map = {
+                SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
+                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
+                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
+            }
+
+        # If the hardware LUNOS controller is set to NOT support OFF,
+        # the fan has 4 speeds (and NO OFF).
         else:
-            self._fan_speeds = [ SPEED_SILENT, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
+            self._relay_state_map = {
+                SPEED_SILENT: [ STATE_OFF, STATE_OFF ],
+                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
+                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
+            }
+
+        self._fan_speeds = []
+        for speed in self._relay_state_map:
+            self._fan_speeds.append(speed)
 
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
@@ -275,35 +296,6 @@ class LUNOSFan(FanEntity):
     @property
     def speed_count(self) -> int:
         return len(self._fan_speeds)
-    
-    @property
-    def speed_percentages(self):
-        speed_levels = {}
-
-        # use HA's built in speed percentage utils
-        for speed in self._fan_speeds:
-            speed_levels[speed] = ordered_list_item_to_percentage(self._fan_speed, speed)
-        return speed_levels
-
-    def speed_switch_states(self):
-        # If the model configuration indicates this LUNOS fan supports OFF then the
-        # fan is configured via the LUNOS hardware controller with only three speeds total.
-        if self._model_config.get('supports_off'):
-            return {
-                SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
-                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
-            }
-
-        # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
-        else:
-            return {
-                SPEED_SILENT: [ STATE_OFF, STATE_OFF ],
-                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
-            }
 
     async def async_set_percentage(self, percentage: int) -> None:
         speed = percentage_to_ordered_list_item(self._fan_speeds, percentage)
@@ -390,7 +382,7 @@ class LUNOSFan(FanEntity):
 
         # determine the current speed based on relay W1/W2 states
         current_state = [ w1.state, w2.state ]
-        for speed, switch_state in self.speed_switch_states().items():
+        for speed, switch_state in self._relay_state_map.items():
             if current_state == switch_state:
                 LOG.info(f"LUNOS '{self._name}' speed={speed} (W1/W2={current_state})")
                 return speed
@@ -418,7 +410,7 @@ class LUNOSFan(FanEntity):
 
     async def async_set_speed(self, speed: str) -> None:
         """Set the fan speed"""
-        switch_states = self.speed_switch_states.get(speed)
+        switch_states = self._relay_state_map.get(speed)
         if not switch_states:
             LOG.warning(
                 f"LUNOS '{self._name}' DOES NOT support speed '{speed}'; ignoring speed change."
