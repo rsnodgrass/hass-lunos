@@ -181,8 +181,11 @@ class LUNOSFan(FanEntity):
             if key not in self._preset_modes:
                 self._preset_modes.append(key)
 
+        # off is not a preset...remove it from the list (use turn_off instead)
+        self._preset_modes.remove('off')
+
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
-        
+
         if default_preset not in self._preset_modes:
             LOG.warning(f"Default preset {default_preset} is not valid: {self._preset_modes}")
             default_preset = PRESET_ECO
@@ -196,7 +199,7 @@ class LUNOSFan(FanEntity):
 
         # setup listeners to track changes to the W1/W2 relays
         async_track_state_change_event(
-            self.hass, [self._relay_w1, self._relay_w2], self._relay_state_changed
+            self.hass, [self._relay_w1, self._relay_w2], self._detected_relay_state_change
         )
 
     @callback
@@ -204,7 +207,7 @@ class LUNOSFan(FanEntity):
         self.async_schedule_update_ha_state(True)
 
     @callback
-    def _relay_state_changed(self, event):
+    def _detected_relay_state_change(self, event):
         """Whenever W1 or W2 relays change state, the fan speed needs to be updated"""
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
@@ -218,8 +221,7 @@ class LUNOSFan(FanEntity):
             self.schedule_update_ha_state()
 
     def update_attributes(self):
-        """Calculate the current CFM based on the current fan speed as well as the
-        number of fans configured by the user."""
+        """Update any speed/state based attributes"""
         self._attributes[ATTR_SPEED] = self._speed
         #self._attributes[ATTR_PRESET_MODE] = self._preset_mode
 
@@ -239,7 +241,7 @@ class LUNOSFan(FanEntity):
         if not behavior_config:
             LOG.error(f"Missing behavior config for {coding}: {controller_config}")
             return
-            
+
         behavior = behavior_config.get(self._speed, {})
 
         # determine the air flow rates based on fan behavior at the current speed
@@ -266,7 +268,7 @@ class LUNOSFan(FanEntity):
     def name(self):
         """Return the name of the fan."""
         return self._name
-    
+
     @property
     def percentage(self):
         if self._speed is None:
@@ -277,7 +279,7 @@ class LUNOSFan(FanEntity):
     def speed_presets(self):
         speed_levels = {}
         
-        # If the model configuration indicates this LUNOS fan supports  OFF then the
+        # If the model configuration indicates this LUNOS fan supports OFF then the
         # fan is configured via the LUNOS hardware controller with only three speeds total.
         if self._model_config.get('supports_off'):
             speed_levels = {
@@ -349,13 +351,6 @@ class LUNOSFan(FanEntity):
     @property
     def is_on(self) -> bool:
         """Return true if entity is on."""
-        if self._speed is None:
-            return False
-
-        # NOTE: for some 4-speed fan settings, there is never a true "OFF" setting
-        if not self._model_config.get('supports_off'):
-            return False
-
         return self._speed != SPEED_OFF
 
     @property
@@ -370,27 +365,33 @@ class LUNOSFan(FanEntity):
             return
 
         speeds = self.preset_speeds()
-        
-        if preset_mode == PRESET_OFF:
-            await self.turn_off()
-
-        elif preset_mode == PRESET_ECO:
-            # FIXME: reset
-            self._preset_mode = PRESET_ECO
-
-        elif preset_mode == PRESET_SUMMER_VENT:
-            await self.async_turn_on_summer_ventilation()
-
-        elif preset_mode in speeds:
+        if preset_mode in speeds:
             # set the fan percentage based on the supplied preset mode name
             percentage = speeds.get(preset_mode)
             LOG.info(f"Applying LUNOS speed preset '{preset_mode}' as percentage {percentage}")
             await self.async_set_percentage(percentage)
+
+        elif preset_mode in self._vent_modes:
+            await self.async_set_ventilation_mode(preset_mode)
+
+        elif preset_mode == PRESET_SUMMER_VENT:
+            await self.async_turn_on_summer_ventilation()
     
         else:
             LOG.warning(f"LUNOS preset '{preset_mode}' not supported: {self.preset_modes}")
-            self._preset_mode = PRESET_ECO
 
+    async def async_set_ventilation_mode(self, vent_mode: str) -> None:
+        """Reset ventilation to LUNOS normal operation"""
+        if vent_mode == PRESET_SUMMER_VENT:
+            await self.async_turn_on_summer_ventilation()
+            self._vent_mode = vent_mode
+        elif vent_mode == PRESET_ECO:
+            LOG.warning("Reset to eco mode not implemented")
+            # FIXME: reset ventilation
+            self._vent_mode = vent_mode
+        else:
+            LOG.warning("Ventilation mode '{vent_mode}' not supported: {self._vent_modes}")
+            
     @property
     def extra_state_attributes(self):
         """Return state attributes."""
