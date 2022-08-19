@@ -155,7 +155,7 @@ class LUNOSFan(FanEntity):
         self._preset_modes.append(self.speed_presets().keys())
 
         # ensure only one instance of each preset is in the modes list
-        self._preset_modes = [*set(self._preset_modes)]
+#        self._preset_modes = [*set(self._preset_modes)]
 
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 
