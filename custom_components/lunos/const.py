@@ -15,9 +15,6 @@ SPEED_MIN = 'min' # logical speed that is the fastest speed the fan can run
 SPEED_LIST = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
 DEFAULT_SPEED = SPEED_MEDIUM
 
-PRESET_ECO = 'eco'
-PRESET_SUMMER_VENT = 'summer' # also known as night mode
-PRESET_EXHAUST_ONLY = 'exhaust'
 PRESET_LOW = SPEED_LOW
 PRESET_MEDIUM = SPEED_MEDIUM
 PRESET_HIGH = SPEED_HIGH
@@ -31,8 +28,6 @@ SPEED_SWITCH_STATES = {
     SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
 }
 
-# set_percentage
-
 # delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
 SPEED_CHANGE_DELAY_SECONDS = 4
 
@@ -42,8 +37,16 @@ ATTR_DB = "dB"
 ATTR_MODEL_NAME = "model"
 ATTR_WATTS = "watts"
 ATTR_SPEED = "speed"
-ATTR_VENTILATION_MODE = "ventilation"  # [ normal, summer, exhaust-only ]
 UNKNOWN = "Unknown"
+
+ATTR_VENTILATION_MODE = "vent_mode"
+VENT_ECO = 'eco'
+VENT_SUMMER = 'summer' # also known as night mode
+VENT_EXHAUST_ONLY = 'exhaust'
+VENT_MODES = [ VENT_ECO, VENT_SUMMER, VENT_EXHAUST_ONLY ] 
+PRESET_ECO = VENT_ECO
+PRESET_SUMMER_VENT = VENT_SUMMER
+PRESET_EXHAUST_ONLY = VENT_EXHAUST_ONLY
 
 SERVICE_CLEAR_FILTER_REMINDER = "lunos_clear_filter_reminder"
 SERVICE_TURN_ON_SUMMER_VENTILATION = "lunos_turn_on_summer_ventilation"
