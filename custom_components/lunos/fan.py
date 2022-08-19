@@ -368,7 +368,7 @@ class LUNOSFan(FanEntity):
             LOG.warning(f"LUNOS preset '{preset_mode}' is not valid: {self.preset_modes}")
             return
 
-        speeds = self.speed_percentages()
+        speeds = self.speed_percentages
         if preset_mode in speeds:
             # set the fan percentage based on the supplied preset mode name
             percentage = speeds.get(preset_mode)
