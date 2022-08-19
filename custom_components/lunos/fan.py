@@ -151,7 +151,7 @@ class LUNOSFan(FanEntity):
                 SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
                 SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
                 SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
             }
 
         # If the hardware LUNOS controller is set to NOT support OFF,
@@ -161,7 +161,7 @@ class LUNOSFan(FanEntity):
                 SPEED_SILENT: [ STATE_OFF, STATE_OFF ],
                 SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
                 SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
+                SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
             }
 
         self._fan_speeds = []
@@ -171,6 +171,7 @@ class LUNOSFan(FanEntity):
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
         # air is circulated through the fan (eco, exhaust-only, summer-vent)
+        self._vent_mode = VENT_ECO
         self._vent_modes = [ VENT_ECO ]
 
         # enable various preset modes depending on the fan configuration
@@ -318,6 +319,12 @@ class LUNOSFan(FanEntity):
         return self._current_speed != SPEED_OFF
 
     @property
+    def preset_mode(self) -> str:
+        """Return the current preset_mode."""
+        # NOTE: fan speeds are not really presets...the only presets LUNOS has is vent mode
+        return self._vent_mode
+
+    @property
     def preset_modes(self) -> list:
         """Get the list of available preset modes."""
         return self._preset_modes
@@ -351,15 +358,17 @@ class LUNOSFan(FanEntity):
 
         if vent_mode == VENT_SUMMER:
             await self.async_turn_on_summer_ventilation()
-            self._vent_mode = vent_mode
         elif vent_mode == VENT_ECO:
             LOG.warning("Reset to eco mode not implemented")
             # FIXME: reset ventilation
-            self._vent_mode = vent_mode
         elif vent_mode == VENT_EXHAUST_ONLY:
-            LOG.warning("Exhaust-only ventilation mode not implemented")
+            LOG.warning("Exhaust-only ventilation mode NOT IMPLEMENTED!")
         else:
-            LOG.warning("Ventilation mode '{vent_mode}' not supported: {self._vent_modes}")
+            LOG.error("Ventilation mode '{vent_mode}' not supported: {self._vent_modes}")
+            return
+
+        self._vent_mode = vent_mode
+        
             
     @property
     def extra_state_attributes(self):
