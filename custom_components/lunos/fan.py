@@ -1,5 +1,4 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
-# FIXME: can we subscribe to updates from the w1/w2 entities to avoid polling?
 
 import asyncio
 import logging
@@ -73,25 +72,19 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     relay_w2 = config.get(CONF_RELAY_W2)
     default_speed = config.get(CONF_DEFAULT_SPEED)
 
-    LOG.info(
-        f"LUNOS fan controller '{name}' using relays W1={relay_w1}, W2={relay_w2}'"
-    )
+    LOG.info(f"LUNOS fan '{name}' using relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
-    async_add_entities([fan], update_before_add=True)
+    async_add_entities([ fan ], update_before_add=True)
 
     # expose service call APIs
-    # FIXME: how are these tied to a specific LUNOS fan instance?
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
-    component.async_register_entity_service(
-        SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder"
-    )
-    component.async_register_entity_service(
-        SERVICE_TURN_ON_SUMMER_VENTILATION, {}, "async_turn_on_summer_ventilation"
-    )
-    component.async_register_entity_service(
-        SERVICE_TURN_OFF_SUMMER_VENTILATION, {}, "async_turn_off_summer_ventilation"
-    )
+    for service, method in {
+        SERVICE_CLEAR_FILTER_REMINDER:       "async_clear_filter_reminder",
+        SERVICE_TURN_ON_SUMMER_VENTILATION:  "async_turn_on_summer_ventilation",
+        SERVICE_TURN_OFF_SUMMER_VENTILATION: "async_turn_off_summer_ventilation"
+    }.items():
+        component.async_register_entity_service(service, {}, method)
 
     return True
 
@@ -109,12 +102,14 @@ class LUNOSFan(FanEntity):
         self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, name, hass=hass)
         super().__init__()
 
+        LOG.warning(f"Creating entity {self.entity_id}")
+
         self._attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
         self._speed = None
         self._last_state_change = None
 
-        # specify W1/W2 relays to use
+        # hardware W1/W2 relays used to determine and control LUNOS fan speed
         self._relay_w1 = relay_w1
         self._relay_w2 = relay_w2
 
@@ -122,38 +117,16 @@ class LUNOSFan(FanEntity):
         model_config = LUNOS_CODING_CONFIG[coding]
         self._model_config = model_config
 
-        # default fan count differs depending on controller mode (e2 = 2 fans, eGO = 1 fan)
+        # fan count differs depending on controller mode (e2 = 2 fans, eGO = 1 fan)
         self._fan_count = conf.get(CONF_FAN_COUNT, model_config[CONF_DEFAULT_FAN_COUNT])
 
         self._attributes = {
             ATTR_MODEL_NAME: model_config["name"],
             CONF_CONTROLLER_CODING: coding,
             CONF_FAN_COUNT: self._fan_count,
-            ATTR_VENTILATION_MODE: VENTILATION_NORMAL,
-            ATTR_DB: UNKNOWN,
             CONF_RELAY_W1: relay_w1,
             CONF_RELAY_W2: relay_w2,
         }
-
-        self._default_preset = default_preset
-        self._preset_mode = self._default_preset
-        self._preset_modes = [ PRESET_ECO ]
-        for key in self.speed_presets.keys():
-            self._preset_modes.append(key)
-
-        # enable various preset modes depending on the fan configuration
-        if model_config.get('supports_summer_vent'):
-            self._preset_modes.append(PRESET_SUMMER_VENT)
-        if model_config.get('supports_exhaust_only'):
-            self._preset_modes.append(PRESET_EXHAUST_ONLY)
-        if model_config.get('supports_turbo_mode'):
-            self._preset_modes.append(PRESET_TURBO)
-
-        # since the HASS fan API no longer has speed names, each speed name becomes a preset
-        #for speed in model_config.get('speeds'):
-        #    self._preset_modes.append(speed)
-
-        self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 
         # copy select fields from the model config into the attributes
         for attribute in [
@@ -162,16 +135,65 @@ class LUNOSFan(FanEntity):
         ]:
             if attribute in model_config:
                 self._attributes[attribute] = model_config[attribute]
+        
+        self._init_vent_modes(model_config)
+        self._init_presets(model_config, default_preset)
 
-        # determine the current speed of the fans
+        # attempt to determine the current speed of the fans (this can fail on startup
+        # if the W1/W2 relays have not yet been initialized by Home Assistant)
         current_speed = self._determine_current_speed()
         if current_speed:
             self._update_speed(current_speed)
         self.update_attributes()
 
         LOG.info(
-            f"Created LUNOS fan '{self._name}': W1={relay_w1}; W2={relay_w2};  presets={self.preset_modes}"
+            f"Created LUNOS fan '{self._name}': W1={relay_w1}; W2={relay_w2}; presets={self.preset_modes}"
         )
+
+    def _init_vent_modes(self, model_config):
+        # ventilation modes have nothing to do with speed, they refer to how
+        # air is circulated through the fan (eco, exhaust-only, summer-vent)
+        self._vent_modes = [ VENTILATION_NORMAL ]
+
+        # enable various preset modes depending on the fan configuration
+        if model_config.get('supports_summer_vent'):
+            self._vent_modes.append(PRESET_SUMMER_VENT)
+        if model_config.get('supports_exhaust_only'):
+            self._vent_modes.append(PRESET_EXHAUST_ONLY)
+
+        self._attributes |= {
+            ATTR_VENTILATION_MODE: VENTILATION_NORMAL,
+            'vent_modes': self._ventilation_modes
+        }
+
+    def _init_presets(self, model_config, default_preset):
+        self._preset_modes = [ PRESET_ECO ]
+
+        if model_config.get('supports_turbo_mode'):
+            self._preset_modes.append(PRESET_TURBO)
+
+        # since the HASS fan API no longer has speed names, each speed name becomes a preset
+        #for speed in model_config.get('speeds'):
+        #    self._preset_modes.append(speed)
+
+        # add all the fan speeds as presets
+        for key in self.speed_presets.keys():
+            if key not in self._preset_modes:
+                self._preset_modes.append(key)
+
+        # add all ventilation modes as presets
+        for key in self._vent_modes:
+            if key not in self._preset_modes:
+                self._preset_modes.append(key)
+
+        self._attributes[ATTR_PRESET_MODES] = self._preset_modes
+        
+        if default_preset not in self._preset_modes:
+            LOG.warning(f"Default preset {default_preset} is not valid: {self._preset_modes}")
+            default_preset = PRESET_ECO
+
+        self._default_preset = default_preset
+        self._preset_mode = self._default_preset
 
     async def async_added_to_hass(self) -> None:
         """Once entity has been added to HASS, subscribe to state changes."""
