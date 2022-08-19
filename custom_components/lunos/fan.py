@@ -382,6 +382,11 @@ class LUNOSFan(FanEntity):
 
     async def async_set_ventilation_mode(self, vent_mode: str) -> None:
         """Reset ventilation to LUNOS normal operation"""
+
+        # if summer vent was known to previously be on, turn it off
+        if self._vent_mode == PRESET_SUMMER_VENT:
+            await self.async_turn_off_summer_ventilation()
+
         if vent_mode == PRESET_SUMMER_VENT:
             await self.async_turn_on_summer_ventilation()
             self._vent_mode = vent_mode
@@ -415,9 +420,7 @@ class LUNOSFan(FanEntity):
         current_state = [ w1.state, w2.state ]
         for speed, switch_state in self.speed_switch_states().items():
             if current_state == switch_state:
-                LOG.info(
-                    f"LUNOS speed for '{self._name}' = {speed} (W1/W2={current_state})"
-                )
+                LOG.info(f"LUNOS '{self._name}' speed={speed} (W1/W2={current_state})")
                 return speed
         return None
 
@@ -493,7 +496,7 @@ class LUNOSFan(FanEntity):
         """Turn the fan off."""
         await self.async_set_percentage(0)
 
-    async def call_switch_service(self, method, relay_entity_id):
+    async def async_call_switch_service(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
         await self.hass.services.async_call(
             "switch", method, {"entity_id": relay_entity_id}, False
@@ -504,7 +507,7 @@ class LUNOSFan(FanEntity):
         LOG.info(f"Setting relay {relay_entity_id} to {state}")
 
         method = SERVICE_TURN_ON if state == STATE_ON else SERVICE_TURN_OFF
-        await self.call_switch_service(method, relay_entity_id)
+        await self.async_call_switch_service(method, relay_entity_id)
 
     async def toggle_relay_to_set_lunos_mode(self, entity_id):
         saved_speed = self._speed
@@ -519,31 +522,36 @@ class LUNOSFan(FanEntity):
             SERVICE_TURN_ON,
         ]
         for method in toggle_methods:
-            await self.call_switch_service(method, entity_id)
+            await self.async_call_switch_service(method, entity_id)
             await asyncio.sleep(DELAY_BETWEEN_FLIPS)
 
         # restore speed state back to the previous state before toggling relay
         await self.async_set_speed(saved_speed)
 
-    # flipping W1 within 3 seconds instructs the LUNOS controller to clear the filter warning light
+    
     async def async_clear_filter_reminder(self):
         LOG.info(f"Clearing the filter change reminder light for LUNOS '{self._name}'")
+
+        # toggling W1 many times within 3 seconds instructs the LUNOS controller
+        # to clear the filter warning light
         self.toggle_relay_to_set_lunos_mode(self._relay_w1)
 
-    # In summer ventilation mode, the reversing time of the fan is extended to one hour, i.e. the fan will run
-    # for one hour in the supply air mode and the following hour in the exhaust air mode etc. for max. 8 hours
+    # In LUNOS summer vent mode, the reversing time for the fans is extended to 1 hour.
+    # The fan will run for 1 hour in the supply air mode and the following hour in
+    # the exhaust air mode (resets after 8 hours). This is typically used during summer
+    # nighttime to allow cooler air into the house.
     def supports_summer_ventilation(self):
-        return PRESET_SUMMER_VENT in self.preset_modes
+        return PRESET_SUMMER_VENT in self._vent_modes
 
-    # flipping W2 within 3 seconds instructs the LUNOS controller to turn on summer ventilation mode
+    
     async def async_turn_on_summer_ventilation(self):
         if not self.supports_summer_ventilation():
-            LOG.warning(
-                f"LUNOS controller '{self._name}' DOES NOT support summer ventilation"
-            )
+            LOG.warning(f"LUNOS '{self._name}' DOES NOT support summer vent")
             return
 
-        LOG.info(f"Enabling summer ventilation mode for LUNOS '{self._name}'")
+        LOG.info(f"Enabling summer vent mode for LUNOS '{self._name}'")
+        # toggling W2 many times within 3 seconds instructs the LUNOS controller
+        # to turn on summer ventilation mode
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
         self._preset_mode = PRESET_SUMMER_VENT
@@ -553,15 +561,15 @@ class LUNOSFan(FanEntity):
         if not self.supports_summer_ventilation():
             return
 
-        # LUNOS requires waiting for a while after the last time W2 was flipped before turning off ventilation
+        # LUNOS requires waiting several seconds after W2 was last changed before turning off ventilation
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
-        LOG.info(f"Disabling summer ventilation mode for LUNOS '{self._name}'")
+        LOG.info(f"Disabling summer vent mode for LUNOS '{self._name}'")
 
-        # toggle the switch back and forth once (thus restoring existing state) to clear summer ventilation mode
-        await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
+        # toggle W2 relay once to clear summer ventilation (and return to previous speed)
+        await self.async_call_switch_service(SERVICE_TOGGLE, self._relay_w2)
         await asyncio.sleep(DELAY_BETWEEN_FLIPS)
-        await self.call_switch_service(SERVICE_TOGGLE, self._relay_w2)
+        await self.async_call_switch_service(SERVICE_TOGGLE, self._relay_w2)
 
         self._preset_mode = PRESET_ECO
         self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_NORMAL
