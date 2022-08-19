@@ -143,7 +143,7 @@ class LUNOSFan(FanEntity):
 
     def _init_fan_speeds(self, model_config):
         if model_config.get('supports_off'):
-            self._fan_speeds = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]                
+            self._fan_speeds = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
         else:
             self._fan_speeds = [ SPEED_SILENT, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
 
@@ -173,13 +173,8 @@ class LUNOSFan(FanEntity):
         #for speed in model_config.get('speeds'):
         #    self._preset_modes.append(speed)
 
-        # add all fan speeds as presets
-        for key in self.speed_percentages.keys():
-            if key not in self._preset_modes:
-                self._preset_modes.append(key)
-
-        # add all ventilation modes as presets
-        for key in self._vent_modes:
+        # add all fan speeds and ventilation modes as presets
+        for key in self._fan_speeds + self._vent_modes:
             if key not in self._preset_modes:
                 self._preset_modes.append(key)
                 
@@ -274,10 +269,13 @@ class LUNOSFan(FanEntity):
         return self._name
 
     @property
-    def percentage(self):
-        current_speed = self._current_speed
-        return ordered_list_item_to_percentage(self._fan_speeds, current_speed)
+    def percentage(self) -> Optional[int]:
+        return ordered_list_item_to_percentage(self._fan_speeds, self._current_speed)
 
+    @property
+    def speed_count(self) -> int:
+        return len(self._fan_speeds)
+    
     @property
     def speed_percentages(self):
         speed_levels = {}
@@ -286,28 +284,6 @@ class LUNOSFan(FanEntity):
         for speed in self._fan_speeds:
             speed_levels[speed] = ordered_list_item_to_percentage(self._fan_speed, speed)
         return speed_levels
-        
-        # If the model configuration indicates this LUNOS fan supports OFF then the
-        # fan is configured via the LUNOS hardware controller with only three speeds total.
-        if self._model_config.get('supports_off'):
-            speed_levels = {
-                SPEED_OFF: 0,
-                SPEED_LOW: 33,
-                SPEED_MEDIUM: 66,
-                SPEED_HIGH: 100
-            }
-
-        # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
-        else:
-            speed_levels = {
-                SPEED_SILENT: 25,
-                SPEED_LOW: 50,
-                SPEED_MEDIUM: 75,
-                SPEED_HIGH: 100
-            }
-
-        # sort the speed levels based on the speed percentage
-        return dict(sorted(speed_levels.items(), key=lambda item: item[1]))
 
     def speed_switch_states(self):
         # If the model configuration indicates this LUNOS fan supports OFF then the
@@ -360,10 +336,8 @@ class LUNOSFan(FanEntity):
             LOG.warning(f"LUNOS preset '{preset_mode}' is not valid: {self.preset_modes}")
             return
 
-        speeds = self.speed_percentages
-        if preset_mode in speeds:
-            # set the fan percentage based on the supplied preset mode name
-            percentage = speeds.get(preset_mode)
+        if preset_mode in self._fan_speeds:
+            percentage = ordered_list_item_to_percentage(self._fan_speeds, preset_mode)            
             LOG.info(f"Applying LUNOS speed preset '{preset_mode}' = {percentage}%")
             await self.async_set_percentage(percentage)
 
@@ -463,14 +437,13 @@ class LUNOSFan(FanEntity):
         self._update_speed(speed)
 
     async def async_update(self):
-        """Attempt to retrieve current state of the fan by inspecting the switch state."""
+        """Determine current state of the fan by inspecting relay states."""
 
         # delay reading allow any pending switch changes to be applied
         await asyncio.sleep(1.0)
 
         current_speed = self._determine_current_speed()
-        if current_speed != self._current_speed:
-            self._update_speed(current_speed)
+        self._update_speed(current_speed)
 
     async def async_turn_on(self,
                             percentage: int = None,
