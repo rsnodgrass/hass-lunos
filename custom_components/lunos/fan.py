@@ -176,13 +176,8 @@ class LUNOSFan(FanEntity):
         #for speed in model_config.get('speeds'):
         #    self._preset_modes.append(speed)
 
-        # add all the fan speeds as presets
-        for key in self.speed_presets.keys():
-            if key not in self._preset_modes:
-                self._preset_modes.append(key)
-
-        # add all ventilation modes as presets
-        for key in self._vent_modes:
+        # add all the fan speeds and ventilation modes as presets
+        for key in self.speed_presets.keys() + self._vent_modes:
             if key not in self._preset_modes:
                 self._preset_modes.append(key)
 
