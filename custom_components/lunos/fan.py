@@ -137,7 +137,9 @@ class LUNOSFan(FanEntity):
 
         self._default_preset = default_preset
         self._preset_mode = self._default_preset
-        self._preset_modes = [ PRESET_ECO ] + self.speed_presets.keys()
+        self._preset_modes = [ PRESET_ECO ]
+        for key in self.speed_presets.keys():
+            self._preset_modes.append(key)
 
         # enable various preset modes depending on the fan configuration
         if model_config.get('supports_summer_vent'):
