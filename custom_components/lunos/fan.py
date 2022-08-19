@@ -214,14 +214,12 @@ class LUNOSFan(FanEntity):
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
 
-        # sometimes there is no from_state
+        # old_state is optional in the event
         old_state = event.data.get("old_state")
         from_state = old_state.state if old_state else None
 
-        if not from_state or to_state != from_state:
-            LOG.info(
-                f"{entity} changed from {from_state} to {to_state}, updating '{self._name}'"
-            )
+        if to_state != from_state:
+            LOG.info(f"{entity} change: {from_state} -> {to_state}, updating '{self._name}'")
             self.schedule_update_ha_state()
 
     def update_attributes(self):
