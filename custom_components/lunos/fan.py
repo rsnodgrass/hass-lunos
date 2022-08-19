@@ -157,9 +157,9 @@ class LUNOSFan(FanEntity):
 
         # enable various preset modes depending on the fan configuration
         if model_config.get('supports_summer_vent'):
-            self._vent_modes.append(PRESET_SUMMER_VENT)
+            self._vent_modes.append(VENT_SUMMER)
         if model_config.get('supports_exhaust_only'):
-            self._vent_modes.append(PRESET_EXHAUST_ONLY)
+            self._vent_modes.append(VENT_EXHAUST_ONLY)
 
         self._attributes |= {
             ATTR_VENTILATION_MODE: VENTILATION_NORMAL,
@@ -167,7 +167,7 @@ class LUNOSFan(FanEntity):
         }
 
     def _init_presets(self, model_config, default_preset):
-        self._preset_modes = [ PRESET_ECO ]
+        self._preset_modes = [ VENT_ECO ] # eco vent mode
 
         if model_config.get('supports_turbo_mode'):
             self._preset_modes.append(PRESET_TURBO)
@@ -188,7 +188,7 @@ class LUNOSFan(FanEntity):
 
         if default_preset not in self._preset_modes:
             LOG.warning(f"Default preset {default_preset} is not valid: {self._preset_modes}")
-            default_preset = PRESET_ECO
+            default_preset = DEFAULT_VENT_MODE
 
         self._default_preset = default_preset
         self._preset_mode = self._default_preset
@@ -387,13 +387,15 @@ class LUNOSFan(FanEntity):
         if self._vent_mode == PRESET_SUMMER_VENT:
             await self.async_turn_off_summer_ventilation()
 
-        if vent_mode == PRESET_SUMMER_VENT:
+        if vent_mode == VENT_SUMMER:
             await self.async_turn_on_summer_ventilation()
             self._vent_mode = vent_mode
-        elif vent_mode == PRESET_ECO:
+        elif vent_mode == VENT_ECO:
             LOG.warning("Reset to eco mode not implemented")
             # FIXME: reset ventilation
             self._vent_mode = vent_mode
+        elif vent_mode == VENT_EXHAUST_ONLY:
+            LOG.warning("Exhaust-only ventilation mode not implemented")
         else:
             LOG.warning("Ventilation mode '{vent_mode}' not supported: {self._vent_modes}")
             
@@ -572,5 +574,5 @@ class LUNOSFan(FanEntity):
         await asyncio.sleep(DELAY_BETWEEN_FLIPS)
         await self.async_call_switch_service(SERVICE_TOGGLE, self._relay_w2)
 
-        self._preset_mode = PRESET_ECO
+        self._preset_mode = DEFAULT_VENT_MODE
         self._attributes[ATTR_VENTILATION_MODE] = VENTILATION_NORMAL
