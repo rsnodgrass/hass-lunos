@@ -177,7 +177,7 @@ class LUNOSFan(FanEntity):
         #    self._preset_modes.append(speed)
 
         # add all the fan speeds and ventilation modes as presets
-        for key in self.speed_presets.keys() + self._vent_modes:
+        for key in self.speed_percentages.keys() + self._vent_modes:
             if key not in self._preset_modes:
                 self._preset_modes.append(key)
 
@@ -276,26 +276,26 @@ class LUNOSFan(FanEntity):
         return self.percentage_for_speed(self._speed)
 
     @property
-    def speed_presets(self):
+    def speed_percentages(self):
         speed_levels = {}
         
         # If the model configuration indicates this LUNOS fan supports OFF then the
         # fan is configured via the LUNOS hardware controller with only three speeds total.
         if self._model_config.get('supports_off'):
             speed_levels = {
-                PRESET_OFF: 0,
-                PRESET_LOW: 33,
-                PRESET_MEDIUM: 66,
-                PRESET_HIGH: 100
+                SPEED_OFF: 0,
+                SPEED_LOW: 33,
+                SPEED_MEDIUM: 66,
+                SPEED_HIGH: 100
             }
 
         # If the hardware LUNOS controller is set to NOT support OFF, the fan has four speeds (and NO OFF).
         else:
             speed_levels = {
-                PRESET_LOW: 25,
-                PRESET_MEDIUM: 50,
-                PRESET_HIGH: 75,
-                PRESET_TURBO: 100
+                SPEED_LOW: 25,
+                SPEED_MEDIUM: 50,
+                SPEED_HIGH: 75,
+                SPEED_TURBO: 100
             }
 
         # sort the speed levels based on the speed percentage
@@ -322,7 +322,7 @@ class LUNOSFan(FanEntity):
             }
     
     def speed_name_for_percentage(self, percentage: int) -> str:
-        for preset, preset_percent in self.speed_presets.items():
+        for preset, preset_percent in self.speed_percentages.items():
             if percentage <= preset_percent:
                 return preset
         LOG.error(f"Invalid fan percentage {percentage} (must be 0-100)!")
@@ -331,7 +331,7 @@ class LUNOSFan(FanEntity):
     def percentage_for_speed(self, speed: str) -> int:        
         if speed is None:
             return None
-        return self.speed_presets.get(speed)
+        return self.speed_percentages.get(speed)
 
     async def async_set_percentage(self, percentage: int) -> None:        
         speed = self.speed_name_for_percentage(percentage)
