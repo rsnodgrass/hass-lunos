@@ -1,7 +1,5 @@
 """LUNOS Heat Recovery Ventilation Fan Control (e2/eGO)"""
 
-# FIXME: disable polling now that this actually subscribes to relay switch updates
-
 import asyncio
 import logging
 import time
@@ -30,6 +28,8 @@ from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.event import async_track_state_change_event
 
+from homeassistant.util.percentage import ordered_list_item_to_percentage, percentage_to_ordered_list_item
+
 from . import LUNOS_CODING_CONFIG
 from .const import *
 
@@ -56,9 +56,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 # pylint: disable=unused-argument
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Initialize the LUNOS fans from config."""
-    name = config.get(CONF_NAME)
-    if not name:
-        name = DEFAULT_LUNOS_NAME
+    name = config.get(CONF_NAME, DEFAULT_LUNOS_NAME)
 
     relay_w1 = config.get(CONF_RELAY_W1)
     relay_w2 = config.get(CONF_RELAY_W2)
@@ -98,7 +96,7 @@ class LUNOSFan(FanEntity):
 
         self._attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
-        self._speed = None
+        self._current_speed = None
         self._last_relay_change = None
 
         # hardware W1/W2 relays used to determine and control LUNOS fan speed
@@ -127,7 +125,8 @@ class LUNOSFan(FanEntity):
         ]:
             if attribute in model_config:
                 self._attributes[attribute] = model_config[attribute]
-        
+
+        self._init_fan_speeds(model_config)
         self._init_vent_modes(model_config)
         self._init_presets(model_config, default_preset)
 
@@ -141,6 +140,12 @@ class LUNOSFan(FanEntity):
         LOG.info(
             f"Created LUNOS fan '{self._name}': W1={relay_w1}; W2={relay_w2}; presets={self.preset_modes}"
         )
+
+    def _init_fan_speeds(self, model_config):
+        if model_config.get('supports_off'):
+            self._fan_speeds = [ SPEED_OFF, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]                
+        else:
+            self._fan_speeds = [ SPEED_SILENT, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH ]
 
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
@@ -223,10 +228,8 @@ class LUNOSFan(FanEntity):
             
     def update_attributes(self):
         """Update any speed/state based attributes"""
-        self._attributes[ATTR_SPEED] = self._speed
-        #self._attributes[ATTR_PRESET_MODE] = self._preset_mode
-
-        if self._speed is None:
+        self._attributes[ATTR_SPEED] = self._current_speed
+        if self._current_speed is None:
             return
 
         coding = self._attributes[CONF_CONTROLLER_CODING]
@@ -243,7 +246,7 @@ class LUNOSFan(FanEntity):
             LOG.error(f"Missing behavior config for {coding}: {controller_config}")
             return
 
-        behavior = behavior_config.get(self._speed, {})
+        behavior = behavior_config.get(self._current_speed, {})
 
         # determine the air flow rates based on fan behavior at the current speed
         cfm = cmh = None
@@ -263,7 +266,7 @@ class LUNOSFan(FanEntity):
         self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
         self._attributes[ATTR_WATTS] = behavior.get("watts", None)
 
-        #LOG.debug(f"Updated '{self._name}': speed={self._speed}; config {controller_config}: {self._attributes}")
+        #LOG.debug(f"Updated '{self._name}': speed={self._current_speed}; config {controller_config}: {self._attributes}")
 
     @property
     def name(self):
@@ -272,13 +275,17 @@ class LUNOSFan(FanEntity):
 
     @property
     def percentage(self):
-        if self._speed is None:
-            return None
-        return self.percentage_for_speed(self._speed)
+        current_speed = self._current_speed
+        return ordered_list_item_to_percentage(self._fan_speeds, current_speed)
 
     @property
     def speed_percentages(self):
         speed_levels = {}
+
+        # use HA's built in speed percentage utils
+        for speed in self._fan_speeds:
+            speed_levels[speed] = ordered_list_item_to_percentage(self._fan_speed, speed)
+        return speed_levels
         
         # If the model configuration indicates this LUNOS fan supports OFF then the
         # fan is configured via the LUNOS hardware controller with only three speeds total.
@@ -321,38 +328,26 @@ class LUNOSFan(FanEntity):
                 SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
                 SPEED_HIGH:   [ STATE_ON,  STATE_ON ],
             }
-    
-    def speed_name_for_percentage(self, percentage: int) -> str:
-        for preset, preset_percent in self.speed_percentages.items():
-            if percentage <= preset_percent:
-                return preset
-        LOG.error(f"Invalid fan percentage {percentage} (must be 0-100)!")
-        return None
-
-    def percentage_for_speed(self, speed: str) -> int:        
-        if speed is None:
-            return None
-        return self.speed_percentages.get(speed)
 
     async def async_set_percentage(self, percentage: int) -> None:
-        speed = self.speed_name_for_percentage(percentage)
-
-        # convert speed name back to a percentage to get scaled value
-        scaled_percentage = self.percentage_for_speed(speed)
+        speed = percentage_to_ordered_list_item(self._fan_speeds, percentage)
         
-        if self._speed != speed and percentage != scaled_percentage:
-            LOG.info(f"Set to {percentage}% speed (changed {self._speed} to {speed}) rescaled to {scaled_percentage}%")
+        # convert speed name back to a percentage to get scaled value
+        scaled_percentage = ordered_list_item_to_percentage(self._fan_speeds, speed)        
+        if self._current_speed != speed and percentage != scaled_percentage:
+            LOG.info(f"Requested {percentage}% speed rescaled to {scaled_percentage}% ({self._current_speed} -> {speed})")
+            
         self._update_speed(speed)
 
     @property
     def speed(self) -> str:
         """Return the current speed."""
-        return self._speed
+        return self._current_speed
 
     @property
     def is_on(self) -> bool:
         """Return true if entity is on."""
-        return self._speed != SPEED_OFF
+        return self._current_speed != SPEED_OFF
 
     @property
     def preset_modes(self) -> list:
@@ -369,7 +364,7 @@ class LUNOSFan(FanEntity):
         if preset_mode in speeds:
             # set the fan percentage based on the supplied preset mode name
             percentage = speeds.get(preset_mode)
-            LOG.info(f"Applying LUNOS speed preset '{preset_mode}' as percentage {percentage}")
+            LOG.info(f"Applying LUNOS speed preset '{preset_mode}' = {percentage}%")
             await self.async_set_percentage(percentage)
 
         elif preset_mode in self._vent_modes:
@@ -432,7 +427,7 @@ class LUNOSFan(FanEntity):
         if speed == None:
             return
         
-        self._speed = speed
+        self._current_speed = speed
         self._last_relay_change = time.time()
         self.update_attributes()
 
@@ -459,7 +454,7 @@ class LUNOSFan(FanEntity):
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
-        LOG.info(f"Changing LUNOS '{self._name}' speed: {self._speed} -> {speed}")
+        LOG.info(f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}")
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
@@ -474,7 +469,7 @@ class LUNOSFan(FanEntity):
         await asyncio.sleep(1.0)
 
         current_speed = self._determine_current_speed()
-        if current_speed != self._speed:
+        if current_speed != self._current_speed:
             self._update_speed(current_speed)
 
     async def async_turn_on(self,
@@ -510,7 +505,7 @@ class LUNOSFan(FanEntity):
         await self.async_call_switch_service(method, relay_entity_id)
 
     async def toggle_relay_to_set_lunos_mode(self, entity_id):
-        saved_speed = self._speed
+        saved_speed = self._current_speed
 
         # LUNOS requires flipping switches on/off 3 times to set mode
         toggle_methods = [
