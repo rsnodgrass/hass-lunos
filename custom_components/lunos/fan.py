@@ -232,16 +232,21 @@ class LUNOSFan(FanEntity):
         )
 
     @callback
-    def _schedule_immediate_update(self):
-        self.async_schedule_update_ha_state(True)
+    def _trigger_entity_update(self):
+        update_before_ha_records_new_value = True
+        self.async_schedule_update_ha_state(update_before_ha_records_new_value)
+
+    @property
+    def should_poll(self):
+        return False # if this is True, callbacks won't work
 
     @callback
     def _detected_relay_state_change(self, event):
         """Whenever W1 or W2 relays change state, the fan speed needs to be updated"""
         # ensure there is a delay if any additional state change occurs to
         # avoid confusing the LUNOS hardware controller
-        self._last_relay_change = time.time()
-
+        self._record_relay_state_change()
+        
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
 
@@ -251,8 +256,8 @@ class LUNOSFan(FanEntity):
 
         if to_state != from_state:
             LOG.info(f"{entity} changed: {from_state} -> {to_state}, updating '{self._name}'")
-            self.schedule_update_ha_state()
-            
+            self._trigger_entity_update()
+
     def update_attributes(self):
         """Update any speed/state based attributes"""
         self._attributes[ATTR_SPEED] = self._current_speed
@@ -429,8 +434,14 @@ class LUNOSFan(FanEntity):
             return
         
         self._current_speed = speed
-        self._last_relay_change = time.time()
+        self._record_relay_state_change()
+
         self.update_attributes()
+
+    def _record_relay_state_change(self):
+        now = time.time()
+        self._last_relay_change = now
+        self._attributes['last_relay_change'] = now
 
     async def _throttle_state_changes(self, required_delay):
         time_passed = time.time() - self._last_relay_change
@@ -496,7 +507,7 @@ class LUNOSFan(FanEntity):
         await self.hass.services.async_call(
             "switch", method, {"entity_id": relay_entity_id}, False
         )
-        self._last_relay_change = time.time()
+        self._record_relay_state_change()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay {relay_entity_id} to {state}")
