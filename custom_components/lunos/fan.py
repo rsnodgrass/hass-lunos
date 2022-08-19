@@ -102,7 +102,7 @@ class LUNOSFan(FanEntity):
         self._attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
         self._speed = None
-        self._last_state_change = None
+        self._last_relay_change = None
 
         # hardware W1/W2 relays used to determine and control LUNOS fan speed
         self._relay_w1 = relay_w1
@@ -204,6 +204,10 @@ class LUNOSFan(FanEntity):
     @callback
     def _detected_relay_state_change(self, event):
         """Whenever W1 or W2 relays change state, the fan speed needs to be updated"""
+        # ensure there is a delay if any additional state change occurs to
+        # avoid confusing the LUNOS hardware controller
+        self._last_relay_change = time.time()
+
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
 
@@ -214,7 +218,7 @@ class LUNOSFan(FanEntity):
         if to_state != from_state:
             LOG.info(f"{entity} change: {from_state} -> {to_state}, updating '{self._name}'")
             self.schedule_update_ha_state()
-
+            
     def update_attributes(self):
         """Update any speed/state based attributes"""
         self._attributes[ATTR_SPEED] = self._speed
@@ -427,11 +431,11 @@ class LUNOSFan(FanEntity):
             return
         
         self._speed = speed
-        self._last_state_change = time.time()
+        self._last_relay_change = time.time()
         self.update_attributes()
 
     async def _throttle_state_changes(self, required_delay):
-        time_passed = time.time() - self._last_state_change
+        time_passed = time.time() - self._last_relay_change
         if time_passed < required_delay:
             delay = max(0, required_delay - time_passed)
             LOG.warning(
@@ -457,7 +461,8 @@ class LUNOSFan(FanEntity):
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
-        # update to the new speed and update any dependent attributes
+        # update with the state change immediately (instead of waiting to notice
+        # that the relays have changed)
         self._update_speed(speed)
 
     async def async_update(self):
@@ -494,7 +499,7 @@ class LUNOSFan(FanEntity):
         await self.hass.services.async_call(
             "switch", method, {"entity_id": relay_entity_id}, False
         )
-        self._last_state_change = time.time()
+        self._last_relay_change = time.time()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
         LOG.info(f"Setting relay {relay_entity_id} to {state}")
