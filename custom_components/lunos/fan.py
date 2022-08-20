@@ -136,7 +136,7 @@ class LUNOSFan(FanEntity):
 
         # attempt to determine the current speed of the fans (this can fail on startup
         # if the W1/W2 relays have not yet been initialized by Home Assistant)
-        current_speed = self._determine_current_speed()
+        current_speed = self._determine_current_relay_speed()
         self._update_speed(current_speed)
 
         LOG.info(
@@ -402,7 +402,7 @@ class LUNOSFan(FanEntity):
         """Return state attributes."""
         return self._attributes
 
-    def _determine_current_speed(self):
+    def _determine_current_relay_speed(self):
         """Probe W1/W2 relays for current states and then match to a speed"""
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
@@ -428,13 +428,14 @@ class LUNOSFan(FanEntity):
 
     def _update_speed(self, speed):
         """Update the current speed (+ refresh any dependent attributes)"""
-        LOG.warn(f"_update_speed({speed})")
         if speed == None:
+            return
+        if speed == self._current_speed:
             return
 
         self._current_speed = speed
-        self._record_relay_state_change()
         self._update_speed_attributes()
+        LOG.info(f"Updated LUNOS {self._name}: {self.percentage}% {self._current_speed}")
 
     def _record_relay_state_change(self):
         now = time.time()
@@ -468,19 +469,18 @@ class LUNOSFan(FanEntity):
         await self.set_relay_switch_state(self._relay_w1, switch_states[0])
         await self.set_relay_switch_state(self._relay_w2, switch_states[1])
 
-        # update with the state change immediately (instead of waiting to notice
-        # that the relays have changed)
+        # update our internal state immediately (instead of waiting for callback relays have changed)
         self._update_speed(speed)
 
     async def async_update(self):
         """Determine current state of the fan by inspecting relay states."""
-        LOG.debug(f"async_update() invoked")
-        
+        LOG.debug(f"{self._name} async_update() called")
+
         # delay reading allow any pending switch changes to be applied
         await asyncio.sleep(1.0)
 
-        actual_speed = self._determine_current_speed()
-        LOG.debug(f"async_update() = {actual_speed}")
+        actual_speed = self._determine_current_relay_speed()
+        LOG.debug({self._name} f"async_update() = {actual_speed}")
         self._update_speed(actual_speed)
 
     async def async_turn_on(self,
@@ -510,8 +510,6 @@ class LUNOSFan(FanEntity):
         self._record_relay_state_change()
 
     async def set_relay_switch_state(self, relay_entity_id, state):
-        LOG.info(f"Setting relay {relay_entity_id} to {state}")
-
         method = SERVICE_TURN_ON if state == STATE_ON else SERVICE_TURN_OFF
         await self.async_call_switch_service(method, relay_entity_id)
 
