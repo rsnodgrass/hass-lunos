@@ -25,7 +25,7 @@ PRESET_TURBO = SPEED_TURBO
 # delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
 SPEED_CHANGE_DELAY_SECONDS = 4
 DELAY_BETWEEN_FLIPS = 0.100
-MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 15.0
+MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 4.0
 
 ATTR_CFM = "cfm"  # note: even when off some LUNOS fans still circulate air
 ATTR_CMHR = "cmh"
