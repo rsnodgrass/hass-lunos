@@ -73,7 +73,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
     async_add_entities([ fan ], update_before_add=True)
 
-    # expose service call APIs
+    # expose service APIs
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     for service, method in {
         SERVICE_CLEAR_FILTER_REMINDER:       "async_clear_filter_reminder",
@@ -139,9 +139,7 @@ class LUNOSFan(FanEntity):
         # attempt to determine the current speed of the fans (this can fail on startup
         # if the W1/W2 relays have not yet been initialized by Home Assistant)
         current_speed = self._determine_current_speed()
-        if current_speed:
-            self._update_speed(current_speed)
-        self.update_attributes()
+        self._update_speed(current_speed)
 
         LOG.info(
             f"Created LUNOS fan '{self._name}': W1={relay_w1}; W2={relay_w2}; presets={self.preset_modes}"
@@ -258,7 +256,7 @@ class LUNOSFan(FanEntity):
             LOG.info(f"{entity} changed: {from_state} -> {to_state}, updating '{self._name}'")
             self._trigger_entity_update()
 
-    def update_attributes(self):
+    def _update_speed_attributes(self):
         """Update any speed/state based attributes"""
         self._attributes[ATTR_SPEED] = self._current_speed
         if self._current_speed is None:
@@ -315,15 +313,10 @@ class LUNOSFan(FanEntity):
     def speed_count(self) -> int:
         return len(self._fan_speeds)
 
-    async def async_set_percentage(self, percentage: int) -> None:
+    async def async_set_percentage(self, percentage: int) -> None:        
         speed = percentage_to_ordered_list_item(self._fan_speeds, percentage)
-        
-        # convert speed name back to a percentage to get scaled value
-        scaled_percentage = ordered_list_item_to_percentage(self._fan_speeds, speed)        
-        if self._current_speed != speed and percentage != scaled_percentage:
-            LOG.info(f"Requested {percentage}% speed rescaled to {scaled_percentage}% ({self._current_speed} -> {speed})")
-            
-        self._update_speed(speed)
+        LOG.debug(f"Setting {percentage}% -> {speed}")
+        await self.async_set_speed(speed)
 
     @property
     def speed(self) -> str:
@@ -367,9 +360,7 @@ class LUNOSFan(FanEntity):
             return
 
         if preset_mode in self._fan_speeds:
-            percentage = ordered_list_item_to_percentage(self._fan_speeds, preset_mode)            
-            LOG.info(f"Applying LUNOS speed '{preset_mode}' = {percentage}%")
-            await self.async_set_percentage(percentage)
+            await self.async_set_speed(preset_mode)
 
         elif preset_mode in self._vent_modes:
             await self.async_set_ventilation_mode(preset_mode)
@@ -426,22 +417,24 @@ class LUNOSFan(FanEntity):
             if current_state == switch_state:
                 LOG.info(f"LUNOS '{self._name}' speed={speed} (W1/W2={current_state})")
                 return speed
+
+        LOG.info(f"Could not determine current speed from W1/W2 relays: {current_state}")
         return None
 
     def _update_speed(self, speed):
-        """Update the speed along with any dependent attributes"""
+        """Update the current speed (+ refresh any dependent attributes)"""
+        LOG.warn(f"_update_speed({speed})")
         if speed == None:
             return
-        
+
         self._current_speed = speed
         self._record_relay_state_change()
-
-        self.update_attributes()
+        self._update_speed_attributes()
 
     def _record_relay_state_change(self):
         now = time.time()
         self._last_relay_change = now
-        self._attributes['last_relay_change'] = now
+        #self._attributes['last_relay_change'] = time.localtime().strftime('%Y-%m-%d %H:%M:%S')
 
     async def _throttle_state_changes(self, required_delay):
         time_passed = time.time() - self._last_relay_change
@@ -476,12 +469,14 @@ class LUNOSFan(FanEntity):
 
     async def async_update(self):
         """Determine current state of the fan by inspecting relay states."""
-
+        LOG.debug(f"async_update() invoked")
+        
         # delay reading allow any pending switch changes to be applied
         await asyncio.sleep(1.0)
 
-        current_speed = self._determine_current_speed()
-        self._update_speed(current_speed)
+        actual_speed = self._determine_current_speed()
+        LOG.debug(f"async_update() = {actual_speed}")
+        self._update_speed(actual_speed)
 
     async def async_turn_on(self,
                             percentage: int = None,
