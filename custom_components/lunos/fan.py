@@ -463,6 +463,10 @@ class LUNOSFan(FanEntity):
             return
 
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
+        #
+        # FIXME: there really should be a queue of changes with a delay between each before application
+        # instead of this (and clearing out of old changes IF any are queued up). This existing
+        # implementation here does not work if someone starts clicking changes again and again
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
         LOG.info(f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}")
