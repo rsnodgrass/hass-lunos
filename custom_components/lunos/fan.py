@@ -99,9 +99,7 @@ class LUNOSFan(FanEntity):
         super().__init__()
 
         LOG.warning(f"Creating entity {self.entity_id}")
-
-        self._attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
-
+        
         self._current_speed = None
         self._last_relay_change = None
 
@@ -310,8 +308,15 @@ class LUNOSFan(FanEntity):
         return ordered_list_item_to_percentage(self._fan_speeds, self._current_speed)
 
     @property
+    def supported_features(self):
+        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
+    
+    @property
     def speed_count(self) -> int:
-        return len(self._fan_speeds)
+        count = len(self._fan_speeds)
+        if SPEED_OFF in self._fan_speeds:
+            count -= 1
+        return count
 
     async def async_set_percentage(self, percentage: int) -> None:        
         speed = percentage_to_ordered_list_item(self._fan_speeds, percentage)
