@@ -107,6 +107,9 @@ class LUNOSFan(FanEntity):
         self._relay_w1 = relay_w1
         self._relay_w2 = relay_w2
 
+        self._pending_relay_w1 = None
+        self._pending_relay_w2 = None
+
         coding = conf.get(CONF_CONTROLLER_CODING)
         model_config = LUNOS_CODING_CONFIG[coding]
         self._model_config = model_config
@@ -462,6 +465,11 @@ class LUNOSFan(FanEntity):
             )
             return
 
+        # save the pending relay states (in case multiple changes are queued up in
+        # event loop only the most recent should "win")
+        self._pending_relay_w1 = switch_states[0]
+        self._pending_relay_w2 = switch_states[1]
+        
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         #
         # FIXME: there really should be a queue of changes with a delay between each before application
@@ -469,9 +477,11 @@ class LUNOSFan(FanEntity):
         # implementation here does not work if someone starts clicking changes again and again
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
-        LOG.info(f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}")
-        await self.set_relay_switch_state(self._relay_w1, switch_states[0])
-        await self.set_relay_switch_state(self._relay_w2, switch_states[1])
+        if self._pending_relay_w1 is not None:
+            LOG.info(f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}")
+            await self.set_relay_switch_state(self._relay_w1, self._pending_relay_w1)
+            await self.set_relay_switch_state(self._relay_w2, self._pending_relay_w2)
+            self._pending_relay_w1 = self._pending_relay_w2 = None            
 
         # update our internal state immediately (instead of waiting for callback relays have changed)
         self._update_speed(speed)
