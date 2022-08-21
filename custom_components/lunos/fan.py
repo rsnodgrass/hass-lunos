@@ -494,7 +494,7 @@ class LUNOSFan(FanEntity):
         await asyncio.sleep(1.0)
 
         actual_speed = self._determine_current_relay_speed()
-        LOG.debug({self._name} f"async_update() = {actual_speed}")
+        LOG.debug(f"{self._name} async_update() = {actual_speed}")
         self._update_speed(actual_speed)
 
     async def async_turn_on(self,
