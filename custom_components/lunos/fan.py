@@ -16,7 +16,7 @@ from homeassistant.components.fan import (
     PLATFORM_SCHEMA,
     ATTR_PRESET_MODES,
     FanEntity,
-    FanEntityFeature
+    FanEntityFeature,
 )
 from homeassistant.const import (
     CONF_ENTITY_ID,
@@ -34,7 +34,10 @@ from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.event import async_track_state_change_event
 
-from homeassistant.util.percentage import ordered_list_item_to_percentage, percentage_to_ordered_list_item
+from homeassistant.util.percentage import (
+    ordered_list_item_to_percentage,
+    percentage_to_ordered_list_item,
+)
 
 from . import LUNOS_CODING_CONFIG
 from .const import *
@@ -71,14 +74,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     LOG.info(f"LUNOS fan '{name}' using relays W1={relay_w1}, W2={relay_w2}'")
 
     fan = LUNOSFan(hass, config, name, relay_w1, relay_w2, default_speed)
-    async_add_entities([ fan ], update_before_add=True)
+    async_add_entities([fan], update_before_add=True)
 
     # expose service APIs
     component = EntityComponent(LOG, LUNOS_DOMAIN, hass)
     for service, method in {
-        SERVICE_CLEAR_FILTER_REMINDER:       "async_clear_filter_reminder",
-        SERVICE_TURN_ON_SUMMER_VENTILATION:  "async_turn_on_summer_ventilation",
-        SERVICE_TURN_OFF_SUMMER_VENTILATION: "async_turn_off_summer_ventilation"
+        SERVICE_CLEAR_FILTER_REMINDER: "async_clear_filter_reminder",
+        SERVICE_TURN_ON_SUMMER_VENTILATION: "async_turn_on_summer_ventilation",
+        SERVICE_TURN_OFF_SUMMER_VENTILATION: "async_turn_off_summer_ventilation",
     }.items():
         component.async_register_entity_service(service, {}, method)
 
@@ -89,7 +92,13 @@ class LUNOSFan(FanEntity):
     """Representation of a LUNOS fan."""
 
     def __init__(
-        self, hass, conf, name, relay_w1, relay_w2, default_preset: str = DEFAULT_VENT_MODE
+        self,
+        hass,
+        conf,
+        name,
+        relay_w1,
+        relay_w2,
+        default_preset: str = DEFAULT_VENT_MODE,
     ):
         """Init this sensor."""
 
@@ -99,7 +108,7 @@ class LUNOSFan(FanEntity):
         super().__init__()
 
         LOG.warning(f"Creating entity {self.entity_id}")
-        
+
         self._current_speed = None
         self._last_relay_change = None
 
@@ -151,71 +160,71 @@ class LUNOSFan(FanEntity):
 
         # If the model configuration indicates this LUNOS fan supports OFF then the
         # fan is configured via the LUNOS hardware controller with only three speeds total.
-        if model_config.get('supports_off'):
+        if model_config.get("supports_off"):
             self._relay_state_map = {
-                SPEED_OFF:    [ STATE_OFF, STATE_OFF ],
-                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
+                SPEED_OFF: [STATE_OFF, STATE_OFF],
+                SPEED_LOW: [STATE_ON, STATE_OFF],
+                SPEED_MEDIUM: [STATE_OFF, STATE_ON],
+                SPEED_HIGH: [STATE_ON, STATE_ON],
             }
 
         # If the hardware LUNOS controller is set to NOT support OFF,
         # the fan has 4 speeds (and NO OFF).
         else:
             self._relay_state_map = {
-                SPEED_SILENT: [ STATE_OFF, STATE_OFF ],
-                SPEED_LOW:    [ STATE_ON,  STATE_OFF ],
-                SPEED_MEDIUM: [ STATE_OFF, STATE_ON ],
-                SPEED_HIGH:   [ STATE_ON,  STATE_ON ]
+                SPEED_SILENT: [STATE_OFF, STATE_OFF],
+                SPEED_LOW: [STATE_ON, STATE_OFF],
+                SPEED_MEDIUM: [STATE_OFF, STATE_ON],
+                SPEED_HIGH: [STATE_ON, STATE_ON],
             }
 
         self._fan_speeds = []
         for speed in self._relay_state_map:
             self._fan_speeds.append(speed)
 
-        self._attributes |= {
-            'fan_speeds': self._fan_speeds
-        }
+        self._attributes |= {"fan_speeds": self._fan_speeds}
 
     def _init_vent_modes(self, model_config):
         # ventilation modes have nothing to do with speed, they refer to how
         # air is circulated through the fan (eco, exhaust-only, summer-vent)
         self._vent_mode = VENT_ECO
-        self._vent_modes = [ VENT_ECO ]
+        self._vent_modes = [VENT_ECO]
 
         # enable various preset modes depending on the fan configuration
-        if model_config.get('supports_summer_vent'):
+        if model_config.get("supports_summer_vent"):
             self._vent_modes.append(VENT_SUMMER)
-        if model_config.get('supports_exhaust_only'):
+        if model_config.get("supports_exhaust_only"):
             self._vent_modes.append(VENT_EXHAUST_ONLY)
 
         self._attributes |= {
             ATTR_VENT_MODE: DEFAULT_VENT_MODE,
-            'vent_modes': self._vent_modes
+            "vent_modes": self._vent_modes,
         }
 
     def _init_presets(self, model_config, default_preset):
-        self._preset_modes = [ VENT_ECO ] # eco vent mode
+        self._preset_modes = [VENT_ECO]  # eco vent mode
 
-        if model_config.get('supports_turbo_mode'):
+        if model_config.get("supports_turbo_mode"):
             self._preset_modes.append(PRESET_TURBO)
 
         # since the HASS fan API no longer has speed names, each speed name becomes a preset
-        #for speed in model_config.get('speeds'):
+        # for speed in model_config.get('speeds'):
         #    self._preset_modes.append(speed)
 
         # add all fan speeds and ventilation modes as presets
         for key in self._fan_speeds + self._vent_modes:
             if key not in self._preset_modes:
                 self._preset_modes.append(key)
-                
+
         # off is not a preset...remove it from the list (use turn_off instead)
-        self._preset_modes.remove('off')
+        self._preset_modes.remove("off")
 
         self._attributes[ATTR_PRESET_MODES] = self._preset_modes
 
         if default_preset not in self._preset_modes:
-            LOG.warning(f"Default preset {default_preset} is not valid: {self._preset_modes}")
+            LOG.warning(
+                f"Default preset {default_preset} is not valid: {self._preset_modes}"
+            )
             default_preset = DEFAULT_VENT_MODE
 
         self._default_preset = default_preset
@@ -227,7 +236,9 @@ class LUNOSFan(FanEntity):
 
         # setup listeners to track changes to the W1/W2 relays
         async_track_state_change_event(
-            self.hass, [self._relay_w1, self._relay_w2], self._detected_relay_state_change
+            self.hass,
+            [self._relay_w1, self._relay_w2],
+            self._detected_relay_state_change,
         )
 
     @callback
@@ -237,7 +248,7 @@ class LUNOSFan(FanEntity):
 
     @property
     def should_poll(self):
-        return False # if this is True, callbacks won't work
+        return False  # if this is True, callbacks won't work
 
     @callback
     def _detected_relay_state_change(self, event):
@@ -245,7 +256,7 @@ class LUNOSFan(FanEntity):
         # ensure there is a delay if any additional state change occurs to
         # avoid confusing the LUNOS hardware controller
         self._record_relay_state_change()
-        
+
         entity = event.data.get("entity_id")
         to_state = event.data["new_state"].state
 
@@ -254,7 +265,9 @@ class LUNOSFan(FanEntity):
         from_state = old_state.state if old_state else None
 
         if to_state != from_state:
-            LOG.info(f"{entity} changed: {from_state} -> {to_state}, updating '{self._name}'")
+            LOG.info(
+                f"{entity} changed: {from_state} -> {to_state}, updating '{self._name}'"
+            )
             self._trigger_entity_update()
 
     def _update_speed_attributes(self):
@@ -292,12 +305,12 @@ class LUNOSFan(FanEntity):
 
         self._attributes[ATTR_CFM] = cfm
         self._attributes[ATTR_CMHR] = cmh
-            
+
         # if sound level (dB) is defined for the speed, include it in attributes
         self._attributes[ATTR_DB] = behavior.get(ATTR_DB, None)
         self._attributes[ATTR_WATTS] = behavior.get("watts", None)
 
-        #LOG.debug(f"Updated '{self._name}': speed={self._current_speed}; config {controller_config}: {self._attributes}")
+        # LOG.debug(f"Updated '{self._name}': speed={self._current_speed}; config {controller_config}: {self._attributes}")
 
     @property
     def name(self):
@@ -313,7 +326,7 @@ class LUNOSFan(FanEntity):
     @property
     def supported_features(self):
         return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
-    
+
     @property
     def speed_count(self) -> int:
         count = len(self._fan_speeds)
@@ -321,7 +334,7 @@ class LUNOSFan(FanEntity):
             count -= 1
         return count
 
-    async def async_set_percentage(self, percentage: int) -> None:        
+    async def async_set_percentage(self, percentage: int) -> None:
         speed = percentage_to_ordered_list_item(self._fan_speeds, percentage)
         LOG.debug(f"Setting {percentage}% -> {speed}")
         await self.async_set_speed(speed)
@@ -338,11 +351,15 @@ class LUNOSFan(FanEntity):
 
     async def async_turn_off(self, **kwargs) -> None:
         if not SPEED_OFF in self._fan_speeds:
-            LOG.warning(f"LUNOS '{self._name}' hardware is not configured to support turning off!")
+            LOG.warning(
+                f"LUNOS '{self._name}' hardware is not configured to support turning off!"
+            )
             return
         await self.async_set_percentage(0)
 
-    async def async_turn_on(self, speed = None, percentage = None, preset_mode = None, **kwargs) -> None:
+    async def async_turn_on(
+        self, speed=None, percentage=None, preset_mode=None, **kwargs
+    ) -> None:
         if speed:
             await self.async_set_preset_mode(speed)
         elif percentage:
@@ -364,7 +381,9 @@ class LUNOSFan(FanEntity):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the fan speed"""
         if preset_mode not in self.preset_modes:
-            LOG.warning(f"LUNOS preset '{preset_mode}' is not valid: {self.preset_modes}")
+            LOG.warning(
+                f"LUNOS preset '{preset_mode}' is not valid: {self.preset_modes}"
+            )
             return
 
         if preset_mode in self._fan_speeds:
@@ -375,9 +394,11 @@ class LUNOSFan(FanEntity):
 
         elif preset_mode == PRESET_SUMMER_VENT:
             await self.async_turn_on_summer_ventilation()
-    
+
         else:
-            LOG.warning(f"LUNOS preset '{preset_mode}' not supported: {self.preset_modes}")
+            LOG.warning(
+                f"LUNOS preset '{preset_mode}' not supported: {self.preset_modes}"
+            )
 
     async def async_set_ventilation_mode(self, vent_mode: str) -> None:
         """Reset ventilation to LUNOS normal operation"""
@@ -394,12 +415,13 @@ class LUNOSFan(FanEntity):
         elif vent_mode == VENT_EXHAUST_ONLY:
             LOG.warning("Exhaust-only ventilation mode NOT IMPLEMENTED!")
         else:
-            LOG.error("Ventilation mode '{vent_mode}' not supported: {self._vent_modes}")
+            LOG.error(
+                "Ventilation mode '{vent_mode}' not supported: {self._vent_modes}"
+            )
             return
 
         self._vent_mode = vent_mode
-        
-            
+
     @property
     def extra_state_attributes(self):
         """Return state attributes."""
@@ -410,23 +432,27 @@ class LUNOSFan(FanEntity):
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
             LOG.warning(
-                f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS speed.")
+                f"W1 entity {self._relay_w1} not found, cannot determine {self._name} LUNOS speed."
+            )
             return None
 
         w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.warning(
-                f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS speed.")
+                f"W2 entity {self._relay_w2} not found, cannot determine {self._name} LUNOS speed."
+            )
             return None
 
         # determine the current speed based on relay W1/W2 states
-        current_state = [ w1.state, w2.state ]
+        current_state = [w1.state, w2.state]
         for speed, switch_state in self._relay_state_map.items():
             if current_state == switch_state:
                 LOG.info(f"LUNOS '{self._name}' speed={speed} (W1/W2={current_state})")
                 return speed
 
-        LOG.info(f"Could not determine current speed from W1/W2 relays: {current_state}")
+        LOG.info(
+            f"Could not determine current speed from W1/W2 relays: {current_state}"
+        )
         return None
 
     def _update_speed(self, speed):
@@ -438,12 +464,14 @@ class LUNOSFan(FanEntity):
 
         self._current_speed = speed
         self._update_speed_attributes()
-        LOG.info(f"Updated LUNOS {self._name}: {self.percentage}% {self._current_speed}")
+        LOG.info(
+            f"Updated LUNOS {self._name}: {self.percentage}% {self._current_speed}"
+        )
 
     def _record_relay_state_change(self):
         now = time.time()
         self._last_relay_change = now
-        #self._attributes['last_relay_change'] = time.localtime().strftime('%Y-%m-%d %H:%M:%S')
+        # self._attributes['last_relay_change'] = time.localtime().strftime('%Y-%m-%d %H:%M:%S')
 
     async def _throttle_state_changes(self, required_delay):
         time_passed = time.time() - self._last_relay_change
@@ -469,7 +497,7 @@ class LUNOSFan(FanEntity):
         # event loop only the most recent should "win")
         self._pending_relay_w1 = switch_states[0]
         self._pending_relay_w2 = switch_states[1]
-        
+
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         #
         # FIXME: there really should be a queue of changes with a delay between each before application
@@ -478,10 +506,12 @@ class LUNOSFan(FanEntity):
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
 
         if self._pending_relay_w1 is not None:
-            LOG.info(f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}")
+            LOG.info(
+                f"Changing LUNOS '{self._name}' speed: {self._current_speed} -> {speed}"
+            )
             await self.set_relay_switch_state(self._relay_w1, self._pending_relay_w1)
             await self.set_relay_switch_state(self._relay_w2, self._pending_relay_w2)
-            self._pending_relay_w1 = self._pending_relay_w2 = None            
+            self._pending_relay_w1 = self._pending_relay_w2 = None
 
         # update our internal state immediately (instead of waiting for callback relays have changed)
         self._update_speed(speed)
@@ -497,10 +527,9 @@ class LUNOSFan(FanEntity):
         LOG.debug(f"{self._name} async_update() = {actual_speed}")
         self._update_speed(actual_speed)
 
-    async def async_turn_on(self,
-                            percentage: int = None,
-                            preset: str = None,
-                            **kwargs) -> None:
+    async def async_turn_on(
+        self, percentage: int = None, preset: str = None, **kwargs
+    ) -> None:
         """Turn the fan on."""
 
         # FIXME: should this turn on to the default speed, or the last speed before turning off?
@@ -546,7 +575,6 @@ class LUNOSFan(FanEntity):
         # restore speed state back to the previous state before toggling relay
         await self.async_set_speed(saved_speed)
 
-    
     async def async_clear_filter_reminder(self):
         LOG.info(f"Clearing the filter change reminder light for LUNOS '{self._name}'")
 
@@ -560,7 +588,7 @@ class LUNOSFan(FanEntity):
     # nighttime to allow cooler air into the house.
     def supports_summer_ventilation(self):
         return PRESET_SUMMER_VENT in self._vent_modes
-    
+
     async def async_turn_on_summer_ventilation(self):
         if not self.supports_summer_ventilation():
             LOG.warning(f"LUNOS '{self._name}' DOES NOT support summer vent")
@@ -580,7 +608,7 @@ class LUNOSFan(FanEntity):
 
         # wait after any relay was last changed to avoid LUNOS controller misinterpreting toggles
         await self._throttle_state_changes(MINIMUM_DELAY_BETWEEN_STATE_CHANGES)
-        
+
         LOG.info(f"Disabling summer vent mode for LUNOS '{self._name}'")
 
         # toggle W2 relay once to clear summer ventilation (and return to previous speed)
