@@ -1,5 +1,4 @@
 {
   "name": "LUNOS Heat Recovery Ventilation",
-  "domains": [ "fan" ],
   "render_readme": true
 }
