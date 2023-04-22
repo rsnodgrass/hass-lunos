@@ -7,7 +7,6 @@ import os
 
 import yaml
 
-from .const import CFM_TO_CMH, LUNOS_DOMAIN
 
 LOG = logging.getLogger(__name__)
 
@@ -18,8 +17,8 @@ config_file = rf"{config_path}/lunos-codings.yaml"
 try:
     with open(config_file) as file:
         LUNOS_CODING_CONFIG = yaml.full_load(file)
-except:
-    LOG.error(f"Failed to load LUNOS config {config_file}")
+except Exception as e:
+    LOG.error(f"Failed to load LUNOS config {config_file}: {e}")
 
 
 async def async_setup(hass, config):

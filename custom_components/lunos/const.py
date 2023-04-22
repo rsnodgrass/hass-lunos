@@ -1,5 +1,3 @@
-from homeassistant.const import STATE_OFF, STATE_ON
-
 LUNOS_DOMAIN = "lunos"
 DEFAULT_LUNOS_NAME = "LUNOS Ventilation"
 

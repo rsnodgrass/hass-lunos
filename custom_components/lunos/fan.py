@@ -12,14 +12,13 @@ import time
 
 import voluptuous as vol
 from homeassistant.components.fan import (
+    ATTR_PRESET_MODES,
     ENTITY_ID_FORMAT,
     PLATFORM_SCHEMA,
-    ATTR_PRESET_MODES,
     FanEntity,
     FanEntityFeature,
 )
 from homeassistant.const import (
-    CONF_ENTITY_ID,
     CONF_NAME,
     SERVICE_TOGGLE,
     SERVICE_TURN_OFF,
@@ -29,11 +28,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.event import async_track_state_change_event
-
 from homeassistant.util.percentage import (
     ordered_list_item_to_percentage,
     percentage_to_ordered_list_item,
@@ -61,6 +58,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         ),  # default is based on how controller is coded (see below)
     }
 )
+
 
 # pylint: disable=unused-argument
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -350,7 +348,7 @@ class LUNOSFan(FanEntity):
         return self._current_speed != SPEED_OFF
 
     async def async_turn_off(self, **kwargs) -> None:
-        if not SPEED_OFF in self._fan_speeds:
+        if SPEED_OFF not in self._fan_speeds:
             LOG.warning(
                 f"LUNOS '{self._name}' hardware is not configured to support turning off!"
             )
@@ -457,7 +455,7 @@ class LUNOSFan(FanEntity):
 
     def _update_speed(self, speed):
         """Update the current speed (+ refresh any dependent attributes)"""
-        if speed == None:
+        if speed is None:
             return
         if speed == self._current_speed:
             return
@@ -527,23 +525,23 @@ class LUNOSFan(FanEntity):
         LOG.debug(f"{self._name} async_update() = {actual_speed}")
         self._update_speed(actual_speed)
 
-    async def async_turn_on(
-        self, percentage: int = None, preset: str = None, **kwargs
-    ) -> None:
-        """Turn the fan on."""
+    #    async def async_turn_on(
+    #        self, percentage: int = None, preset: str = None, **kwargs
+    #    ) -> None:
+    #        """Turn the fan on."""
+    #
+    #        # FIXME: should this turn on to the default speed, or the last speed before turning off?
+    #
+    #        if preset is None:
+    #            preset = self._default_preset
+    #            await self.async_set_preset_mode(preset)
+    #
+    #        if percentage is not None:
+    #            await self.async_set_percentage(percentage)
 
-        # FIXME: should this turn on to the default speed, or the last speed before turning off?
-
-        if preset is None:
-            preset = self._default_preset
-            await self.async_set_preset_mode(preset)
-
-        if percentage is not None:
-            await self.async_set_percentage(percentage)
-
-    async def async_turn_off(self, **kwargs) -> None:
-        """Turn the fan off."""
-        await self.async_set_percentage(0)
+    #    async def async_turn_off(self, **kwargs) -> None:
+    #        """Turn the fan off."""
+    #        await self.async_set_percentage(0)
 
     async def async_call_switch_service(self, method, relay_entity_id):
         LOG.info(f"Calling switch {method} for {relay_entity_id}")
