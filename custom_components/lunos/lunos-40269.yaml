@@ -6,20 +6,20 @@ lunos:
     dip:
       1:
         +: Every 2h 15m
-	0: Interval Off
-	-: Every 4h 30m
+        0: Interval Off
+        -: Every 4h 30m
       2:
         +: Time Delay 30m
-	0: Time Delay Off
-	-: Time Delay 15m
+        0: Time Delay Off
+        -: Time Delay 15m
       3:
         +: ON 50% - 70% Rh
-	0: Humidity Control Off
-	-: ON 45% - 75% Rh
+        0: Humidity Control Off
+        -: ON 45% - 75% Rh
       4:
         +: None
-	0: Standard Fan
-	-: Short Fan
+        0: Standard Fan
+        -: Short Fan
     codes:
       0:
         type: RA 15-60
