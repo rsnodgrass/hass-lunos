@@ -1,42 +1,39 @@
----
 # pre-commit autoupdate
 
 fail_fast: true
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: requirements-txt-fixer
 
-  - repo: https://github.com/odwyersoftware/brunette
-    rev: 0.2.8
-    hooks:
-      - id: brunette
-        args: [--line-length=88, --single-quotes]
-
-
-#-   repo: https://github.com/hadialqattan/pycln
-#    rev: v2.4.0
+  # isort - sort import statements
+#  - repo: https://github.com/pycqa/isort
+#    rev: 5.13.2
 #    hooks:
-#    -   id: pycln
-#        args: [--config=pyproject.toml]
+#      - id: isort
+#        files: \.(py)$
+#        args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
     hooks:
-      - id: isort
-        files: \.(py)$
-        args: [--settings-path=pyproject.toml]  # ["--profile", "black" ]
+      - id: ruff
+        args: [ --fix ]  # run linter
+      - id: ruff-format  # run formatter
 
-  - repo: https://github.com/dosisod/refurb
-    rev: v1.27.0
-    hooks:
-      - id: refurb
+
+  #### OPTIONAL: for keeping syntax more current
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
+        args: [--py311-plus]    # NOTE: SET TO HOME ASSISTANT VERSION
+
+  - repo: https://github.com/dosisod/refurb
+    rev: v2.0.0
+    hooks:
+      - id: refurb              # NOTE: Update pyproject.toml to match HA Python version
