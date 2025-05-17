@@ -28,7 +28,7 @@ e2:
 e2-4speed:
   name: LUNOS e2 (4-speed)
   model_number: e2
-  controller_coding: 4 
+  controller_coding: 4
   default_fan_count: 2
   heat_recovery_efficiency: 0.906
   cycle_seconds: 70
@@ -40,9 +40,9 @@ e2-4speed:
   behavior:
       "off":
         cmh: 15
-      low: 
+      low:
         cmh: 20
-      medium: 
+      medium:
         cmh: 30
       high:
         cmh: 38
@@ -125,9 +125,9 @@ e2-usa-v2:
       high:
           cfm: 22
           decibel: 26.0
-  
+
 # FIXME: confirm coding 7, different resources list different CFM
-  
+
 # Source: https://foursevenfive.com/content/product/ventilation/lunos_e2/installation_guide_lunos_e2.pdf
 e2-short-usa:
   name: LUNOS e2 Short (USA)
@@ -148,10 +148,10 @@ e2-short-usa:
     low:
         cmh: 15
         db: 16.5
-    medium: 
+    medium:
         cmh: 30
         db: 19.5
-    high: 
+    high:
         cmh: 38
         db: 26
 
@@ -177,11 +177,11 @@ e2-nz:
           cmh: 18
           db: 16.5
           watts: 1.4
-      medium: 
+      medium:
           cmh: 31
           db: 19.5
           watts: 2.8
-      high: 
+      high:
           cmh: 38
           db: 26
           watts: 3.3
@@ -209,9 +209,9 @@ e2-60:
         watts: 0
     low:
         cmh: 15
-    medium: 
+    medium:
         cmh: 30
-    high: 
+    high:
         cmg: 60
 
 ego:
@@ -233,9 +233,9 @@ ego:
     low:
         cfm: 3
         cmh: 5  # 3 CFM
-    medium: 
+    medium:
         cmh: 10  # 6 CFM
-    high: 
+    high:
         cmh: 20   # 12 CFM
 
 ego-4speed:
@@ -263,7 +263,7 @@ ego-4speed:
         cmh: 20
     turbo: # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h
         cmh: 60
-    
+
 ego-exhaust-4speed:
   name: LUNOS eGO (high=exhaust-only 4-speed)
   model_number: eGO
@@ -276,17 +276,17 @@ ego-exhaust-4speed:
   supports_off: false
   summer_vent_cycle_seconds: 3600
   behavior:
-    "off": 
+    "off":
         cmh: 5
         decibel: 0
-    low: 
+    low:
         cmh: 10
-    medium: 
+    medium:
         cmh: 20
-    high: 
+    high:
         cmh: 45 # exhaust only
         supports_exhaust_only: true
- 
+
 ego-exhaust:
   name: LUNOS eGO (high=exhaust-only)
   model_number: eGO
@@ -305,7 +305,7 @@ ego-exhaust:
         decibel: 0
         cmh: 0
         watts: 0
-    low:  
+    low:
         cmh: 5
     medium:
         cmh: 10
@@ -328,7 +328,7 @@ ra-15-60:
         decibel: 0
         cmh: 0
         watts: 0
-    low: 
+    low:
         cfm: 9 # marketing estimate
         cmh: 15
     medium:
@@ -340,7 +340,7 @@ ra-15-60:
     turbo:
         cmh: 60 # SPEED_TURBO: flip W2 on/off < 3 seconds = 60 m3/h (35 CFM)
         cfm: 35
-    
+
 ra-15-60-high:
   name: LUNOS RA 15-60 radial duct fan (Extra High)
   speeds: [ "off", "low", "medium", "high" ]
@@ -362,7 +362,7 @@ ra-15-60-high:
         cmh: 30 # 18 CFM
     high:
         cmh: 60  # 35 CFM
-    
+
 ra-15-60-4speed:
   name: LUNOS RA 15-60 radial duct fan (4-speed)
   speeds: [ "off", "low", "medium", "high" ]
@@ -402,7 +402,7 @@ e2-60-d:
     medium:
         cfm: 30
     high:
-        cfm: 35  
+        cfm: 35
   peak_efficiency: 96
   max_cmh: 60
   power_consumption: 3.3             # 0.4 - 3.3W
