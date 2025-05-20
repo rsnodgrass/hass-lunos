@@ -1,11 +1,11 @@
 {
   "domain": "lunos",
   "name": "LUNOS Heat Recovery Ventilation",
-  "version": "0.3.0",
+  "codeowners": ["@rsnodgrass"],
+  "dependencies": [],
   "documentation": "https://github.com/rsnodgrass/hass-lunos/",
+  "iot_class": "local_polling",
   "issue_tracker": "https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287",
   "requirements": [],
-  "dependencies": [],
-  "codeowners": ["@rsnodgrass"],
-  "iot_class": "local_polling"
+  "version": "0.3.0"
 }
