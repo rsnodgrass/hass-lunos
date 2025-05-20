@@ -3,7 +3,7 @@
   "name": "LUNOS Heat Recovery Ventilation",
   "version": "0.3.0",
   "documentation": "https://github.com/rsnodgrass/hass-lunos/",
-  "issue_tracker": "https://github.com/rsnodgrass/hass-lunos/issues",
+  "issue_tracker": "https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287",
   "requirements": [],
   "dependencies": [],
   "codeowners": ["@rsnodgrass"],
