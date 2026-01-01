@@ -392,7 +392,7 @@ class LUNOSFan(FanEntity):
         elif preset_mode in self._vent_modes:
             await self.async_set_ventilation_mode(preset_mode)
 
-        elif preset_mode == PRESET_SUMMER_VENT:
+        elif preset_mode == VENT_SUMMER:
             await self.async_turn_on_summer_ventilation()
 
         else:
@@ -404,7 +404,7 @@ class LUNOSFan(FanEntity):
         """Reset ventilation to LUNOS normal operation"""
 
         # if summer vent was known to previously be on, turn it off
-        if self._vent_mode == PRESET_SUMMER_VENT:
+        if self._vent_mode == VENT_SUMMER:
             await self.async_turn_off_summer_ventilation()
 
         if vent_mode == VENT_SUMMER:
@@ -546,10 +546,21 @@ class LUNOSFan(FanEntity):
     async def async_call_switch_service(
         self, method: str, relay_entity_id: str
     ) -> None:
-        LOG.info(f'Calling switch {method} for {relay_entity_id}')
-        await self.hass.services.async_call(
-            'switch', method, {'entity_id': relay_entity_id}, False
-        )
+        domain = (relay_entity_id or '').split('.', 1)[0]
+        # Backward-compatible: original versions assumed relays were always switch entities.
+        # Many Zigbee relays can also appear as light entities, so we route the service call
+        # to the entity's domain when it's one we know.
+        if domain not in ('switch', 'light'):
+            LOG.warning(
+                "Relay entity '%s' is in unsupported domain '%s'; falling back to switch.%s",
+                relay_entity_id,
+                domain,
+                method,
+            )
+            domain = 'switch'
+
+        LOG.info(f'Calling {domain} {method} for {relay_entity_id}')
+        await self.hass.services.async_call(domain, method, {'entity_id': relay_entity_id}, False)
         self._record_relay_state_change()
 
     async def set_relay_switch_state(self, relay_entity_id: str, state: str) -> None:
@@ -580,14 +591,14 @@ class LUNOSFan(FanEntity):
 
         # toggling W1 many times within 3 seconds instructs the LUNOS controller
         # to clear the filter warning light
-        self.toggle_relay_to_set_lunos_mode(self._relay_w1)
+        await self.toggle_relay_to_set_lunos_mode(self._relay_w1)
 
     # In LUNOS summer vent mode, the reversing time for the fans is extended to 1 hour.
     # The fan will run for 1 hour in the supply air mode and the following hour in
     # the exhaust air mode (resets after 8 hours). This is typically used during summer
     # nighttime to allow cooler air into the house.
     def supports_summer_ventilation(self) -> bool:
-        return PRESET_SUMMER_VENT in self._vent_modes
+        return VENT_SUMMER in self._vent_modes
 
     async def async_turn_on_summer_ventilation(self) -> None:
         if not self.supports_summer_ventilation():
@@ -599,7 +610,7 @@ class LUNOSFan(FanEntity):
         # to turn on summer ventilation mode
         await self.toggle_relay_to_set_lunos_mode(self._relay_w2)
 
-        self._preset_mode = PRESET_SUMMER_VENT
+        self._preset_mode = VENT_SUMMER
         self._attributes[ATTR_VENT_MODE] = VENT_SUMMER
 
     async def async_turn_off_summer_ventilation(self) -> None:
