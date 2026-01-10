@@ -1,20 +1,17 @@
-lunos_clear_filter_reminder:
-  description: Clear a fan's reminder to change the filter
-  fields:
-    entity_id:
-      description: Name(s) of the entities to toggle
-      example: 'fan.bedrooms'
+clear_filter_reminder:
+  target:
+    entity:
+      integration: lunos
+      domain: fan
 
-lunos_turn_on_summer_ventilation_mode:
-  description: Turn on summer ventilation mode (if supported by the LUNOS fan controller setting)
-  fields:
-    entity_id:
-      description: Name(s) of the entities to toggle
-      example: 'fan.whole_house'
+turn_on_summer_ventilation:
+  target:
+    entity:
+      integration: lunos
+      domain: fan
 
-lunos_turn_off_summer_ventilation_mode:
-  description: Turn off summer ventilation mode
-  fields:
-    entity_id:
-      description: Name(s) of the entities to toggle
-      example: 'fan.whole_house'
+turn_off_summer_ventilation:
+  target:
+    entity:
+      integration: lunos
+      domain: fan

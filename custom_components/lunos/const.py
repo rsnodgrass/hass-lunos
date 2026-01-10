@@ -1,54 +1,79 @@
-LUNOS_DOMAIN = 'lunos'
-DEFAULT_LUNOS_NAME = 'LUNOS Ventilation'
+"""Constants for the LUNOS Heat Recovery Ventilation integration."""
 
-SPEED_TURBO = 'turbo'  # not sure what this speed is ;)
-SPEED_HIGH = 'high'
-SPEED_MEDIUM = 'medium'
-SPEED_LOW = 'low'
-SPEED_SILENT = 'silent'  # for 4-speed fans when there is no off
-SPEED_OFF = 'off'
+from __future__ import annotations
 
-SPEED_MAX = 'max'  # logical speed that is the lowest speed the fan can run
-SPEED_MIN = 'min'  # logical speed that is the fastest speed the fan can run
+from typing import Final
 
-SPEED_LIST = [SPEED_OFF, SPEED_SILENT, SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH, SPEED_TURBO]
-DEFAULT_SPEED = SPEED_MEDIUM
+DOMAIN: Final = 'lunos'
+DEFAULT_NAME: Final = 'LUNOS Ventilation'
+DEFAULT_LUNOS_NAME: Final = DEFAULT_NAME
 
-PRESET_SILENT = SPEED_SILENT
-PRESET_LOW = SPEED_LOW
-PRESET_MEDIUM = SPEED_MEDIUM
-PRESET_HIGH = SPEED_HIGH
-PRESET_TURBO = SPEED_TURBO
+# Fan speed constants
+SPEED_TURBO: Final = 'turbo'
+SPEED_HIGH: Final = 'high'
+SPEED_MEDIUM: Final = 'medium'
+SPEED_LOW: Final = 'low'
+SPEED_SILENT: Final = 'silent'  # for 4-speed fans when there is no off
+SPEED_OFF: Final = 'off'
 
-# delay all speed changes to > 3 seconds since the last relay switch change to avoid side effects
-SPEED_CHANGE_DELAY_SECONDS = 4
-DELAY_BETWEEN_FLIPS = 0.100
-MINIMUM_DELAY_BETWEEN_STATE_CHANGES = 4.0
+SPEED_MAX: Final = 'max'  # logical max speed
+SPEED_MIN: Final = 'min'  # logical min speed
 
-ATTR_CFM = 'cfm'  # note: even when off some LUNOS fans still circulate air
-ATTR_CMHR = 'cmh'
-ATTR_DB = 'dB'
-ATTR_MODEL_NAME = 'model'
-ATTR_WATTS = 'watts'
-ATTR_SPEED = 'speed'
-UNKNOWN = 'Unknown'
+SPEED_LIST: Final[list[str]] = [
+    SPEED_OFF,
+    SPEED_SILENT,
+    SPEED_LOW,
+    SPEED_MEDIUM,
+    SPEED_HIGH,
+    SPEED_TURBO,
+]
+DEFAULT_SPEED: Final = SPEED_MEDIUM
 
-ATTR_VENT_MODE = 'vent_mode'
-VENT_ECO = 'eco'
-VENT_SUMMER = 'summer'  # also known as night mode
-VENT_EXHAUST_ONLY = 'exhaust'
-VENT_MODES = [VENT_ECO, VENT_SUMMER, VENT_EXHAUST_ONLY]
-DEFAULT_VENT_MODE = VENT_ECO
+# Preset modes (same as speeds for backward compatibility)
+PRESET_SILENT: Final = SPEED_SILENT
+PRESET_LOW: Final = SPEED_LOW
+PRESET_MEDIUM: Final = SPEED_MEDIUM
+PRESET_HIGH: Final = SPEED_HIGH
+PRESET_TURBO: Final = SPEED_TURBO
 
-SERVICE_CLEAR_FILTER_REMINDER = 'lunos_clear_filter_reminder'
-SERVICE_TURN_ON_SUMMER_VENTILATION = 'lunos_turn_on_summer_ventilation'
-SERVICE_TURN_OFF_SUMMER_VENTILATION = 'lunos_turn_off_summer_ventilation'
+# Timing constants for relay control
+# delay all speed changes to > 3 seconds since the last relay switch change
+SPEED_CHANGE_DELAY_SECONDS: Final = 4
+DELAY_BETWEEN_FLIPS: Final = 0.100
+MINIMUM_DELAY_BETWEEN_STATE_CHANGES: Final = 4.0
 
-CONF_CONTROLLER_CODING = 'controller_coding'
-CONF_RELAY_W1 = 'relay_w1'
-CONF_RELAY_W2 = 'relay_w2'
-CONF_DEFAULT_SPEED = 'default_speed'
-CONF_DEFAULT_FAN_COUNT = 'default_fan_count'
-CONF_FAN_COUNT = 'fan_count'
+# Entity attribute keys
+ATTR_CFM: Final = 'cfm'  # note: even when off some LUNOS fans still circulate air
+ATTR_CMHR: Final = 'cmh'
+ATTR_DB: Final = 'dB'
+ATTR_MODEL_NAME: Final = 'model'
+ATTR_WATTS: Final = 'watts'
+ATTR_SPEED: Final = 'speed'
+UNKNOWN: Final = 'Unknown'
 
-CFM_TO_CMH = 1.69901  # 1 cubic feet/minute = 1.69901 cubic meters/hour
+# Ventilation mode attributes
+ATTR_VENT_MODE: Final = 'vent_mode'
+VENT_ECO: Final = 'eco'
+VENT_SUMMER: Final = 'summer'  # also known as night mode
+VENT_EXHAUST_ONLY: Final = 'exhaust'
+VENT_MODES: Final[list[str]] = [VENT_ECO, VENT_SUMMER, VENT_EXHAUST_ONLY]
+DEFAULT_VENT_MODE: Final = VENT_ECO
+
+# Service names
+SERVICE_CLEAR_FILTER_REMINDER: Final = 'clear_filter_reminder'
+SERVICE_TURN_ON_SUMMER_VENTILATION: Final = 'turn_on_summer_ventilation'
+SERVICE_TURN_OFF_SUMMER_VENTILATION: Final = 'turn_off_summer_ventilation'
+
+# Configuration keys
+CONF_CONTROLLER_CODING: Final = 'controller_coding'
+CONF_RELAY_W1: Final = 'relay_w1'
+CONF_RELAY_W2: Final = 'relay_w2'
+CONF_DEFAULT_SPEED: Final = 'default_speed'
+CONF_DEFAULT_FAN_COUNT: Final = 'default_fan_count'
+CONF_FAN_COUNT: Final = 'fan_count'
+
+# Unit conversion
+CFM_TO_CMH: Final = 1.69901  # 1 cubic feet/minute = 1.69901 cubic meters/hour
+
+# Default controller coding
+DEFAULT_CONTROLLER_CODING: Final = 'e2-usa'

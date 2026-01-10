@@ -1,19 +1,55 @@
+[project]
+name = "hass-lunos"
+version = "1.0.0"
+description = "LUNOS Heat Recovery Ventilation integration for Home Assistant"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-homeassistant-custom-component>=0.13",
+    "ruff>=0.8",
+    "mypy>=1.11",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+
 [tool.isort]
-force_to_top = [ "logging" ]
+force_to_top = ["logging"]
 balanced_wrapping = true
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 indent-width = 4
-lint.ignore = [
-       "F403",
-       "F405"  # * imports
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+]
+ignore = [
+    "F403",   # star imports
+    "F405",   # star import usage
 ]
 
 [tool.ruff.format]
-quote-style = "single" # Use a single quote instead of double
+quote-style = "single"
 
-# import sorting settings (replaces isort)
 [tool.ruff.lint.isort]
 force-single-line = false
 force-sort-within-sections = true
@@ -22,10 +58,17 @@ section-order = ["future", "standard-library", "third-party", "first-party", "lo
 combine-as-imports = true
 force-to-top = ["logging"]
 
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
 [tool.pycln]
 all = true
 
 [tool.refurb]
 python_version = "3.13"
 quiet = true
-ignore = [ "FURB184" ]
+ignore = ["FURB184"]
