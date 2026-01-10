@@ -5,9 +5,10 @@ https://github.com/rsnodgrass/hass-lunos
 
 import logging
 import os
-
 import yaml
 
+from homeassistant.helpers.discovery import load_platform
+from .const import LUNOS_DOMAIN
 
 LOG = logging.getLogger(__name__)
 
@@ -23,5 +24,19 @@ except Exception as e:
 
 
 async def async_setup(hass, config):
-    LOG.info(f'LUNOS controller codings supported: {LUNOS_CODING_CONFIG.keys()}')
+    LOG.info(f"LUNOS controller codings supported: {LUNOS_CODING_CONFIG.keys()}")
+
+    conf = config.get(LUNOS_DOMAIN)
+    if conf is None:
+        LOG.info("No LUNOS configuration found")
+        return True
+
+    load_platform(
+        hass,
+        "fan",
+        LUNOS_DOMAIN,
+        None,
+        conf,
+    )
+
     return True
