@@ -2,81 +2,81 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configure LUNOS Ventilation Fan",
-        "description": "Set up your LUNOS Heat Recovery Ventilation fan control.",
+        "title": "Add LUNOS Fan",
+        "description": "Connect your LUNOS ventilation fan to Home Assistant.",
         "data": {
           "name": "Name",
-          "relay_w1": "W1 Relay Switch",
-          "relay_w2": "W2 Relay Switch",
-          "controller_coding": "Controller Coding",
-          "fan_count": "Number of Fans",
-          "default_speed": "Default Speed"
+          "relay_w1": "First Relay (W1)",
+          "relay_w2": "Second Relay (W2)",
+          "controller_coding": "Fan Model",
+          "fan_count": "Fan Count",
+          "default_speed": "Startup Speed"
         },
         "data_description": {
-          "relay_w1": "Switch entity connected to the W1 terminal on the LUNOS controller",
-          "relay_w2": "Switch entity connected to the W2 terminal on the LUNOS controller",
-          "controller_coding": "The coding setting configured on your LUNOS controller hardware",
-          "fan_count": "Number of LUNOS fans connected to this controller",
-          "default_speed": "Default fan speed when turned on without specifying a speed"
+          "relay_w1": "Select the switch entity controlling your first LUNOS relay.",
+          "relay_w2": "Select the switch entity controlling your second LUNOS relay.",
+          "controller_coding": "Select your LUNOS fan model. Check your controller's DIP switches if unsure.",
+          "fan_count": "Number of fan units (most installations have 2).",
+          "default_speed": "Speed used when turning on without specifying. Medium works for most homes."
         }
       }
     },
     "error": {
-      "same_relay": "W1 and W2 relays must be different entities",
+      "same_relay": "Both relays must be different switch entities.",
       "unknown": "An unexpected error occurred"
     },
     "abort": {
-      "already_configured": "This LUNOS fan controller is already configured",
+      "already_configured": "A LUNOS fan with these relays already exists.",
       "missing_relays": "YAML configuration must include both relay_w1 and relay_w2"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "LUNOS Fan Options",
+        "title": "LUNOS Fan Settings",
         "description": "Adjust your LUNOS fan configuration.",
         "data": {
           "name": "Name",
-          "relay_w1": "W1 Relay Switch",
-          "relay_w2": "W2 Relay Switch",
-          "controller_coding": "Controller Coding",
-          "fan_count": "Number of Fans",
-          "default_speed": "Default Speed"
+          "relay_w1": "First Relay (W1)",
+          "relay_w2": "Second Relay (W2)",
+          "controller_coding": "Fan Model",
+          "fan_count": "Fan Count",
+          "default_speed": "Startup Speed"
         },
         "data_description": {
-          "relay_w1": "Switch entity connected to the W1 terminal on the LUNOS controller",
-          "relay_w2": "Switch entity connected to the W2 terminal on the LUNOS controller",
-          "controller_coding": "The coding setting configured on your LUNOS controller hardware",
-          "fan_count": "Number of LUNOS fans connected to this controller",
-          "default_speed": "Default fan speed when turned on without specifying a speed"
+          "relay_w1": "Select the switch entity controlling your first LUNOS relay.",
+          "relay_w2": "Select the switch entity controlling your second LUNOS relay.",
+          "controller_coding": "Select your LUNOS fan model. Check your controller's DIP switches if unsure.",
+          "fan_count": "Number of fan units (most installations have 2).",
+          "default_speed": "Speed used when turning on without specifying. Medium works for most homes."
         }
       }
     },
     "error": {
-      "same_relay": "W1 and W2 relays must be different entities"
+      "same_relay": "Both relays must be different switch entities."
     }
   },
   "selector": {
     "controller_coding": {
       "options": {
-        "e2": "LUNOS e2 (non-USA)",
-        "e2-4speed": "LUNOS e2 (4-speed)",
-        "e2-short": "LUNOS e2 Short (non-USA)",
-        "e2-usa": "LUNOS e2 (USA)",
-        "e2-usa-v2": "LUNOS e2 v2 (USA)",
-        "e2-short-usa": "LUNOS e2 Short (USA)",
-        "e2-nz": "LUNOS e2 (New Zealand)",
-        "e2-mini": "LUNOS e2 Mini",
-        "e2-60": "LUNOS e2 60",
-        "ego": "LUNOS eGO",
-        "ego-4speed": "LUNOS eGO (4-speed)",
-        "ego-exhaust-4speed": "LUNOS eGO (high=exhaust-only 4-speed)",
-        "ego-exhaust": "LUNOS eGO (high=exhaust-only)",
-        "ra-15-60": "LUNOS RA 15-60 radial duct fan",
-        "ra-15-60-high": "LUNOS RA 15-60 radial duct fan (Extra High)",
-        "ra-15-60-4speed": "LUNOS RA 15-60 radial duct fan (4-speed)",
-        "e2-60-d": "LUNOS e2 60 D",
-        "e2-60-short": "LUNOS e2 60 Short"
+        "e2": "e2 (non-USA)",
+        "e2-4speed": "e2 (4-speed)",
+        "e2-short": "e2 Short (non-USA)",
+        "e2-usa": "e2 (USA)",
+        "e2-usa-v2": "e2 v2 (USA)",
+        "e2-short-usa": "e2 Short (USA)",
+        "e2-nz": "e2 (New Zealand)",
+        "e2-mini": "e2 Mini",
+        "e2-60": "e2 60",
+        "ego": "eGO",
+        "ego-4speed": "eGO (4-speed)",
+        "ego-exhaust-4speed": "eGO (high=exhaust-only 4-speed)",
+        "ego-exhaust": "eGO (high=exhaust-only)",
+        "ra-15-60": "RA 15-60 radial duct fan",
+        "ra-15-60-high": "RA 15-60 radial duct fan (Extra High)",
+        "ra-15-60-4speed": "RA 15-60 radial duct fan (4-speed)",
+        "e2-60-d": "e2 60 D",
+        "e2-60-short": "e2 60 Short"
       }
     },
     "fan_speed": {

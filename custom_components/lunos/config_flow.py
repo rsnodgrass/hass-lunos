@@ -120,17 +120,13 @@ class LunosConfigFlow(ConfigFlow, domain=DOMAIN):
         """Initialize the config flow."""
         self._coding_config: dict[str, Any] = {}
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
 
         # load coding configurations
         if not self._coding_config:
-            self._coding_config = await self.hass.async_add_executor_job(
-                load_lunos_codings
-            )
+            self._coding_config = await self.hass.async_add_executor_job(load_lunos_codings)
 
         coding_options = get_coding_options(self._coding_config)
 
@@ -159,9 +155,7 @@ class LunosConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_import(
-        self, import_data: dict[str, Any]
-    ) -> FlowResult:
+    async def async_step_import(self, import_data: dict[str, Any]) -> FlowResult:
         """Handle import from YAML configuration."""
         # convert old LUNOS_DOMAIN to DOMAIN if needed
         name = import_data.get(CONF_NAME, DEFAULT_NAME)
@@ -206,17 +200,13 @@ class LunosOptionsFlow(OptionsFlow):
         self._config_entry = config_entry
         self._coding_config: dict[str, Any] = {}
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Manage the options."""
         errors: dict[str, str] = {}
 
         # load coding configurations
         if not self._coding_config:
-            self._coding_config = await self.hass.async_add_executor_job(
-                load_lunos_codings
-            )
+            self._coding_config = await self.hass.async_add_executor_job(load_lunos_codings)
 
         coding_options = get_coding_options(self._coding_config)
 

@@ -145,9 +145,7 @@ class LunosCoordinator(DataUpdateCoordinator[LunosData]):
         current_state = [w1_state, w2_state]
         for speed, relay_states in self._relay_state_map.items():
             if current_state == relay_states:
-                LOG.debug(
-                    'Determined LUNOS speed=%s from W1/W2=%s', speed, current_state
-                )
+                LOG.debug('Determined LUNOS speed=%s from W1/W2=%s', speed, current_state)
                 return speed
 
         LOG.warning(

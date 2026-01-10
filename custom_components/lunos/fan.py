@@ -200,9 +200,7 @@ class LUNOSFan(FanEntity):
         self._vent_modes: list[str] = []
         self._init_vent_modes(model_config)
 
-        self._default_speed = (
-            default_speed if default_speed in self._fan_speeds else DEFAULT_SPEED
-        )
+        self._default_speed = default_speed if default_speed in self._fan_speeds else DEFAULT_SPEED
 
         self._preset_modes: list[str] = []
         self._preset_mode: str | None = None
@@ -524,7 +522,7 @@ class LUNOSFan(FanEntity):
         w1 = self.hass.states.get(self._relay_w1)
         if not w1:
             LOG.warning(
-                "W1 entity %s not found, cannot determine %s LUNOS speed.",
+                'W1 entity %s not found, cannot determine %s LUNOS speed.',
                 self._relay_w1,
                 self._name,
             )
@@ -533,7 +531,7 @@ class LUNOSFan(FanEntity):
         w2 = self.hass.states.get(self._relay_w2)
         if not w2:
             LOG.warning(
-                "W2 entity %s not found, cannot determine %s LUNOS speed.",
+                'W2 entity %s not found, cannot determine %s LUNOS speed.',
                 self._relay_w2,
                 self._name,
             )
@@ -589,7 +587,7 @@ class LUNOSFan(FanEntity):
             delay = max(0, required_delay - time_passed)
             LOG.warning(
                 "To avoid LUNOS '%s' controller race conditions, "
-                "sleeping %s seconds before changing relay.",
+                'sleeping %s seconds before changing relay.',
                 self._name,
                 delay,
             )
@@ -652,9 +650,7 @@ class LUNOSFan(FanEntity):
         LOG.debug('%s async_update() = %s', self._name, actual_speed)
         self._update_speed(actual_speed)
 
-    async def async_call_switch_service(
-        self, method: str, relay_entity_id: str
-    ) -> None:
+    async def async_call_switch_service(self, method: str, relay_entity_id: str) -> None:
         """Call the appropriate service for the relay entity."""
         domain = relay_entity_id.split('.', 1)[0]
         # Backward-compatible: original versions assumed relays were always switch entities.

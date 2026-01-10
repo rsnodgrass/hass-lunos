@@ -56,9 +56,7 @@ async def test_diagnostics_output(
     mock_config_entry_for_diag: MagicMock,
 ) -> None:
     """Test diagnostics output structure."""
-    diagnostics = await async_get_config_entry_diagnostics(
-        hass, mock_config_entry_for_diag
-    )
+    diagnostics = await async_get_config_entry_diagnostics(hass, mock_config_entry_for_diag)
 
     # verify structure
     assert 'config_entry' in diagnostics
@@ -72,9 +70,7 @@ async def test_diagnostics_redaction(
     mock_config_entry_for_diag: MagicMock,
 ) -> None:
     """Test that sensitive data is redacted."""
-    diagnostics = await async_get_config_entry_diagnostics(
-        hass, mock_config_entry_for_diag
-    )
+    diagnostics = await async_get_config_entry_diagnostics(hass, mock_config_entry_for_diag)
 
     # relay entity IDs should be redacted
     config_data = diagnostics['config_entry']['data']
@@ -87,9 +83,7 @@ async def test_diagnostics_coordinator_state(
     mock_config_entry_for_diag: MagicMock,
 ) -> None:
     """Test coordinator state in diagnostics."""
-    diagnostics = await async_get_config_entry_diagnostics(
-        hass, mock_config_entry_for_diag
-    )
+    diagnostics = await async_get_config_entry_diagnostics(hass, mock_config_entry_for_diag)
 
     coord_state = diagnostics['coordinator_state']
     assert coord_state['current_speed'] == 'medium'
@@ -104,9 +98,7 @@ async def test_diagnostics_model_config(
     mock_config_entry_for_diag: MagicMock,
 ) -> None:
     """Test model config in diagnostics."""
-    diagnostics = await async_get_config_entry_diagnostics(
-        hass, mock_config_entry_for_diag
-    )
+    diagnostics = await async_get_config_entry_diagnostics(hass, mock_config_entry_for_diag)
 
     model_config = diagnostics['model_config']
     assert model_config['name'] == 'LUNOS e2 (USA)'
