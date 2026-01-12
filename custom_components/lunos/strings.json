@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Add LUNOS Fan",
-        "description": "Connect your LUNOS ventilation fan to Home Assistant.",
+        "description": "Connect your LUNOS ventilation fan to Home Assistant. [☕ Tip the Author](https://buymeacoffee.com/DYks67r)",
         "data": {
           "name": "Name",
           "relay_w1": "First Relay (W1)",

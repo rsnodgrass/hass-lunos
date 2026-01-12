@@ -1,15 +1,12 @@
 # LUNOS Heat Recovery Ventilation for Home Assistant
 
-![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 ![release_badge](https://img.shields.io/github/v/release/rsnodgrass/hass-lunos.svg)
 ![release_date](https://img.shields.io/github/release-date/rsnodgrass/hass-lunos.svg)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-[![Support on Patreon][patreon-shield]][patreon]
-[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [🥈](https://www.home-assistant.io/docs/quality_scale/)
+[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
 
 [Community Support](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)
 
@@ -36,12 +33,10 @@ such as Alexa, the real power comes in supporting a wide variety of automation o
 
 * automatically turn on summer ventilation mode when house is set to sleep mode (and return to normal operating mode upon wakeup or specific time during the day)
 
-## Support
+## Community Help
 
 There is no official support for this add-on and is community supported within the **[Home Assistant LUNOS discussion thread](https://community.home-assistant.io/t/lunos-heat-recovery-ventilation-hrv-fan-control/157287)**.
 If you have any proposed changes or bug fixes, please code them and create pull requests for your patches to the [hass-lunos GitHub repository](https://github.com/rsnodgrass/hass-lunos).
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
 ## Installation
 
@@ -298,8 +293,8 @@ Ideally, we would update this integration to follow naming/conventions similar t
 * [eWeLink Sonoff Device Control in Home Assistant](https://sonoff.tech/product-review/tutorial/how-to-add-your-sonoff-devices-on-home-assistant/)
 * [LUNOS Advanced Controller Settings - 40269](https://store-b79re8owlk.mybigcommerce.com/content/product/ventilation/lunos_e2/advanced_controller_settings_guide.pdf)
 
+## Support
 
+This integration is maintained in my free time. Sponsorship directly funds new device support and faster updates.
 
-
-[patreon]: https://www.patreon.com/rsnodgrass
-[patreon-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Drsnodgrass%26type%3Dpatrons&style=for-the-badge
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
